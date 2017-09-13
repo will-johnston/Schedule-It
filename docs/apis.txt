@@ -1,0 +1,6 @@
+Events
+https://www.eventbrite.com/developer/v3/
+http://api.eventful.com/	//Uses the Eventbrite api
+
+Movies
+https://developer.fandango.com/io-docs
