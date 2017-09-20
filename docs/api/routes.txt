@@ -1,0 +1,18 @@
+/api/user/login - Login to the system
+/api/user/edit - Edit account info, create profile picture, set notifications
+/api/user/friends/add - Add a friend
+/api/user/friends/delete - Remove friend
+/api/user/groups/create - Create a new group
+/api/user/groups/add - Add a friend to group
+/api/user/groups/join - Join a group from an invitation
+/api/user/groups/leave - Leave the group
+/api/notifications/getnew - Get the new notifications for the user
+/api/user/calendar/get - Get the user's calendar
+/api/user/groups/calendar/get - Get the group's calendar
+/api/user/calendar/events/create - Create a new event in the calendar
+/api/user/calendar/events/edit - Edit the information for an event
+/api/user/groups/calendar/events/create - Create a new event, if the user is an admin
+/api/users/groups/edit - Edit group info, set permissions
+/api/users/groups/calendar/events/respond - User sets their 'going' status - accept, decline, on the fence
+
+/* Need chat methods */
