@@ -4,13 +4,72 @@
 <head>
 	<title>Schedule It</title>
 	<link href="dependencies/bootstrap.min.css" rel="stylesheet">
+	<link href="resources/style.css" rel="stylesheet">
 </head>
 <body>
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
+	<script src="resources/script.js"></script>
 
-	<h1>This is a test</h1>
+	<div class="row">
+		<div class="col-2">
+			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+				<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-2" role="tab">Group 1</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-3" role="tab">Group 2</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-4" role="tab">Group 3</a>
+			</div>
+		</div>
+		<div class="col-10">
+			<div class="tab-content" id="v-pills-tabContent">
+				<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel">
+				
+					<div class="row">
+						<div class="col-10">
+							<div class="card" style="height: 100%">
+								<div class="card-body">
+									<h3>Group Name</h3>
+									<br />
+									<p>Group info</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-2">
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail float-right" width="100%">
+						</div>
+					</div>
+
+					
+					
+					<ul class="nav nav-tabs nav-fill" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#v-pills-1-chat" role="tab">Chat</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#v-pills-1-cal" role="tab">Calendar</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#v-pills-1-opt" role="tab">Group Options</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active show" id="v-pills-1-chat" role="tabpanel">chat</div>
+						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
+						<div class="tab-pane" id="v-pills-1-opt" role="tabpanel">group options</div>
+					</div>
+					
+					
+
+				</div>
+				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>
+				<div class="tab-pane fade" id="v-pills-3" role="tabpanel">Group 2 content</div>
+				<div class="tab-pane fade" id="v-pills-4" role="tabpanel">Group 3 content</div>
+			</div>
+		</div>
+	</div>
+
+
 
 </body>
 </html>
