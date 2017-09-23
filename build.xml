@@ -6,7 +6,7 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
 
-    <property name="main-class"  value="src.Main"/>
+    <property name="main-class"  value="Main"/>
 
 
 
@@ -34,6 +34,6 @@
 
     <target name="clean-build" depends="clean,jar"/>
 
-    <target name="main" depends="clean, compile"/>
+    <target name="main" depends="clean, compile, jar"/>
 
 </project>
