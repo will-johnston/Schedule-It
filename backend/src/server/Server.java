@@ -1,7 +1,10 @@
-/**
+package server; /**
  * Created by Ryan on 9/20/2017.
  */
 
+import endpoints.IAPIRoute;
+import server.HTTPMessage;
+import server.Router;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.net.ssl.*;
@@ -11,7 +14,6 @@ import java.io.OutputStream;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.*;
 
 public class Server {
     private Boolean isSSL;
@@ -27,7 +29,7 @@ public class Server {
             isListening = false;
             listenThread = null;
         } catch (IOException e) {
-            System.out.println(String.format("Server cannot bind to port %d, already in use!", port));
+            System.out.println(String.format("server.Server cannot bind to port %d, already in use!", port));
         }
     }
 
@@ -93,7 +95,7 @@ public class Server {
                 int readResult = in.read(buffer);
                 String header = new String(buffer, 0, readResult, StandardCharsets.UTF_8);
                 //System.out.println("header: " + header);
-                //System.out.println(String.format("Header length: %d, read: %d", header.length(), readResult));
+                //System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
                 HTTPMessage mess;
                 try {
                     mess = new HTTPMessage(header);
@@ -118,8 +120,8 @@ public class Server {
                     out.flush();
                     sock.close();
                 }
-                //out.write(HTTPMessage.makeBasicResponse("{ \"message\": \"Hello World\" }").getBytes(Charset.forName("UTF-8")));
-                /*String response = HTTPMessage.makeResponse("{ \"message\": \"Hello World\" }", HTTPMessage.HTTPStatus.OK);
+                //out.write(server.HTTPMessage.makeBasicResponse("{ \"message\": \"Hello World\" }").getBytes(Charset.forName("UTF-8")));
+                /*String response = server.HTTPMessage.makeResponse("{ \"message\": \"Hello World\" }", server.HTTPMessage.HTTPStatus.OK);
                 out.write(response.getBytes(Charset.forName("UTF-8")));
                 out.flush();
                 sock.close();*/
@@ -128,4 +130,15 @@ public class Server {
             }
         }
     }
+
+    //Getters and Setters
+
+    public Boolean getListening() {
+        return isListening;
+    }
+
+    public Boolean getSSL() {
+        return isSSL;
+    }
+
 }

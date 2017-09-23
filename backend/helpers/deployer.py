@@ -129,17 +129,17 @@ def main():
             quit()
         print "Stopping Apache"
         stopapache()
-        print "Stopping API Server"
+        print "Stopping API server.Server"
         stopapiserver()
         if os.path.exists(serverBackupLocation):
-            print "Removing Server Backup (/app.backup)"
+            print "Removing server.Server Backup (/app.backup)"
             shutil.rmtree(serverBackupLocation, ignore_errors=True)
         print "Backing up previous Apache directory (/app.backup)"
         shutil.copytree(serverLocation, serverBackupLocation)
-        print "Removing Server Directory (/app)"
+        print "Removing server.Server Directory (/app)"
         if os.path.exists(serverLocation):
             shutil.rmtree(serverLocation, ignore_errors=True)
-        print "Installing new Server Directory (/app)"
+        print "Installing new server.Server Directory (/app)"
         shutil.copytree(buildsLocation + deploynumber + "/app/", serverLocation)
         print "App installed"
         if os.path.exists(apiBackupLocation):
@@ -157,7 +157,7 @@ def main():
 
         print "API installed"
 
-        print "Starting API Server"
+        print "Starting API server.Server"
         startapiserver()
         print "Starting Apache"
         startapache()
