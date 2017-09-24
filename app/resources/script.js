@@ -7,7 +7,6 @@ $(document).ready(function(){
 
 		//Fix current pill stuff
 		var currPill = event.target.getAttribute("href");
-
 		$(currPill + " .nav a:first").tab("show");
 	});
 });

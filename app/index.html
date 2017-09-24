@@ -12,6 +12,37 @@
 	<script src="dependencies/bootstrap.min.js"></script>
 	<script src="resources/script.js"></script>
 
+
+	<h1>
+		<span>Schedule It</span>
+		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
+		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Notifications <span class="badge">0</span></button>
+	</h1>
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					</div>
+					<div class="modal-body">
+						In here we will have fields for name, password, notification settings, an option to change profile pic, etc...
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<hr />
+
 	<div class="row">
 		<div class="col-2">
 			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
@@ -24,23 +55,16 @@
 		<div class="col-10">
 			<div class="tab-content" id="v-pills-tabContent">
 				<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel">
-				
-					<div class="row">
-						<div class="col-10">
-							<div class="card" style="height: 100%">
-								<div class="card-body">
-									<h3>Group Name</h3>
-									<br />
-									<p>Group info</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-2">
-							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail float-right" width="100%">
+					<div class="card" style="height: 100%">
+						<div class="card-body">
+							<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
+							<h3>Group Name</h3>
+							<br />
+							<p>Group info</p>
 						</div>
 					</div>
 
-					
+					<div style="height: 30px"></div>
 					
 					<ul class="nav nav-tabs nav-fill" role="tablist">
 						<li class="nav-item">
@@ -58,9 +82,6 @@
 						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
 						<div class="tab-pane" id="v-pills-1-opt" role="tabpanel">group options</div>
 					</div>
-					
-					
-
 				</div>
 				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>
 				<div class="tab-pane fade" id="v-pills-3" role="tabpanel">Group 2 content</div>
