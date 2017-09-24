@@ -1,4 +1,7 @@
-import java.awt.*;
+package server;
+
+import endpoints.IAPIRoute;
+
 import java.util.*;
 
 /**
@@ -20,7 +23,7 @@ public class Router {
     public Router() throws Exception {
         this(20);
     }
-    /*public void add(String method, IAPIRoute obj) throws Exception {
+    /*public void add(String method, endpoints.IAPIRoute obj) throws Exception {
         if (!method.contains("/")) {
             throw new Exception("Invalid method!");
         }
@@ -58,13 +61,13 @@ public class Router {
     /*class Node {
         String key;
         Node next;
-        IAPIRoute method;
+        endpoints.IAPIRoute method;
         //Creating a Key
         public Node(String key, Node next) {
 
         }
         //Creating a Method
-        public Node(String key, IAPIRoute method) {
+        public Node(String key, endpoints.IAPIRoute method) {
 
         }
     }*/

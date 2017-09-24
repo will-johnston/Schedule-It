@@ -1,7 +1,6 @@
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+package server;
 
 import java.util.*;
-import java.time.*;
 import java.text.*;
 
 /**
@@ -80,7 +79,7 @@ public class HTTPMessage {
         response.append(new SimpleDateFormat("EEE, d MMM YYYY 00:kk:ss zzz").format(new Date()));
         response.append('\n');
         response.append("Connection: close\n");
-        response.append("Server: ScheduleIt API Server\n");
+        response.append("server.Server: ScheduleIt API server.Server\n");
         response.append("Accept-Ranges: bytes\n");
         response.append("Content-Type: application/json\n");
         response.append(String.format("Content-Length: %d\n", message.length()));
@@ -119,7 +118,7 @@ public class HTTPMessage {
         // Method, MethodType, HTTP Version
         System.out.println(String.format("Method: %s, Type: %s, HTTP Version: %f", method, methodType, HTTPversion));
         // Print Headers
-        System.out.println(String.format("Header Count: %d", headers.size()));
+        System.out.println(String.format("server.Header Count: %d", headers.size()));
         for (Header header : headers.values()) {
             System.out.println(String.format("Key: %s, Value: %s", header.Key, header.Value));
         }
@@ -164,7 +163,7 @@ public class HTTPMessage {
                 return 302;
             case Unknown:
             default:
-                //Return Internal Server Error
+                //Return Internal server.Server Error
                 return 500;
         }
     }
@@ -184,8 +183,8 @@ public class HTTPMessage {
                 return "Redirect Found";
             case Unknown:
             default:
-                //Return Internal Server Error
-                return "Internal Server Error";
+                //Return Internal server.Server Error
+                return "Internal server.Server Error";
         }
     }
 	public static String gettMimeTypeName(MimeType type) {
@@ -211,5 +210,22 @@ public class HTTPMessage {
         else {
             return null;
         }
+    }
+
+    //Getters and Setters because Java is dumb
+
+    public HashMap<String, Header> getHeaders() {
+        return headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public HTTPMethod getMethodType() {
+        return methodType;
+    }
+    public float getHTTPversion() {
+        return HTTPversion;
     }
 }
