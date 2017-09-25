@@ -12,14 +12,14 @@
 	<script src="dependencies/bootstrap.min.js"></script>
 	<script src="resources/script.js"></script>
 
-
+	<!-- Heading -->
 	<h1>
 		<span>Schedule It</span>
 		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
 		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Notifications <span class="badge">0</span></button>
 	</h1>
 
-	<!-- Modal -->
+	<!-- Settings modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -28,11 +28,62 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+							<label for="..." class="col-5 col-form-label">Name</label>
+							<div class="col-7">
+								<input class="form-control" type="text" value="Vardbot">
+							</div>
 					</div>
-					<div class="modal-body">
-						In here we will have fields for name, password, notification settings, an option to change profile pic, etc...
+					<div class="form-group row">
+							<label for="..." class="col-5 col-form-label">Email</label>
+							<div class="col-7">
+								<input class="form-control" type="email" value="helloWorld123@gmail.com">
+							</div>
 					</div>
-					<div class="modal-footer">
+					<div class="form-group row">
+							<label for="..." class="col-5 col-form-label">Phone number</label>
+							<div class="col-7">
+								<input class="form-control" type="tel" value="123-456-7890">
+							</div>
+					</div>
+					<div class="form-group row">
+							<label for="..." class="col-5 col-form-label">Change password</label>
+							<div class="col-7">
+								<input class="form-control" type="password" value="">
+							</div>
+					</div>
+					<div class="form-group row">
+							<div class="col-5">
+								<label for="...">Profile picture</label>
+								<input type="file" class="form-control-file" aria-describedby="fileHelp">
+							</div>
+							<div class="col-7">
+								<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+							</div>
+					</div>
+					<div class="form-group row">
+							<div class="col-5">
+								<p>Send notifications to</p>
+							</div>
+							<div class="col-3">
+								<label class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input">
+									<span class="custom-control-indicator"></span>
+									<span class="custom-control-description">Email</span>
+								</label>
+							</div>
+							<div class="col-4">
+								<label class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input">
+									<span class="custom-control-indicator"></span>
+									<span class="custom-control-description">Phone</span>
+								</label>
+							</div>
+					</div>
+				</div>
+				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary">Save changes</button>
 				</div>
@@ -40,9 +91,9 @@
 		</div>
 	</div>
 
-
 	<hr />
 
+	<!-- Main content -->
 	<div class="row">
 		<div class="col-2">
 			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
