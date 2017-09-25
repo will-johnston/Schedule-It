@@ -49,5 +49,5 @@ crashlytics-build.properties
 fabric.properties
 
 # Remove actual compilations
-*.jar
 *.class
+ant/*
