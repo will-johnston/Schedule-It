@@ -7,6 +7,9 @@
     <property name="jar.dir"     value="${build.dir}/jar"/>
 
     <property name="main-class"  value="Main"/>
+	<path id="classpath">
+		<fileset dir="backend/lib" includes="*.jar" />
+	</path>
 
 
 
@@ -16,7 +19,11 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+        <javac 
+		srcdir="${src.dir}" 
+		destdir="${classes.dir}"
+		classpathref="classpath"
+		/>
     </target>
 
     <target name="jar" depends="compile">
