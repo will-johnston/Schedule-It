@@ -14,10 +14,57 @@
 
 	<!-- Heading -->
 	<h1>
-		<span>Schedule It</span>
 		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
-		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Notifications <span class="badge">0</span></button>
+		
+		<!-- Notification dropdown -->
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
+			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
+				<div class="card notification-card alert alert-success">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Billy Bob sent you a friend request</p>
+						<button type="button" class="btn btn-primary btn-sm">Accept</button>
+						<button type="button" class="btn btn-danger btn-sm">Decline</button>
+					</div>
+				</div>
+				<div class="card notification-card alert alert-success">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Jimmy created an event in Work</p>
+					</div>
+				</div>
+				<div class="card notification-card">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Larry sent you a friend request</p>
+						<p>Accepted</p>
+					</div>
+				</div>
+				<div class="card notification-card">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Tom created an event in Purdue CS 180</p>
+					</div>
+				</div>
+				<div class="card notification-card">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Timmy created an event in Purdue CS 180</p>
+					</div>
+				</div>
+				<div class="card notification-card">
+					<div class="card-block">
+						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
+						<p>Jim created an event in Purdue CS 180</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<span>Schedule It</span>
 	</h1>
+
 
 	<!-- Settings modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
