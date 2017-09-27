@@ -6,7 +6,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 		
 public class AddUserToDb {
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		for (String str: args) {
 			System.out.println(str);
 		}
@@ -17,9 +17,9 @@ public class AddUserToDb {
 		String email = args[4];
 		String phoneNumber = args[5];		
 		addUser(id, username, fullname, password, email, phoneNumber);
-	}
+	}*/
 				
-	private static void addUser(String id, String username, String fullname, String password, String email,
+	public static void addUser(String id, String username, String fullname, String password, String email,
 	String phoneNumber) {
 		DataSource ds = null;
 		ds = data_source_factory.get_data_source();
