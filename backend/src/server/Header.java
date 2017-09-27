@@ -21,4 +21,10 @@ public class Header {
             System.out.println(e.getMessage());
         }
     }
+    public String getValue() {
+        return Value;
+    }
+    public String getKey() {
+        return Key;
+    }
 }

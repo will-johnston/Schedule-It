@@ -114,6 +114,9 @@ public class HTTPMessage {
 		response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org\n\n");
 		return response.toString();
 	}
+	public static String makeNotImplemented(){
+        return makeResponse("NotImplemented", HTTPStatus.MethodNotAllowed, MimeType.textPlain, true);
+    }
     public void printDebugString() {
         // Method, MethodType, HTTP Version
         System.out.println(String.format("Method: %s, Type: %s, HTTP Version: %f", method, methodType, HTTPversion));
