@@ -1,5 +1,7 @@
 body {
-	margin: 2% 10% 2% 10%;
+	margin: auto;
+	margin-top: 10px;
+	width: 1400px;
 }
 
 #notification-menu {
@@ -17,3 +19,4 @@ body {
 .notification-card img {
 	margin-right: 10px;
 }
+

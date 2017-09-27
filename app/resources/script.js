@@ -9,4 +9,14 @@ $(document).ready(function(){
 		var currPill = event.target.getAttribute("href");
 		$(currPill + " .nav a:first").tab("show");
 	});
+
+	$(".chevron").click(function() {
+		if(!$(this).hasClass("collapsed")) {
+			$(this).find("img").attr("src","resources/chevron-down.png");
+		}
+		else {
+			$(this).find("img").attr("src","resources/chevron-up.png");
+		}
+
+	});
 });

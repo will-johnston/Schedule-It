@@ -21,7 +21,7 @@
 		<div class="dropdown">
 			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
 			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
-				<div class="card notification-card alert alert-success">
+				<div class="card notification-card alert-success">
 					<div class="card-block">
 						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
 						<p>Billy Bob sent you a friend request</p>
@@ -29,7 +29,7 @@
 						<button type="button" class="btn btn-danger btn-sm">Decline</button>
 					</div>
 				</div>
-				<div class="card notification-card alert alert-success">
+				<div class="card notification-card alert-success">
 					<div class="card-block">
 						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
 						<p>Jimmy created an event in Work</p>
@@ -141,6 +141,8 @@
 
 	<hr />
 
+
+
 	<!-- Main content -->
 	<div class="row">
 		<div class="col-2">
@@ -154,12 +156,14 @@
 		<div class="col-10">
 			<div class="tab-content" id="v-pills-tabContent">
 				<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel">
-					<div class="card" style="height: 100%">
-						<div class="card-body">
-							<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
-							<h3>Group Name</h3>
-							<br />
-							<p>Group info</p>
+					<div id="collapseExample" class="collapse show">
+						<div class="card" style="height: 100%">
+							<div class="card-body">
+								<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
+								<h3>Group Name</h3>
+								<br />
+								<p>Group info</p>
+							</div>
 						</div>
 					</div>
 
@@ -175,9 +179,16 @@
 						<li class="nav-item">
 							<a class="nav-link" data-toggle="tab" href="#v-pills-1-opt" role="tab">Group Options</a>
 						</li>
+						<button class="btn btn-outline-secondary chevron" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" style="margin-left: 10px">
+							<img src="resources/chevron-up.png">
+						</button>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active show" id="v-pills-1-chat" role="tabpanel">chat</div>
+						<div class="tab-pane active show" id="v-pills-1-chat" role="tabpanel">
+							<div class="chat">
+								chat
+							</div>
+						</div>
 						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
 						<div class="tab-pane" id="v-pills-1-opt" role="tabpanel">group options</div>
 					</div>
