@@ -7,9 +7,9 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 /**
  * Created by williamjohnston on 9/22/17.
 */
-public class data_source_factory {
+public class DataSourceFactory {
 
-    public static DataSource get_data_source() {
+    public static DataSource getDataSource() {
 	    Properties properties = new Properties();
 	    MysqlDataSource ds = null; 
 	    FileInputStream fis = null;
