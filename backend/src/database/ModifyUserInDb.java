@@ -48,11 +48,7 @@ public class ModifyUserInDb {
 			//modify result
 			int length = mods.length;
 			System.out.println(length);
-			for (int i = 0; i < length; i+=2) {
-	
-					System.out.printf("current i:%d\n", i);
-				        System.out.println(mods[i]);
-					System.out.println(mods[i+1]);	
+			for (int i = 0; i < length; i+=2) {	
 				if (!mods[i].equals("username") && !mods[i].equals("fullname") 
 					&& !mods[i].equals("password") && !mods[i].equals("email") 
 					&& !mods[i].equals("phone_number")) {

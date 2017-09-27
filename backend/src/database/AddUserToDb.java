@@ -3,6 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;		
 import javax.sql.DataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 		
 public class AddUserToDb {
 	public static void main(String[] args) {
@@ -15,12 +16,12 @@ public class AddUserToDb {
 		String password = args[3];
 		String email = args[4];
 		String phoneNumber = args[5];		
-		addUser(id, username, fullname, password, email, phoneNumber);
+		addUser(username, fullname, password, email, phoneNumber);
 	}
 				
-	private static void addUser(String id, String username, String fullname, String password, 
+	public static void addUser(String username, String fullname, String password, 
 			String email, String phoneNumber) {
-		DataSource ds = null;
+		MysqlConnectionPoolDataSource ds = null;
 		ds = DataSourceFactory.getDataSource();
 		if (ds == null) {
 			System.out.println("null data source");
@@ -31,7 +32,8 @@ public class AddUserToDb {
 		ResultSet result = null;
 		try {
 			connection = ds.getConnection();
-			String query = "INSERT INTO Users VALUES('" + id +  "','" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "')";
+			System.out.println("Connected.");
+			String query = "INSERT INTO Users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "')";
 			System.out.println(query);
 			statement = connection.createStatement();
 			int ex = statement.executeUpdate(query);
