@@ -1,6 +1,6 @@
 package endpoints;
 
-import server.HTTPMessage;
+import server.*;
 
 import java.net.Socket;
 
@@ -13,6 +13,6 @@ public class UserCreate implements IAPIRoute {
 
     @Override
     public void execute(Socket sock, HTTPMessage request) {
-
+        Socketeer.sendText(HTTPMessage.makeNotImplemented(), sock);
     }
 }
