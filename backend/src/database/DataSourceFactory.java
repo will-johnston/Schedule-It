@@ -11,14 +11,14 @@ import javax.naming.*;
 public class DataSourceFactory {
 
     public static MysqlConnectionPoolDataSource getDataSource() {
-	    MysqlConnectionPoolDataSource ds = null; 
+	    MysqlConnectionPoolDataSource ds = null;  
 	    FileInputStream fis = null;
-	    Properties properties = new Properties();
+	    Properties properties = new Properties();  //database properties
 	    try { 
 		ds = new MysqlConnectionPoolDataSource();
 		fis = new FileInputStream("/home/will/db.properties");
-		properties.load(fis);
-		
+		properties.load(fis);  //load properties file contents into properties object
+		//set properties in datasource
 		ds.setServerName(properties.getProperty("DB_URL")); 
 		ds.setUser(properties.getProperty("DB_USERNAME"));
 		ds.setPassword(properties.getProperty("DB_PASSWORD"));
@@ -31,10 +31,8 @@ public class DataSourceFactory {
 	 catch(IOException/* | NamingException*/ e) {
 	 	e.printStackTrace();
 	 }
+	 //send pool datasource
 	 return ds;
     }
 
-    //public static void main(String[] args) {
-//	    DataSource ds = getDataSource();
-  //  }
 }
