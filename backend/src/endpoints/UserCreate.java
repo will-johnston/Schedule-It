@@ -66,7 +66,7 @@ public class UserCreate implements IAPIRoute {
         catch (Exception e) {
             System.out.println("Caught an exception");
             e.printStackTrace();
-            return null;
+            return null; 
         }
     }
 }
