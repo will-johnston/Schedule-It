@@ -19,7 +19,7 @@ public class AddUserToDb {
 		addUser(id, username, fullname, password, email, phoneNumber);
 	}
 				
-	private static void addUser(String id, String username, String fullname, String password, String email,
+	public static void addUser(String id, String username, String fullname, String password, String email,
 	String phoneNumber) {
 		DataSource ds = null;
 		ds = data_source_factory.get_data_source();

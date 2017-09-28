@@ -16,8 +16,20 @@ public class UserCreate implements IAPIRoute {
     @Override
     public void execute(Socket sock, HTTPMessage request) {
         String[] args = parseArgs(request.getBody());
-        AddUserToDb.addUser("0", args[4], args[2], args[1], args[0], args[3]);
-        Socketeer.sendJSON("\"cookie\": 1234\"", sock);
+        if (args == null) {
+            System.out.println("Invalid Arguments");
+            Socketeer.sendText(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
+        try {
+            AddUserToDb.addUser("0", args[4], args[2], args[1], args[0], args[3]);
+            Socketeer.sendJSON("\"cookie\": 1234\"", sock);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to add, sending error");
+            Socketeer.sendText(HTTPMessage.makeResponse("Failed to add user", HTTPMessage.HTTPStatus.Unknown), sock);
+        }
         //Socketeer.sendText(HTTPMessage.makeNotImplemented(), sock);
     }
 
@@ -27,10 +39,20 @@ public class UserCreate implements IAPIRoute {
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
+            if (bodyObj == null) {
+                System.out.println("Failed to parse JSON");
+                return null;
+            }
             if (!bodyObj.has("email")) {
                 return null;
             }
             if (!bodyObj.has("pass")) {
+                return null;
+            }
+            if (!bodyObj.has("name")) {
+                return null;
+            }
+            if (!bodyObj.has("phone")) {
                 return null;
             }
             String[] arr = new String[5];
@@ -43,6 +65,7 @@ public class UserCreate implements IAPIRoute {
         }
         catch (Exception e) {
             System.out.println("Caught an exception");
+            e.printStackTrace();
             return null;
         }
     }
