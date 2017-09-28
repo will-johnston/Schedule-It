@@ -11,9 +11,9 @@ import javax.naming.*;
 public class DataSourceFactory {
 
     public static MysqlConnectionPoolDataSource getDataSource() {
-	    Properties properties = new Properties();
 	    MysqlConnectionPoolDataSource ds = null; 
 	    FileInputStream fis = null;
+	    Properties properties = new Properties();
 	    try { 
 		ds = new MysqlConnectionPoolDataSource();
 		fis = new FileInputStream("/home/will/db.properties");
@@ -34,7 +34,7 @@ public class DataSourceFactory {
 	 return ds;
     }
 
-    public static void main(String[] args) {
-	    DataSource ds = getDataSource();
-    }
+    //public static void main(String[] args) {
+//	    DataSource ds = getDataSource();
+  //  }
 }

@@ -16,22 +16,26 @@ public class AddUserToDb {
 		String password = args[3];
 		String email = args[4];
 		String phoneNumber = args[5];		
-		addUser(username, fullname, password, email, phoneNumber);
+		addUser(username,fullname,password,email,phoneNumber);	
+		
 	}
 				
-	public static void addUser(String username, String fullname, String password, 
-			String email, String phoneNumber) {
+		
+	public static boolean addUser(String username,String fullname,String  password,String email,String phoneNumber) {
 		MysqlConnectionPoolDataSource ds = null;
-		ds = DataSourceFactory.getDataSource();
-		if (ds == null) {
-			System.out.println("null data source");
-			return;
-		}					
+						
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
 		try {
+			
+			ds = DataSourceFactory.getDataSource();	
+			if (ds == null) {
+			System.out.println("null data source");
+			return false;
+		}	
 			connection = ds.getConnection();
+
 			System.out.println("Connected.");
 			String query = "INSERT INTO Users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "')";
 			System.out.println(query);
@@ -42,6 +46,7 @@ public class AddUserToDb {
 			}*/
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		} finally {
 			try {
 				if(result != null) result.close();
@@ -49,7 +54,9 @@ public class AddUserToDb {
 				if(connection != null) connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				return false;
 			}
+			return true;
 		}
 	}
 }
