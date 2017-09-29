@@ -13,6 +13,6 @@ public class GroupJoin implements IAPIRoute {
 
     @Override
     public void execute(Socket sock, HTTPMessage request) {
-        Socketeer.sendText(HTTPMessage.makeNotImplemented(), sock);
+        Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
     }
 }

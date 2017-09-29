@@ -19,24 +19,24 @@ public class UserCreate implements IAPIRoute {
         String[] args = parseArgs(request.getBody());
         if (args == null) {
             System.out.println("Invalid Arguments");
-            Socketeer.sendText(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.BadRequest), sock);
+            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
         //try {
         System.out.println("Trying to add User");
 	if (AddUserToDb.addUser(args[4], args[2], args[1], args[0], args[3])) {
 		System.out.println("Sending success, attempt 2");
-		Socketeer.sendText(HTTPMessage.makeResponse("\"cookie\": 1234\"", HTTPMessage.HTTPStatus.OK), sock);
+		Socketeer.send(HTTPMessage.makeResponse("\"cookie\": 1234\"", HTTPMessage.HTTPStatus.OK), sock);
 	}
 	else {
 		System.out.println("Failed to add, sending error");
-           	Socketeer.sendText(HTTPMessage.makeResponse("Failed to add user", HTTPMessage.HTTPStatus.Unknown), sock);
+           	Socketeer.send(HTTPMessage.makeResponse("Failed to add user", HTTPMessage.HTTPStatus.Unknown), sock);
 	}
         //}
         /*catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to add, sending error");
-            Socketeer.sendText(HTTPMessage.makeResponse("Failed to add user", HTTPMessage.HTTPStatus.Unknown), sock);
+            Socketeer.send(HTTPMessage.makeResponse("Failed to add user", HTTPMessage.HTTPStatus.Unknown), sock);
 	    return;
         }*/
     }

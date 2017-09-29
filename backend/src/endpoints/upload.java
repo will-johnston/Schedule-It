@@ -1,0 +1,19 @@
+package endpoints;
+
+import server.HTTPMessage;
+
+import java.net.Socket;
+
+//A special type of endpoint where multiple uploads can happen at the same time
+//
+public class upload implements IAPIRoute {
+    @Override
+    public void setup() {
+
+    }
+
+    @Override
+    public void execute(Socket sock, HTTPMessage request) {
+
+    }
+}

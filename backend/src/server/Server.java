@@ -91,7 +91,8 @@ public class Server {
             try {
                 InputStream in = sock.getInputStream();
                 OutputStream out = sock.getOutputStream();
-                byte[] buffer = new byte[8192];
+                //Max recieve size is 8 KB, allow for overhead
+                byte[] buffer = new byte[9216];
                 int readResult = in.read(buffer);
                 String header = new String(buffer, 0, readResult, StandardCharsets.UTF_8);
                 //System.out.println("header: " + header);

@@ -1,11 +1,13 @@
 import endpoints.*;
 import server.*;
+import management.*;
 public class Main {
 
     //server.Router initialization should be done here
     public static Router initRouter() {
         try {
             Router router = new Router();
+            router.add("/upload", new upload());
             router.add("/example/example", new ExampleEndpoint());
             router.add("/user/login", new UserLogin());
             router.add("/user/edit", new UserEdit());
@@ -33,6 +35,7 @@ public class Main {
 	// write your code here
         Server server = new Server(8181);
         Router router = initRouter();
+        Tracker tracker = new Tracker();
         if (router == null) {
             //An error occured, can't start server
             System.out.println("Failed in initailze the router, shutting down the server");
