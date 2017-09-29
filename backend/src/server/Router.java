@@ -45,6 +45,7 @@ public class Router {
     //Returns null if method isn't in table
     public IAPIRoute get(String method) {
         if (!methods.containsKey(method)) {
+		System.out.println("Method doesn't exist");
             return null;
         }
         return methods.get(method);

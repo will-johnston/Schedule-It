@@ -6,20 +6,20 @@ public class Main {
     public static Router initRouter() {
         try {
             Router router = new Router();
-            router.add("/api/example/example", new ExampleEndpoint());
-            router.add("/api/user/login", new UserLogin());
-            router.add("/api/user/edit", new UserEdit());
-            router.add("/api/user/groups/calendar/get", new GroupGetCalendar());
-            router.add("/api/user/calendar/get", new UserGetCalendar());
-            router.add("/api/user/groups/leave", new GroupLeave());
-            router.add("/api/user/groups/join", new GroupJoin());
-            router.add("/api/user/search", new UserSearch());
-            router.add("/api/user/groups/add", new GroupAdd());
-            router.add("/api/user/groups/edit", new GroupEdit());
-            router.add("/api/user/groups/create", new GroupCreate());
-            router.add("/api/user/friends/remove", new FriendsRemove());
-            router.add("/api/user/create", new UserCreate());
-            router.add("/api/user/friends/add", new FriendsAdd());
+            router.add("/example/example", new ExampleEndpoint());
+            router.add("/user/login", new UserLogin());
+            router.add("/user/edit", new UserEdit());
+            router.add("/user/groups/calendar/get", new GroupGetCalendar());
+            router.add("/user/calendar/get", new UserGetCalendar());
+            router.add("/user/groups/leave", new GroupLeave());
+            router.add("/user/groups/join", new GroupJoin());
+            router.add("/user/search", new UserSearch());
+            router.add("/user/groups/add", new GroupAdd());
+            router.add("/user/groups/edit", new GroupEdit());
+            router.add("/user/groups/create", new GroupCreate());
+            router.add("/user/friends/remove", new FriendsRemove());
+            router.add("/user/create", new UserCreate());
+            router.add("/user/friends/add", new FriendsAdd());
             return router;
         }
         catch (Exception e) {

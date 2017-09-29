@@ -9,6 +9,7 @@ public class Socketeer {
     //Return true if send was successful, false if could not send
     public static Boolean sendText(String message, Socket sock) {
         if (sock.isClosed()) {
+            System.out.println("Socket is Closed");
             return false;
         }
         if (!sock.isConnected()) {
@@ -17,19 +18,24 @@ public class Socketeer {
                 sock.connect(sock.getRemoteSocketAddress());
             }
             catch (Exception e) {
+                System.out.println("Socket is not connected");
                 return false;
             }
         }
         if (sock.isOutputShutdown()) {
+            System.out.println("Socket output is shutdown");
             return false;
         }
         try {
+            //System.out.println("Try to send " + message);
             OutputStream out = sock.getOutputStream();
             out.write(message.getBytes(Charset.forName("UTF-8")));
             out.flush();
             sock.close();
+            System.out.println("Sent!");
         }
         catch (Exception e) {
+            System.out.println("Failed to write out stream");
             return false;
         }
         return true;

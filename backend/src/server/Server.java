@@ -99,6 +99,7 @@ public class Server {
                 HTTPMessage mess;
                 try {
                     mess = new HTTPMessage(header);
+			System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
