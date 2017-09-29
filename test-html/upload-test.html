@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		function test() {
+			console.log("Called test");
+			var fileElement = document.getElementById("filePicker");
+			if (fileElement.value == null) {
+				console.log("File Element is null");
+				return;
+			}
+			var files = fileElement.files;
+			var file = files[0];
+			console.log("File name: ", file.name, "Size: ", file.size, "mime: ", file.type);
+			var reader = new FileReader();
+			//for readAsString()
+			/*reader.onload = (function(theFile) {
+				console.log("Called reader.onload");
+				var resArea = document.getElementById("rasult");
+				console.log("Outputting file");
+				resArea.value = theFile.target.result;
+				console.log(theFile);
+			});*/
+			reader.onload = (function(theFile) {
+				//var arr = theFile.target.result;		//This only returns the ArrayBugger object (not an array)
+				var buffer = theFile.target.result;
+				var newBuf = new Uint8Array(buffer);
+				console.log(theFile.target.result);
+				console.log(theFile.target.result.byteLength);
+				console.log(newBuf);
+				console.log("newbuf length: ", newBuf.length);
+			});
+			//reader.readAsText(file);	//works great
+			//reader.readAsBinaryString(file);
+			reader.readAsArrayBuffer(file);
+		}
+		function upload() {
+		
+		}
+	</script>
+</head>
+<body>
+<input type="file" id="filePicker"></input><button onclick="test()">Upload</button>
+<br />
+<textarea rows="10" cols="50" id="rasult"></textarea>
+</body>
