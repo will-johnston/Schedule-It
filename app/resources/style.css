@@ -52,3 +52,7 @@ body {
 #filePath {
 	margin-left: 10px;
 }
+
+.is-invalid {
+	border: 2px solid red;
+}
