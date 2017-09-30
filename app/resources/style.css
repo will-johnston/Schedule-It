@@ -37,3 +37,18 @@ body {
 .col-mod-r {
 	width: 79%;
 }
+
+.card-block {
+	padding-top: 30px;
+	padding-right: 30px;
+	padding-left: 30px;
+	padding-bottom: 30px;
+}
+
+#skipPhoto {
+	margin-left: 130px;
+}
+
+#filePath {
+	margin-left: 10px;
+}
