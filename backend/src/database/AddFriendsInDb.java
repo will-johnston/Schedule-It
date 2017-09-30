@@ -8,7 +8,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 public class AddFriendsInDb {
 	
 	public static void main(String[] args) {
-		addFriend("bro", "lad");
+		addFriend("chico", "bro");
 	}		
 	//This function takes adds a user to the mysql database		
 	public static boolean addFriend(String user1, String user2) {
@@ -43,7 +43,15 @@ public class AddFriendsInDb {
 				id1 = ids[1];
 				id2 = ids[0];
 			}
-			
+
+			//see if users are already friends
+			String check = "SELECT * FROM friends WHERE userID_1=" + id1 + " AND userID_2=" + id2;
+			statement = connection.createStatement();
+			result = statement.executeQuery(check);
+			if (result.next()) {
+				//already friends
+				return true;
+			}
 			//perform add friendship functionality
 			String update = "INSERT INTO friends VALUES(" + id1 + ", " + id2 + ")";
 			statement = connection.createStatement();
