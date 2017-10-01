@@ -19,22 +19,65 @@ $(document).ready(function(){
 		}
 
 	});
-
-	//Function to verify display name and check if both passwords match
-	$("#create").click(function() {
-		//Check username first in if and place password check in the else
-			//Clear both password textboxes
-			//Clear red text and red border classes
-		var s1 = new String($("#newPassword").val()).trim();
-		var s2 = new String($("#verifyPassword").val()).trim();
-		if(!(s1 === s2))
-		{
-			$("#passwordError").removeClass("invisible");
-			$("#verifyPassword").addClass("is-invalid");
+	
+	/**
+	 * Login button function
+	 */
+	$("#login").click(function() {
+		if(true) { //Verify username is in DB
+			if(true) { //Verify password matches username in DB
+				window.location.href = "programMain.html";
+			}
+			//Password doesn't match username
+			else {
+				document.getElementById("loginError").innerHTML = "The input combination didn't match.";
+				$("#loginError").removeClass("invisible");				
+				$("#loginError").removeClass("invisible");	
+				document.getElementById("loginUsername").value = "";
+				document.getElementById("loginPassword").value = "";
+			}
+		//Username isn't found in DB
+		} else {
+			document.getElementById("loginError").innerHTML = "The input username doesn't exist.";
+			$("#loginError").removeClass("invisible");	
+			document.getElementById("loginUsername").value = "";
+			document.getElementById("loginPassword").value = "";
 		}
-
 	});
 
+	/**
+	 * Register account button function
+	 */
+	$("#create").click(function() {
+		//TODO: check to ensure everything but phone number is not empty
+		if(true) { //If username isnt in DB
+			//TODO: Change true to check if username exists in DB, if not then check passwords
+			var s1 = new String($("#newPassword").val()).trim();
+			var s2 = new String($("#verifyPassword").val()).trim();
+			if(!(s1 === s2)) { //Username isn't in DB && passwords don't match
+				$("#passwordError").removeClass("invisible");
+				$("#verifyPassword").addClass("is-invalid");
+				document.getElementById("verifyPassword").value = "";
+			} else { //Username isn't in DB && passwords match
+				//TODO: Send information to DB for user
+				window.location.href = "pictureUpload.html";
+			}
+		} else { //If username is in DB
+			$("#usernameError").removeClass("invisible");
+			$("#displayname").addClass("is-invalid");
+			document.getElementById("newPassword").value = "";
+			document.getElementById("verifyPassword").value = "";
+			$("#progressBar").attr("style", "width: 0%");
+			$("#progressBar").attr("aria-valuenow", 0);
+			$("#invisibility").addClass("invisible");		
+		}
+	});
+
+	/**
+	 * Regex for getting password strength
+	 * @param {*} userName 
+	 * @param {*} password 
+	 */
 	function passwordStrength(userName, password) {
 		let strength = password.length;
 		var regex = /[a-z]/;
@@ -87,7 +130,9 @@ $(document).ready(function(){
 		return strength;
 	}
 
-	//Function for password strength progress bar
+	/**
+	 * Password verification error message updater
+	 */
 	$('#newPassword').on('input', function() {
 		let val = passwordStrength(($("#displayname").val().trim()),($("#newPassword").val()).trim());
 		console.log(val);
@@ -123,5 +168,30 @@ $(document).ready(function(){
 		if(($("#newPassword").val()).trim() === "") {
 			$("#invisibility").addClass("invisible");
 		}
+	});
+
+	/**
+	 * Skip photo upload function, use default (when creating account)
+	 */
+	$("#skipPhoto").click(function() {
+		//TODO: assign default photo to user in DB
+		window.location.href = "programMain.html";		
+	});
+
+	/**
+	 * Upload selected photo from user's computer (when creating account)
+	 */
+	$("#uploadPhoto").click(function() {
+		//TODO: get filename from choose file button
+		//TODO: upload file to DB
+		window.location.href = "programMain.html";		
+	});
+
+	/**
+	 * Logout button function
+	 */
+	$("#logoutButton").click(function() {
+		//TODO: not sure what to do when you log out other than redirect
+		window.location.href = "createOrLogin.html";		
 	});
 });
