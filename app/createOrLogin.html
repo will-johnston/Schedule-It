@@ -21,16 +21,16 @@
     <div class="container">
         <div class="row">
             <div class="col"> <!-- Column 1-->
-                <div style="height:145px;"> </div>
+                <div style="height:130px;"> </div>
                 <h1 style="color: white" class="display-5">Login</h1>
                 <div class="form-group">
                         <div style="height:10px;"> </div>
-                        <label style="color: white">Username</label>
+                        <label style="color: white" for="passwordLogin">Username</label>
                         <input class="form-control" id="passwordLogin" placeholder="Username">
 
                         <div style="height:5px;"> </div>
-                        <label style="color: white">Password</label>
-                        <input class="form-control" id="userName" placeholder="Password">
+                        <label style="color: white" for="userName">Password</label>
+                        <input class="form-control" id="userName" type="password"  placeholder="Password">
 
                         <div style="height:15px;"> </div>                        
                         <button type="button" id="login" class="btn btn-secondary"> Log In </button>
@@ -41,32 +41,38 @@
                 <h1 style="color: #000061" class="display-3">Schedule It</h1>
             </div>
             <div class="col"> <!-- Column 3-->
-                <div style="height:145px;"> </div>
+                <div style="height:130px;"> </div>
                 <h1 color: style="color: white" class="display-5">Register</h1>
                 <div class="form-group">
                         <div style="height:10px;"> </div>
-                        <label style="color: white">Full Name</label>
+                        <label style="color: white" for="fullName">Full Name</label>
                         <input class="form-control" id="fullName" placeholder="Full Name">
 
                         <div style="height:5px;"> </div>                        
-                        <label style="color: white">Display Name</label>
+                        <label style="color: white" for="displayname">Display Name</label>
                         <input class="form-control" id="displayname" placeholder="Display Name">
 
                         <div style="height:5px;"> </div>   
-                        <label style="color: white">Email</label>
+                        <label style="color: white" for="email">Email</label>
                         <input class="form-control" id="email" placeholder="Email">
 
                         <div style="height:5px;"> </div>   
-                        <label style="color: white">Phone Number</label>
+                        <label style="color: white"for="phoneNumber">Phone Number</label>
                         <input class="form-control" id="phoneNumber" placeholder="Phone Number">
 
                         <div style="height:5px;"> </div>   
-                        <label style="color: white">New Password</label>
-                        <input class="form-control" id="newPassword" placeholder="Please provide your new password">
+                        <label style="color: white" for="newPassword">New Password</label>
+                        <input class="form-control" id="newPassword" type="password" maxlength="32" placeholder="Please provide your new password">
+
+                        <!-- Progress bar for new password -->
+                        <div class="progress invisible" id="invisibility"> <!-- red:bg-danger, yellow: bg-warning, blue: bg-info, green: bg-success-->
+                            <div class="progress-bar bg-danger" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="44"></div>
+                          </div>
 
                         <div style="height:5px;"> </div>   
-                        <label style="color: white">Verify Password</label>
-                        <input class="form-control" id="verifyPassword" placeholder="Please verify your password">
+                        <label style="color: white" for="verifyPassword">Verify Password</label>
+                        <input class="form-control" id="verifyPassword" type="password" maxlength="32" placeholder="Please verify your password">
+                        <div class="form-control-feedback invisible" id="passwordError" style="color: red">Passwords do not match.</div>
 
                         <div style="height:15px;"> </div>                        
                         <button type="button" id="create" class="btn btn-secondary"> Create Account </button>
