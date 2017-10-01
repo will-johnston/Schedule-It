@@ -32,7 +32,7 @@ public class UserCreate implements IAPIRoute {
         User user = new User(args[2], args[0],args[1],args[3]);
         int cookie = tracker.login(user);
         System.out.println("Successfully added user, returning cookie");
-        String response = String.format("\"cookie\": \"%d\"\n", cookie);
+        String response = String.format("{\"cookie\": \"%d\"}\n", cookie);
 		Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
 	}
 	else {

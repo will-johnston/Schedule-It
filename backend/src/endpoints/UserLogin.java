@@ -3,7 +3,7 @@ package endpoints;
 import database.*;
 import server.*;
 import com.google.gson.*;
-
+import management.*;
 import java.net.Socket;
 
 //Logins into the system
@@ -11,6 +11,10 @@ import java.net.Socket;
 // /api/user/login
 public class UserLogin implements IAPIRoute {
 
+    Tracker tracker;
+    public UserLogin(Tracker tracker) {
+        this.tracker = tracker;
+    }
     @Override
     public void execute(Socket sock, HTTPMessage request) {
         Gson gson = new Gson();
@@ -19,18 +23,28 @@ public class UserLogin implements IAPIRoute {
             if (args == null) {
                 System.out.println("Args is null");
                 Socketeer.send(HTTPMessage.makeResponse("\"Error\":\"No Arguments specified\"", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                return;
             }
             else {
                 System.out.println(String.format("name: %s, pass: %s", args[0], args[1]));
                 User user = User.fromDatabase(args[0]);
                 if (user == null) {
-                    Socketeer.send(HTTPMessage.makeResponse("\"Error\":\"User doesn't exist\"", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                    String response = "{\"error\":\"User doesn't exist\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest,
+                            HTTPMessage.MimeType.appJson, true), sock);
+                    return;
                 }
-                else if (args[1] == user.getPassword()) {
-                    Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
+                if (args[1].equals(user.getPassword())) {
+                    int cookie = tracker.login(user);
+                    String response = String.format("{\"cookie\":\"%d\"}", cookie);
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
+                    return;
                 }
                 else {
-                    Socketeer.send(HTTPMessage.makeResponse("\"Error\" : \"Invalid Password\"", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                    String response = "{\"error\":\"Invalid Password\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest,
+                            HTTPMessage.MimeType.appJson, true), sock);
+                    return;
                 }
             }
         } catch (Exception e) {

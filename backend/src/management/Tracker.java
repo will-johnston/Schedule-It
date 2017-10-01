@@ -27,7 +27,7 @@ public class Tracker {
         return true;
     }
     public int login(User user) {
-        //check database for password
+        //TODO check if user is already in users
         int cookie = -1;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
