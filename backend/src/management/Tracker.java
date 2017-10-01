@@ -18,6 +18,7 @@ public class Tracker {
         if (!users.containsKey(cookie)) {
             return false;
         }
+        System.out.println("User exists");
         User user = users.get(cookie);
         if (!hasElapsed(user.getLastCheckedIn())) {
             return false;

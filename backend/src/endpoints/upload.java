@@ -2,6 +2,7 @@ package endpoints;
 
 import server.HTTPMessage;
 
+import java.math.BigInteger;
 import java.net.Socket;
 import java.util.*;
 import management.*;
@@ -19,6 +20,14 @@ public class upload implements IAPIRoute {
         this.tracker = tracker;
         uploads = new HashMap<>(10);
     }
+    private int getNewUploadId() {
+        int result = 0;
+        do {
+            result = new BigInteger(128, new Random()).intValue();
+        }
+        while (uploads.containsKey(result));
+        return result;
+    }
 
     @Override
     public void execute(Socket sock, HTTPMessage request) {
@@ -32,11 +41,32 @@ public class upload implements IAPIRoute {
             System.out.println("Recieved new upload request");
             Object[] args = parseNewUploadRequest(request.getBody());
             if (args == null) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }", HTTPMessage.HTTPStatus.BadRequest), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-            if (!tracker.isLoggedIn((int)args[3])) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }", HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+            if (!tracker.isLoggedIn((int)args[2])) {
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }",
+                        HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                return;
+            }
+            System.out.println("Handling request");
+            //create new uuid and uploadid
+            String uuid = images.makeUUID();
+            int uploadid = getNewUploadId();
+            try {
+                newupload up = new newupload((int)args[1], (HTTPMessage.MimeType) args[0] , uuid);
+                uploads.put(uploadid, up);
+                String response = String.format("{\"uploadid\":\"%d\"}\n", uploadid);
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
+                        HTTPMessage.MimeType.appJson, false), sock);
+                return;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Could not add newupload");
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not handle request\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
 
@@ -53,18 +83,42 @@ public class upload implements IAPIRoute {
             System.out.println("Recieved new chunk request");
             Object[] args = parseChunkUploadRequest(request.getBody());
             if (args == null) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }", HTTPMessage.HTTPStatus.BadRequest), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
             if (!tracker.isLoggedIn((int)args[1])) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }", HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }",
+                        HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
                 return;
             }
             if (!uploads.containsKey((int)args[2])) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Uploadid is incorrect\" }", HTTPMessage.HTTPStatus.BadRequest), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Uploadid is incorrect\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-
+            try {
+                int uploadid = (int)args[2];
+                newupload up = uploads.get(uploadid);
+                boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
+                String response;
+                if (success) {
+                    response = "\"success\":\"true\"\n";
+                }
+                else {
+                    response = "\"success\":\"false\"\n";
+                }
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
+                        HTTPMessage.MimeType.appJson, false), sock);
+                return;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Failed to handle new chunk request");
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not handle chunk request\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
         else {
             // /upload/info
@@ -74,15 +128,18 @@ public class upload implements IAPIRoute {
             System.out.println("Recieved chunk info request");
             int[] args = parseUploadInfoRequest(request.getBody());
             if (args == null) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }", HTTPMessage.HTTPStatus.BadRequest), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
             if (!tracker.isLoggedIn(args[0])) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }", HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }",
+                        HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
                 return;
             }
             if (!uploads.containsKey(args[1])) {
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Uploadid is incorrect\" }", HTTPMessage.HTTPStatus.BadRequest), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Uploadid is incorrect\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
         }
@@ -110,11 +167,10 @@ public class upload implements IAPIRoute {
             }
             System.out.println("Upload Request has correct params");
             //ArrayList<Object> arr = new ArrayList<>(4);
-            Object[] arr =  new Object[4];
+            Object[] arr =  new Object[3];
             arr[0] = (HTTPMessage.getMimeTypeFromString(bodyObj.get("type").getAsString()));
-            arr[1] = (bodyObj.get("size").getAsInt());
-            arr[2] = (bodyObj.get("length").getAsInt());
-            arr[3] = (bodyObj.get("cookie").getAsInt());
+            arr[1] = (bodyObj.get("length").getAsInt());
+            arr[2] = (bodyObj.get("cookie").getAsInt());
             return arr;
         }
         catch (Exception e) {
@@ -193,7 +249,7 @@ public class upload implements IAPIRoute {
     }
     class newupload {
         int chunkCount;         //length from client
-        int recieved;
+        int received;
         int size;               //current size
         HTTPMessage.MimeType type;
         String path;
@@ -210,12 +266,12 @@ public class upload implements IAPIRoute {
             if (type == HTTPMessage.MimeType.Unknown) {
                 throw new Exception("Incorrect Mime Type");
             }
-            recieved = 0;
+            received = 0;
             size = 0;
             this.chunkCount = chunkCount;
             this.type = type;
             this.uuid = uuid;
-            this.path = null;
+            this.path = images.makePath(uuid, type);
             chunks = new ArrayList<>(chunkCount);
             failed = new ArrayList<>();
         }
@@ -235,7 +291,7 @@ public class upload implements IAPIRoute {
                 else {
                     failed.add(chnk);
                 }
-                recieved = recieved + 1;
+                received = received + 1;
             }
             return chnk.succeeded;
         }

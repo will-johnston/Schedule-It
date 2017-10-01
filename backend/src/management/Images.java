@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Images {
     public static String imagesPath = "/home/scheduleit/app/images/";
+    public static String webPath = "scheduleit.duckdns.org/images/";
     HashMap<String, Boolean> pathCache;
     public Images() {
         pathCache = new HashMap<>(10);
@@ -53,6 +54,7 @@ public class Images {
             uuid = UUID.randomUUID().toString();
         }
         while (uuids.containsKey(uuid));
+        uuids.put(uuid, false);
         return uuid;
     }
     //should format as images/{UUID}.{type}

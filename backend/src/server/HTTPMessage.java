@@ -97,7 +97,8 @@ public class HTTPMessage {
         response.append("Accept-Ranges: bytes\n");
         response.append(String.format("Content-Type: %s\n", getMimeTypeName(type)));
         response.append(String.format("Content-Length: %d\n", message.length()));
-        response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org\n\n");
+        //response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org, http://127.0.0.1:8181\n\n");
+        response.append("Access-Control-Allow-Origin: http://127.0.0.1:8181\n\n");
         response.append(message);
         response.append('\n');
         return response.toString();
