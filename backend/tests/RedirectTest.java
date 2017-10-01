@@ -12,10 +12,6 @@ public class RedirectTest {
         Server server = new Server(8181);
         Router router = new Router();
         router.add("/api/test/redirect", new IAPIRoute() {
-            @Override
-            public void setup() {
-
-            }
 
             @Override
             public void execute(Socket sock, HTTPMessage request) {

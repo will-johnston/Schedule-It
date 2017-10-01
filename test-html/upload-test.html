@@ -2,6 +2,30 @@
 <html>
 <head>
 	<script type="text/javascript">
+		function getChunks(buffer) {
+			var arr = new Array();
+			var CHUNK_SIZE = 8192;	//8KB
+			var iterations = Math.ceil(buffer.length / CHUNK_SIZE);
+			console.log("Rounder: " + (buffer.length / CHUNK_SIZE) + " to " + (Math.ceil(buffer.length / CHUNK_SIZE)));
+			console.log("Iterations: " + iterations);
+			var totalSize = buffer.length;
+			for (var i = 0; i < iterations - 1; i++) {
+				console.log("Pushing from " + CHUNK_SIZE * i + " to " + CHUNK_SIZE * (i + 1));
+				arr.push(buffer.slice(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1)));
+			}
+			arr.push(buffer.slice(CHUNK_SIZE * (iterations - 1), totalSize));
+			console.log("Pusing from " + CHUNK_SIZE * (iterations - 1) + " to " + totalSize);
+			return arr;
+		}
+		//Generates a 16-bit checksum
+		function checksum(array) {
+			var MODULUS = 65535;
+			var sum = 0;
+			for (var i in array) {
+				sum = (sum + i) % MODULUS;
+			}
+			return sum;
+		}
 		function test() {
 			console.log("Called test");
 			var fileElement = document.getElementById("filePicker");
@@ -29,6 +53,8 @@
 				console.log(theFile.target.result.byteLength);
 				console.log(newBuf);
 				console.log("newbuf length: ", newBuf.length);
+				var chunks = getChunks(newBuf);
+				console.log("chunks[0] checksum: " + checksum(chunks[0]));
 			});
 			//reader.readAsText(file);	//works great
 			//reader.readAsBinaryString(file);

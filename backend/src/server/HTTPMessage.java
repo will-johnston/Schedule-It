@@ -95,7 +95,7 @@ public class HTTPMessage {
 			response.append("Connection: close\n");
 		}
         response.append("Accept-Ranges: bytes\n");
-        response.append(String.format("Content-Type: %s\n", gettMimeTypeName(type)));
+        response.append(String.format("Content-Type: %s\n", getMimeTypeName(type)));
         response.append(String.format("Content-Length: %d\n", message.length()));
         response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org\n\n");
         response.append(message);
@@ -190,7 +190,7 @@ public class HTTPMessage {
                 return "Internal server.Server Error";
         }
     }
-	public static String gettMimeTypeName(MimeType type) {
+	public static String getMimeTypeName(MimeType type) {
 		switch (type) {
 			case appJson:
 				return "application/json";
@@ -214,6 +214,21 @@ public class HTTPMessage {
             return null;
         }
     }
+    public static MimeType getMimeTypeFromString(String mime) {
+	    if (mime.equals("application/json")) {
+	        return MimeType.appJson;
+        }
+        if (mime.equals("image/jped")) {
+	        return MimeType.imageJpeg;
+        }
+        if (mime.equals("text/plain")) {
+	        return MimeType.textPlain;
+        }
+        if (mime.equals("image/png")) {
+	        return MimeType.imagePng;
+        }
+        return MimeType.Unknown;
+    }
 
     //Getters and Setters because Java is dumb
 
@@ -230,5 +245,9 @@ public class HTTPMessage {
     }
     public float getHTTPversion() {
         return HTTPversion;
+    }
+
+    public String getMethod() {
+        return method;
     }
 }

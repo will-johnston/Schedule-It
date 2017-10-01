@@ -12,11 +12,6 @@ import java.net.Socket;
 public class UserLogin implements IAPIRoute {
 
     @Override
-    public void setup() {
-
-    }
-
-    @Override
     public void execute(Socket sock, HTTPMessage request) {
         Gson gson = new Gson();
         try {
