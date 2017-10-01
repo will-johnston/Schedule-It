@@ -26,7 +26,7 @@ $(document).ready(function(){
 	$("#login").click(function() {
 		if(true) { //Verify username is in DB
 			if(true) { //Verify password matches username in DB
-				window.location.href = "programMain.html";
+				window.location.href = "http://scheduleit.duckdns.org/programMain.html";
 			}
 			//Password doesn't match username
 			else {
@@ -60,7 +60,7 @@ $(document).ready(function(){
 				document.getElementById("verifyPassword").value = "";
 			} else { //Username isn't in DB && passwords match
 				//TODO: Send information to DB for user
-				window.location.href = "pictureUpload.html";
+				window.location.href = "http://scheduleit.duckdns.org/pictureUpload.html";
 			}
 		} else { //If username is in DB
 			$("#usernameError").removeClass("invisible");
@@ -175,7 +175,7 @@ $(document).ready(function(){
 	 */
 	$("#skipPhoto").click(function() {
 		//TODO: assign default photo to user in DB
-		window.location.href = "programMain.html";		
+		window.location.href = "http://scheduleit.duckdns.org/programMain.html";		
 	});
 
 	/**
@@ -184,7 +184,7 @@ $(document).ready(function(){
 	$("#uploadPhoto").click(function() {
 		//TODO: get filename from choose file button
 		//TODO: upload file to DB
-		window.location.href = "programMain.html";		
+		window.location.href = "http://scheduleit.duckdns.org/programMain.html";		
 	});
 
 	/**
@@ -192,6 +192,6 @@ $(document).ready(function(){
 	 */
 	$("#logoutButton").click(function() {
 		//TODO: not sure what to do when you log out other than redirect
-		window.location.href = "createOrLogin.html";		
+		window.location.href = "http://scheduleit.duckdns.org/createOrLogin.html";		
 	});
 });
