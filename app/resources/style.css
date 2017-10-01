@@ -56,3 +56,11 @@ body {
 .is-invalid {
 	border: 2px solid red;
 }
+
+#loginLabel {
+	text-align: center;
+}
+
+#registerLabel {
+	text-align: center;
+}

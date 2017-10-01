@@ -31,12 +31,16 @@
                     <div class="card-block" id="pictureUploadFrame">
                         <img class="card-img-top" src="resources/profileDefaultPhoto.png" style="border: 3px solid #868686;">
                         <div style="height:10px;"> </div>
-                        <div style="display: inline-block">
-                                <button type="button" id="choosePicture" class="btn btn-secondary"> Browse </button>
-                        </div>
-                        <div style="display: inline-block">
-                                <input class="form-control" size="30" id="filePath" placeholder="No file chosen">
-                        </div>
+                        
+                        <!--Upload photo input-->
+                        <label class="btn btn-primary" for="my-file-selector">
+                            <input id="my-file-selector" type="file" style="display:none" 
+                            onchange="$('#upload-file-info').html(this.files[0].name)">
+                            Choose file
+                        </label>
+                        <span class='label label-info' id="upload-file-info"></span>
+
+                        <!--Upload or skip-->
                         <div style="height:20px;"> </div>
                         <div style="display: inline-block">
                                 <button type="button" id="uploadPhoto" class="btn btn-secondary" style="width:120px"> Upload </button>
