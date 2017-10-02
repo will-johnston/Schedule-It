@@ -29,7 +29,7 @@ public class UserCreate implements IAPIRoute {
         }
         //try {
 	if (AddUserToDb.addUser(args[4], args[2], args[1], args[0], args[3])) {
-        User user = new User(args[2], args[0],args[1],args[3]);
+        User user = new User(args[2], args[0],args[1],args[3], -1, args[4]);
         int cookie = tracker.login(user);
         System.out.println("Successfully added user, returning cookie");
         String response = String.format("{\"cookie\": \"%d\"}\n", cookie);
@@ -72,13 +72,16 @@ public class UserCreate implements IAPIRoute {
             if (!bodyObj.has("phone")) {
                 return null;
             }
+            if (!bodyObj.has("username")) {
+                return null;
+            }
 		System.out.println("UserCreate has correct params");
             String[] arr = new String[5];
             arr[0] = bodyObj.get("email").getAsString();
             arr[1] = bodyObj.get("pass").getAsString();
             arr[2] = bodyObj.get("name").getAsString();
             arr[3] = bodyObj.get("phone").getAsString();
-            arr[4] = arr[0].split("@")[0];
+            arr[4] = bodyObj.get("username").getAsString();
             return arr;
         }
         catch (Exception e) {

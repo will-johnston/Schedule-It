@@ -14,8 +14,8 @@ public class Main {
             //router.add("/upload/chunk", up);
             //router.add("/upload/info", up);
             router.add("/example/example", new ExampleEndpoint());
-            router.add("/user/login", new UserLogin());
-            router.add("/user/edit", new UserEdit());
+            router.add("/user/login", new UserLogin(tracker));
+            router.add("/user/edit", new UserEdit(tracker));
             router.add("/user/groups/calendar/get", new GroupGetCalendar());
             router.add("/user/calendar/get", new UserGetCalendar());
             router.add("/user/groups/leave", new GroupLeave());

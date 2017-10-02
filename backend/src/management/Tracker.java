@@ -56,6 +56,27 @@ public class Tracker {
             this.timeout = timeout;
         }
     }
+    public User getUser(int cookie) {
+        if (!users.containsKey(cookie)) {
+            return null;
+        }
+        User user = users.get(cookie);
+        user.checkin();
+        return user;
+    }
+    public boolean updateUser(int cookie, User newUser) {
+        if (!users.containsKey(cookie)) {
+            return false;
+        }
+        try {
+            newUser.checkin();
+            users.put(cookie, newUser);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
     public int getTimeout() {
         return timeout;
     }
