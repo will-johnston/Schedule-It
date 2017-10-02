@@ -32,10 +32,14 @@ public class UserEdit implements IAPIRoute {
             return;
         }
         User user = tracker.getUser(cookie);
-        if (args[2] != null) user.setPassword((String)args[2]);
-        if (args[3] != null) user.setName((String)args[3]);
-        if (args[4] != null) user.setEmail((String)args[4]);
-        if (args[5] != null) user.setPassword((String)args[5]);
+        if (args[2] != null) { user.setPassword((String)args[2]); }
+        if (args[2] != null) { System.out.println("Set new password"); }
+        if (args[3] != null) { user.setName((String)args[3]); }
+        if (args[3] != null) { System.out.println("Set new name"); }
+        if (args[4] != null) { user.setEmail((String)args[4]); }
+        if (args[4] != null) { System.out.println("Set new email"); }
+        if (args[5] != null) { user.setPhone((String)args[5]); }
+        if (args[5] != null) { System.out.println("Set new phone"); }
         //Update Db
         try {
             ModifyUserInDb.modifyUser(makeMods(user), username);
