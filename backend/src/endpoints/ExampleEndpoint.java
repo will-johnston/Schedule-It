@@ -9,10 +9,6 @@ import java.nio.charset.Charset;
  * Created by Ryan on 9/20/2017.
  */
 public class ExampleEndpoint implements IAPIRoute {
-    @Override
-    public void setup() {
-
-    }
 
     @Override
     public void execute(Socket sock, HTTPMessage request) {

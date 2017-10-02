@@ -48,5 +48,8 @@ Returns an error (like above) or a login cookie if successful.
 /api/user/groups/calendar/events/create - Create a new event, if the user is an admin
 /api/user/groups/edit - Edit group info, set permissions
 /api/user/groups/calendar/events/respond - User sets their 'going' status - accept, decline, on the fence
+/api/upload/ - Starts the upload process
+/api/upload/chunk - Adds a chunk to the file
+/api/upload/check - Checks if any chunks failed to transfer
 
 /* Need chat methods */

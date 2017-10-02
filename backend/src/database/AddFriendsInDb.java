@@ -1,3 +1,4 @@
+package database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,9 +8,9 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 		
 public class AddFriendsInDb {
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		addFriend("chico", "bro");
-	}		
+	}		*/
 	//This function takes adds a user to the mysql database		
 	public static boolean addFriend(String user1, String user2) {
 		MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database

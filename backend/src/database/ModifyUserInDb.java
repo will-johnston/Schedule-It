@@ -1,3 +1,5 @@
+package database;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,16 +8,16 @@ import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 		
 public class ModifyUserInDb {
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String mods[] = {"email", "example@gmail.com", "fullname", "Clarence tarence", "password", "pss", "phone_number", "7"};
 		modifyUser(mods, "CLARENCE");
-	}
+	}*/
 	/*
 	 * Update any user information except id 
 	 * Strint[] mods (modifications), format: [col1_name, col1_value, col2_name, col2_value ...]
 	 * example format: modifications = [email, jon_snow@averagemail.com, password, urabastardjonsnow]
 	 */		
-	private static void modifyUser(String[] mods, String username) {
+	public static void modifyUser(String[] mods, String username) {
 		//if invalid input
 		if (mods.length < 2 || mods.length % 2 != 0 || mods == null || username == null)  {
 			System.out.println("invalid input: make sure to follow proper mods format" 
