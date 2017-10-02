@@ -22,7 +22,7 @@ public class UserLogin implements IAPIRoute {
             String[] args = parseArgs(request.getBody());
             if (args == null) {
                 System.out.println("Args is null");
-                Socketeer.send(HTTPMessage.makeResponse("\"Error\":\"No Arguments specified\"", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
                 return;
             }
             else {
@@ -35,7 +35,7 @@ public class UserLogin implements IAPIRoute {
                     return;
                 }
                 if (args[1].equals(user.getPassword())) {
-                    int cookie = tracker.login(user);
+                    int cookie = tracker.login(user);   //if user is already logged in, handle silently
                     String response = String.format("{\"cookie\":\"%d\"}", cookie);
                     Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
                     return;

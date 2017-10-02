@@ -45,6 +45,7 @@ public class UserEdit implements IAPIRoute {
             ModifyUserInDb.modifyUser(makeMods(user), username);
         }
         catch (Exception e) {
+            e.printStackTrace();
             String response = "{\"error\":\"Couldn't update database\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
@@ -67,12 +68,24 @@ public class UserEdit implements IAPIRoute {
             }
             String username = jobj.get("username").getAsString(), password = null, fullname = null, email = null, phonenumber = null;
             int cookie = jobj.get("cookie").getAsInt();
-            for (Map.Entry keyvalue : jobj.entrySet()) {
+            if (jobj.has("pass")) {
+                password = jobj.get("pass").getAsString();
+            }
+            if (jobj.has("fullname")) {
+                fullname = jobj.get("fullname").getAsString();
+            }
+            if (jobj.has("email")) {
+                email = jobj.get("email").getAsString();
+            }
+            if (jobj.has("phone")) {
+                phonenumber = jobj.get("phone").getAsString();
+            }
+            /*for (Map.Entry keyvalue : jobj.entrySet()) {
                 if (keyvalue.getKey() == "pass") { password = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "fullname") { fullname = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "email") { email = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "phone") { phonenumber = keyvalue.getValue().toString(); }
-            }
+            }*/
             return new Object[] { username, cookie, password, fullname, email, phonenumber };
         }
         catch (Exception e) {
@@ -91,6 +104,9 @@ public class UserEdit implements IAPIRoute {
         mods[5] = values.getPassword();
         mods[6] = "phone_number";
         mods[7] = values.getPhone();
+        for (int i = 0; i < mods.length; i++) {
+            System.out.println(String.format("%d: %s", i, mods[i]));
+        }
         return mods;
     }
 }

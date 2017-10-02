@@ -1,6 +1,7 @@
 package management;
 
 import database.*;
+import endpoints.Tuple;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -27,7 +28,10 @@ public class Tracker {
         return true;
     }
     public int login(User user) {
-        //TODO check if user is already in users
+        Tuple exists = isInUsers(user);
+        if (exists != null) {
+            return (int)exists.Item2;
+        }
         int cookie = -1;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
@@ -37,8 +41,17 @@ public class Tracker {
         users.put(cookie, user);
         return cookie;
     }
+    private Tuple isInUsers(User user) {
+        for (Map.Entry value : users.entrySet()) {
+            User userValue = (User)value.getValue();
+            if (userValue.getUsername() == user.getUsername()) {
+                return new Tuple(true, value.getKey());
+            }
+        }
+        return null;
+    }
     //Returns true if the User has been inactive for too long
-    private Boolean hasElapsed(long timestamp) {
+    private boolean hasElapsed(long timestamp) {
         long currentTime = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
         System.out.println("Current time: " + currentTime);
         System.out.println("Timestamp: " + timestamp);
