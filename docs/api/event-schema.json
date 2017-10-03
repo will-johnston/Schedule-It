@@ -1,0 +1,13 @@
+{
+	/*Generic info about the event*/
+	"type": "movie",
+	"date": "10/07/2017",
+	"time": "19:30 EST",
+	"id" : 89647829
+	"info": {
+		/*Event type specific info*/
+		"theater": "Wabash Landing 9",
+		"movie": "Baby Driver",
+		"movieID": "43532"
+	}
+}
