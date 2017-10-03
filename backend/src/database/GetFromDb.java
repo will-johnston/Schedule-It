@@ -34,9 +34,9 @@ public class GetFromDb {
             System.out.println(query);
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
-            if (result == null) {
+            /*if (result == null) {
                 return null;
-            }
+            }*/
             result.first();
 
             String[] results = new String[6];
