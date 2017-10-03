@@ -46,18 +46,23 @@ public class FriendsAdd implements IAPIRoute {
         try {
             Gson gson = new Gson();
             JsonObject jobj = gson.fromJson(body, JsonObject.class);
+            if (jobj == null) {
+                return null;
+            }
             if (!jobj.has("cookie")) {
                 return null;
             }
             if (!jobj.has("username")) {
                 return null;
             }
+            System.out.println("Has the right parameters");
             Object[] args = new String[2];
             args[0] = jobj.get("cookie").getAsInt();
             args[1] = jobj.get("username").getAsString();
             return args;
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println("failed to parse args");
             return null;
         }
