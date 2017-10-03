@@ -40,21 +40,29 @@ public class User {
         }
         for (String friend : dbfriends) {
             if (!friends.contains(friend)) {
+                System.out.println("Added ");
                 friends.add(friend);
             }
+            System.out.println(friend);
         }
         return friends.contains(username);
     }
     //We assume that the database has already been checked to see if the user exists
     public boolean addFriend(String username) {
         if (friends.contains(username)) {
+            System.out.println("Already contained in friends list");
             System.out.println("The Users are already friends");
             return false;
         }
         else {
+            System.out.println("Not in friends list");
             if (areFriendsInDb(username)) {
+                System.out.println("Friends after db update, returning false");
                 friends.add(username);
                 return false;           //Were already friends
+            }
+            else {
+                System.out.println("Not in friends list after update");
             }
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
