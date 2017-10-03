@@ -33,11 +33,27 @@ public class User {
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
     }
+    private boolean areFriendsInDb(String username) {
+        String[] dbfriends = FindUsersFriends.findFriends(username);
+        if (friends == null) {
+            return false;
+        }
+        for (String friend : dbfriends) {
+            if (!friends.contains(friend)) {
+                friends.add(friend);
+            }
+        }
+        return friends.contains(username);
+    }
     //We assume that the database has already been checked to see if the user exists
     public boolean addFriend(String username) {
         if (friends.contains(username)) {
             System.out.println("The Users are already friends");
             return false;
+        }
+        if (areFriendsInDb(username)) {
+            friends.add(username);
+            return false;           //Were already friends
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
@@ -51,15 +67,17 @@ public class User {
     //We assume that the database has already been checked to see if the user exists
     public boolean removeFriend(String username) {
         if (!friends.contains(username)) {
-            System.out.println("The Users are not friends");
-            return false;
+            if (areFriendsInDb(username)) {
+                //This is silly, but it works
+                friends.add(username);
+            }
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, false)) {
             friends.remove(username);
             return true;
         }
         else {
-            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            System.out.println("AddFriendsInDb.addFriend failed to remove friend");
             return false;
         }
     }
