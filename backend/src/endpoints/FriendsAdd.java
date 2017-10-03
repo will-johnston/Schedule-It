@@ -56,9 +56,9 @@ public class FriendsAdd implements IAPIRoute {
                 return null;
             }
             System.out.println("Has the right parameters");
-            Object[] args = new String[2];
-            args[0] = (int)jobj.get("cookie").getAsInt();
-            args[1] = (String)jobj.get("username").getAsString();
+            Object[] args = new Object[2];
+            args[0] = jobj.get("cookie").getAsInt();
+            args[1] = jobj.get("username").getAsString();
             return args;
         }
         catch (Exception e) {
