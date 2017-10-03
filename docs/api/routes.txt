@@ -1,6 +1,38 @@
 /api/user/login - Login to the system
+Password should be securely hashed before sending, preferably
+{
+  "name" : "{USERNAME}",
+  "pass" : "{PASSWORD}"
+}
+Returns a login cookie upon success with status OK
+{
+  "cookie" : {COOKIE}
+}
+If failure, returns a status appropriate to the error (BadRequest, MethodNotAvailable) and returns an error string
+{
+   "error" : "{ERROR MESSAGE}:
+}
+
 /api/user/edit - Edit account info, create profile picture, set notifications
+Fields that need to be changed are supplied in the request, if you only want to change the password do;
+{
+   "username" : "{USERNAME}",
+   "cookie" : {LOGIN COOKIE},
+   "pass" : "{NEW PASSWORD}"
+
+}
+Returns an empty string with status OK if it succeeds
+Returns an error string (similar to above) if it fails
 /api/user/create - Create a new account
+Like user login, the password should be hashed
+{
+   "username" : "{NEW USERNAME}",
+   "pass" : "{NEW PASSWORD}",
+   "phone" : "{NEW PHONE NUMBER}",
+   "fullname" : "{NEW FULL NAME}",
+   "email" : "{NEW EMAIL}"
+}
+Returns an error (like above) or a login cookie if successful.
 /api/user/friends/add - Add a friend
 /api/user/friends/remove - Remove friend
 /api/user/search - Search all user's in the system
@@ -16,8 +48,5 @@
 /api/user/groups/calendar/events/create - Create a new event, if the user is an admin
 /api/user/groups/edit - Edit group info, set permissions
 /api/user/groups/calendar/events/respond - User sets their 'going' status - accept, decline, on the fence
-/api/upload/ - Starts the upload process
-/api/upload/chunk - Adds a chunk to the file
-/api/upload/check - Checks if any chunks failed to transfer
 
 /* Need chat methods */
