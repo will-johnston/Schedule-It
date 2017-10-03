@@ -9,6 +9,7 @@ public class User {
     String email;
     String password;
     String phone;       //can be null
+    ArrayList<String> friends;          //List of usernames that this user is friends with
     int id;
     long lastCheckedIn = -1;
     public User(String name, String email, String password, String phone, int id, String username) {
@@ -18,6 +19,7 @@ public class User {
         this.phone = phone;
         this.id = id;
         this.username = username;
+        this.friends = new ArrayList<>();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
@@ -30,6 +32,21 @@ public class User {
     }
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
+    }
+    //We assume that the database has already been checked to see if the user exists
+    public boolean addFriend(String username) {
+        if (friends.contains(username)) {
+            System.out.println("The Users are already friends");
+            return false;
+        }
+        if (AddFriendsInDb.addFriend(username, this.username)) {
+            friends.add(username);
+            return true;
+        }
+        else {
+            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

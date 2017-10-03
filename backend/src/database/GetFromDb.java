@@ -33,6 +33,11 @@ public class GetFromDb {
                     + " from users where username='" + username + "'";
             System.out.println(query);
             result = statement.executeQuery(query);
+            System.out.println("Checking for null");
+            /*if (result == null) {
+                return null;
+            }*/
+            result.first();
 
             String[] results = new String[6];
             results[0] = result.getString("id");
