@@ -34,7 +34,7 @@ public class User {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
     }
     private boolean areFriendsInDb(String username) {
-        String[] dbfriends = FindUsersFriends.findFriends(username);
+        String[] dbfriends = FindUsersFriends.findFriends(this.username);
         if (friends == null) {
             return false;
         }
