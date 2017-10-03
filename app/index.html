@@ -15,7 +15,7 @@
 	<!-- Heading -->
 	<h1>
 		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
-		<button type="button" id="logoutButton" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button>
+		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
@@ -139,12 +139,12 @@
 		</div>
 	</div>
 
-	<!-- Group settings modal -->
-	<div class="modal fade" id="groupSettings" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
+	<!-- New group modal -->
+	<div class="modal fade" id="newGroupModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">Group settings</h5>
+					<h5 class="modal-title">New group</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -164,11 +164,11 @@
 					</div>
 					<div class="form-group row">
 						<div class="col-4">
-							<label>Group picture</label>
+							<label>Profile picture</label>
 						</div>
 						<div class="col-8">
 							<label class="btn btn-primary">
-								<input type="file" style="display: none">Choose file
+								<input type="file" style="display:none">Choose file
 							</label>
 							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
 						</div>
@@ -186,30 +186,16 @@
 
 	<!-- Main content -->
 	<div class="row">
-		<div class="col-mod-l">
-			<div class="container fill">
-				<button type="button" class="btn btn-primary sidelistBtn" style="margin-bottom: 10px" data-toggle="modal" data-target="#groupSettings">Create new group</button>
-				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-					<div class="sidelist">
-						<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-2" role="tab">Group 1</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-3" role="tab">Group 2</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-4" role="tab">Group 3</a>
-					</div>
-				</div>
-
-				<button type="button" class="btn btn-primary sidelistBtn" style="margin-bottom: 10px" data-toggle="modal" data-target="#addFriend">Add friend</button>
-				<div class="sidelist">
-					<div class="list-group">
-						<a href="#" class="list-group-item list-group-item-action">Billy Bob</a>
-						<a href="#" class="list-group-item list-group-item-action">Jimmy's Jhon</a>
-						<a href="#" class="list-group-item list-group-item-action">Mike Hoc</a>
-						<a href="#" class="list-group-item list-group-item-action">Joey</a>
-					</div>
-				</div>
+		<div class="col-2">
+			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+				<button type="button" class="btn btn-primary" style="margin-bottom: 10px" data-toggle="modal" data-target="#newGroupModal">Add new group</button>
+				<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-2" role="tab">Group 1</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-3" role="tab">Group 2</a>
+				<a class="nav-link" data-toggle="pill" href="#v-pills-4" role="tab">Group 3</a>
 			</div>
 		</div>
-		<div class="col-mod-r">
+		<div class="col-10">
 			<div class="tab-content" id="v-pills-tabContent">
 				<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel">
 					<div id="collapseExample" class="collapse show">
@@ -217,8 +203,8 @@
 							<div class="card-body">
 								<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 								<h3>Group Name</h3>
+								<br />
 								<p>Group info</p>
-								<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#groupSettings">Group settings</button>
 							</div>
 						</div>
 					</div>
@@ -232,6 +218,9 @@
 						<li class="nav-item">
 							<a class="nav-link" data-toggle="tab" href="#v-pills-1-cal" role="tab">Calendar</a>
 						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#v-pills-1-opt" role="tab">Group Options</a>
+						</li>
 						<button class="btn btn-outline-secondary chevron" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" style="margin-left: 10px">
 							<img src="resources/chevron-up.png">
 						</button>
@@ -243,6 +232,7 @@
 							</div>
 						</div>
 						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
+						<div class="tab-pane" id="v-pills-1-opt" role="tabpanel">group options</div>
 					</div>
 				</div>
 				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>
