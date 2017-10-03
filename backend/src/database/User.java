@@ -40,10 +40,10 @@ public class User {
         }
         for (String friend : dbfriends) {
             if (!friends.contains(friend)) {
-                System.out.println("Added ");
+                //System.out.println("Added ");
                 friends.add(friend);
             }
-            System.out.println(friend);
+            //System.out.println(friend);
         }
         return friends.contains(username);
     }
@@ -80,6 +80,12 @@ public class User {
             if (areFriendsInDb(username)) {
                 //This is silly, but it works
                 friends.add(username);
+                System.out.println("In friends list: " + friends.contains(username));
+                //continue to remove from db
+            }
+            else {
+                System.out.println("Are not friends");
+                return false;
             }
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, false)) {
