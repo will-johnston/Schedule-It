@@ -1,3 +1,4 @@
+package database;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 import java.sql.Connection;
@@ -12,13 +13,13 @@ import java.util.LinkedList;
  */
 public class FindUsersFriends {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 	String[] friends = findFriends("will");
 	for (String str: friends) {
 		System.out.println(str);
 	}
 
-    }
+    }*/
 
     public static String[] findFriends(String username) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database

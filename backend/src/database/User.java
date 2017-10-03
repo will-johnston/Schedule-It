@@ -39,8 +39,23 @@ public class User {
             System.out.println("The Users are already friends");
             return false;
         }
-        if (AddFriendsInDb.addFriend(username, this.username)) {
+        if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
+            return true;
+        }
+        else {
+            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
+    }
+    //We assume that the database has already been checked to see if the user exists
+    public boolean removeFriend(String username) {
+        if (!friends.contains(username)) {
+            System.out.println("The Users are not friends");
+            return false;
+        }
+        if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, false)) {
+            friends.remove(username);
             return true;
         }
         else {

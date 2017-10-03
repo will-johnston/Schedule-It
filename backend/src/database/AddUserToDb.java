@@ -8,9 +8,9 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 		
 public class AddUserToDb {
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		addUser("CLARENCE", null, null, null, null);
-	}		
+	}		*/
 	//This function takes adds a user to the mysql database		
 	public static boolean addUser(String username,String fullname,String  password,String email,String phoneNumber) {
 		MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
