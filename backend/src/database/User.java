@@ -51,9 +51,11 @@ public class User {
             System.out.println("The Users are already friends");
             return false;
         }
-        if (areFriendsInDb(username)) {
-            friends.add(username);
-            return false;           //Were already friends
+        else {
+            if (areFriendsInDb(username)) {
+                friends.add(username);
+                return false;           //Were already friends
+            }
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
