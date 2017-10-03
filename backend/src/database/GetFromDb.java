@@ -33,6 +33,9 @@ public class GetFromDb {
                     + " from users where username='" + username + "'";
             System.out.println(query);
             result = statement.executeQuery(query);
+            if (result == null) {
+                return null;
+            }
 
             String[] results = new String[6];
             results[0] = result.getString("id");
