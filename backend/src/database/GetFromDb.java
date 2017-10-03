@@ -37,6 +37,7 @@ public class GetFromDb {
             if (result == null) {
                 return null;
             }
+            result.first();
 
             String[] results = new String[6];
             results[0] = result.getString("id");
