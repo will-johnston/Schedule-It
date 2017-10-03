@@ -9,6 +9,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
+//TODO Merge this witb RetrieveUserInfo
 public class GetFromDb {
     //return {id, username, password, name, email, phone}
     public static String[] getUserFromName(String username) {
