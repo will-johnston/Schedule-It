@@ -12,10 +12,10 @@ $(document).ready(function(){
 
 	$(".chevron").click(function() {
 		if(!$(this).hasClass("collapsed")) {
-			$(this).find("img").attr("src","resources/chevron-down.png");
+			$(this).find("img").attr("src","resources/chevronDown.png");
 		}
 		else {
-			$(this).find("img").attr("src","resources/chevron-up.png");
+			$(this).find("img").attr("src","resources/chevronUp.png");
 		}
 
 	});

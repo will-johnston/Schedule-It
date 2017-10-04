@@ -57,3 +57,15 @@ body {
 #registerLabel {
 	text-align: center;
 }
+
+.side-list-head {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.side-list {
+	height: 250px;
+	overflow-y: scroll;
+	margin-bottom: 50px;
+	padding-right: 10px;
+}
