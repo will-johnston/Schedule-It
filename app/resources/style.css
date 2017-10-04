@@ -20,19 +20,22 @@ body {
 	margin-right: 10px;
 }
 
+.sidelist {
+	height: 250px;
+	overflow-y: scroll;
+	margin-bottom: 40px;
+}
+
+.sidelistBtn {
+	width: 100%;
+}
+
 .col-mod-l {
 	width: 20%;
 }
 
 .col-mod-r {
 	width: 79%;
-}
-
-.card-block {
-	padding-top: 30px;
-	padding-right: 30px;
-	padding-left: 30px;
-	padding-bottom: 30px;
 }
 
 #skipPhoto {
