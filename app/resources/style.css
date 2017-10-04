@@ -19,17 +19,6 @@ body {
 .notification-card img {
 	margin-right: 10px;
 }
-}
-
-.sidelist {
-	height: 250px;
-	overflow-y: scroll;
-	margin-bottom: 40px;
-}
-
-.sidelistBtn {
-	width: 100%;
-}
 
 .col-mod-l {
 	width: 20%;
@@ -64,4 +53,16 @@ body {
 
 #registerLabel {
 	text-align: center;
+}
+
+.side-list-head {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.side-list {
+	height: 250px;
+	overflow-y: scroll;
+	margin-bottom: 50px;
+	padding-right: 10px;
 }
