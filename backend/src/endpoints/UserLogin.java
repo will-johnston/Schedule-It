@@ -1,8 +1,9 @@
 package endpoints;
 
+import database.*;
 import server.*;
 import com.google.gson.*;
-
+import management.*;
 import java.net.Socket;
 
 //Logins into the system
@@ -10,11 +11,10 @@ import java.net.Socket;
 // /api/user/login
 public class UserLogin implements IAPIRoute {
 
-    @Override
-    public void setup() {
-
+    Tracker tracker;
+    public UserLogin(Tracker tracker) {
+        this.tracker = tracker;
     }
-
     @Override
     public void execute(Socket sock, HTTPMessage request) {
         Gson gson = new Gson();
@@ -22,29 +22,48 @@ public class UserLogin implements IAPIRoute {
             String[] args = parseArgs(request.getBody());
             if (args == null) {
                 System.out.println("Args is null");
+                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                return;
             }
             else {
-                System.out.println(String.format("Email: %s, pass: %s", args[0], args[1]));
+                System.out.println(String.format("name: %s, pass: %s", args[0], args[1]));
+                User user = User.fromDatabase(args[0]);
+                if (user == null) {
+                    String response = "{\"error\":\"User doesn't exist\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest,
+                            HTTPMessage.MimeType.appJson, true), sock);
+                    return;
+                }
+                if (args[1].equals(user.getPassword())) {
+                    int cookie = tracker.login(user);   //if user is already logged in, handle silently
+                    String response = String.format("{\"cookie\":\"%d\"}", cookie);
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
+                    return;
+                }
+                else {
+                    String response = "{\"error\":\"Invalid Password\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest,
+                            HTTPMessage.MimeType.appJson, true), sock);
+                    return;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Socketeer.sendText(HTTPMessage.makeNotImplemented(), sock);
     }
     //Returns an array of [email, password]
     private String[] parseArgs(String message) {
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
-            if (!bodyObj.has("email")) {
+            if (!bodyObj.has("name")) {
                 return null;
             }
             if (!bodyObj.has("pass")) {
                 return null;
             }
             String[] arr = new String[2];
-            arr[0] = bodyObj.get("email").getAsString();
+            arr[0] = bodyObj.get("name").getAsString();
             arr[1] = bodyObj.get("pass").getAsString();
             return arr;
         }

@@ -3,6 +3,8 @@ import java.nio.charset.Charset;
 import java.time.*;
 import java.util.concurrent.*;
 import java.io.OutputStream;
+import server.*;
+import endpoints.*;
 public class RedirectTest {
 
     public static void main(String[] args) throws Exception {
@@ -10,17 +12,13 @@ public class RedirectTest {
         Server server = new Server(8181);
         Router router = new Router();
         router.add("/api/test/redirect", new IAPIRoute() {
-            @Override
-            public void setup() {
-
-            }
 
             @Override
             public void execute(Socket sock, HTTPMessage request) {
                 try {
                     OutputStream out = sock.getOutputStream();
                     String response = HTTPMessage.makeRedirect("http://www.google.com");
-                    System.out.println("User Agent: " + request.getHeader("User-Agent").Value);
+                    System.out.println("User Agent: " + request.getHeader("User-Agent").getValue());
                     System.out.println("Response: " + response);
                     out.write(response.getBytes(Charset.forName("UTF-8")));
                     out.flush();
@@ -32,7 +30,7 @@ public class RedirectTest {
             }
         });
         server.startListening(router);
-        while (server.isListening) {
+        while (server.getListening()) {
             Thread.currentThread().sleep(1000);
         }
     }

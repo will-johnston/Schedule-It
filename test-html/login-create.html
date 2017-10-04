@@ -1,0 +1,106 @@
+<!DOCTYPE html> <html> <head>
+    <meta charset="UTF-8">
+    <script type="text/javascript">
+        function createAccount() {
+            // /api/user/create
+            console.log("Called create");
+            var emailRAW = 
+document.getElementById("emailCreateText").value;
+            var passRAW = 
+document.getElementById("passwordCreateText").value;
+            var nameRAW = 
+document.getElementById("nameCreateText").value;
+			var phoneRAW = 
+document.getElementById("phoneCreateText").value;
+            var re = 
+/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (emailRAW == null || emailRAW == "") {
+                window.alert("Email is incorrect!");
+                return;
+            }
+            if (!re.test(emailRAW)) {
+                window.alert("Email is invalid format!");
+                return;
+            }
+            if (passRAW == null || passRAW == "") {
+                window.alert("Password is incorrect!");
+                return;
+            }
+            if (nameRAW == null || nameRAW == "") {
+                window.alert("Name is incorrect!");
+                return;
+            }
+			if (phoneRAW == null || phoneRAW == "") {
+                window.alert("Name is incorrect!");
+                return;
+            }
+            var request = new XMLHttpRequest();
+            request.addEventListener("load", function () {
+                var recieved = this.responseText;
+                console.log("Recieved ", recieved);
+            });
+            request.open("POST", 
+"http://scheduleit.duckdns.org/api/user/create");
+            request.send(JSON.stringify({ email: emailRAW, pass: passRAW, phone: phoneRAW, name: nameRAW }));
+        }
+        function login() {
+            //get login data
+            console.log("Called login");
+            var emailRAW = 
+document.getElementById("emailLoginText").value;
+            var passRAW = 
+document.getElementById("passwordLoginText").value;
+            var re = 
+/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (emailRAW == null || emailRAW == "") {
+                window.alert("Email is incorrect!");
+                return;
+            }
+            if (!re.test(emailRAW)) {
+                window.alert("Email is invalid format!");
+                return;
+            }
+            if (passRAW == null || passRAW == "") {
+                window.alert("Password is incorrect!");
+                return;
+            }
+            console.log(JSON.stringify({ email : emailRAW, pass : 
+passRAW}));
+            var request = new XMLHttpRequest();
+            request.addEventListener("load", function () {
+                var recieved = this.responseText;
+                console.log("Recieved ", recieved);
+            });
+            request.open("POST", 
+"http://scheduleit.duckdns.org/api/user/login");
+            request.send(JSON.stringify({ email: emailRAW, pass: 
+passRAW, fullname : nameRAW, pass: passRAW, email: emailRAW }));
+        }
+    </script> </head> <body>
+    <div class="login">
+            <h3>Login to ScheduleIt</h3>
+            <label id="emailLoginID">Email: </label>
+            <input type="email" id="emailLoginText" />
+            <label id="passwordLoginID">Password: </label>
+            <input type="password" id="passwordLoginText" />
+            <button id="login" onclick="login()">Login</button>
+    </div>
+    <br />
+    <div class="create">
+            <h3>Create Accout</h3>
+            <label id="emailCreateID">Email: </label>
+            <input type="email" id="emailCreateText" />
+            <br />
+            <label id="passwordCreateID">Password: </label>
+            <input type="password" id="passwordCreateText" />
+            <br />
+            <label id="nameCreateID">Name: </label>
+            <input type="text" id="nameCreateText" />
+            <br />
+			<label id="phoneCreateID">Phone: </label>
+            <input type="tel" id="phoneCreateText" />
+            <br />
+            <button id="create" onclick="createAccount()">Create 
+Account</button>
+    </div> </body>
+</html>

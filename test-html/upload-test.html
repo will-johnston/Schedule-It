@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        var name, size, type, chunks, chunksqueue, index = 0, uploadid;
+        function getChunks(buffer) {
+            var arr = new Array();
+            var CHUNK_SIZE = 8192;	//8KB
+            var iterations = Math.ceil(buffer.length / CHUNK_SIZE);
+            console.log("Rounder: " + (buffer.length / CHUNK_SIZE) + " to " + (Math.ceil(buffer.length / CHUNK_SIZE)));
+            console.log("Iterations: " + iterations);
+            var totalSize = buffer.length;
+            for (var i = 0; i < iterations - 1; i++) {
+                console.log("Pushing from " + CHUNK_SIZE * i + " to " + CHUNK_SIZE * (i + 1));
+                arr.push(buffer.slice(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1)));
+            }
+            arr.push(buffer.slice(CHUNK_SIZE * (iterations - 1), totalSize));
+            console.log("Pusing from " + CHUNK_SIZE * (iterations - 1) + " to " + totalSize);
+            return arr;
+        }
+        //Generates a 16-bit checksum
+        function checksum(array) {
+            var MODULUS = 65535;
+            var sum = 0;
+            for (var i in array) {
+                sum = (sum + i) % MODULUS;
+            }
+            return sum;
+        }
+        function test() {
+            console.log("Called test");
+            var fileElement = document.getElementById("filePicker");
+            if (fileElement.value == null) {
+                console.log("File Element is null");
+                return;
+            }
+            var files = fileElement.files;
+            var file = files[0];
+            console.log("File name: ", file.name, "Size: ", file.size, "mime: ", file.type);
+            var reader = new FileReader();
+            //for readAsString()
+            /*reader.onload = (function(theFile) {
+				console.log("Called reader.onload");
+				var resArea = document.getElementById("rasult");
+				console.log("Outputting file");
+				resArea.value = theFile.target.result;
+				console.log(theFile);
+			});*/
+            reader.onload = (function(theFile) {
+                //var arr = theFile.target.result;		//This only returns the ArrayBugger object (not an array)
+                var buffer = theFile.target.result;
+                var newBuf = new Uint8Array(buffer);
+                console.log(theFile.target.result);
+                console.log(theFile.target.result.byteLength);
+                console.log(newBuf);
+                console.log("newbuf length: ", newBuf.length);
+                var chunks = getChunks(newBuf);
+                console.log("chunks[0] checksum: " + checksum(chunks[0]));
+            });
+            //reader.readAsText(file);	//works great
+            //reader.readAsBinaryString(file);
+            reader.readAsArrayBuffer(file);
+        }
+        //Starts the upload process
+        function requestUpload() {
+            console.log("requesting upload");
+            // {{"type": "image/jpg",
+            //   "size": 65535,
+            //   "length": 78,
+            //   "cookie": 1297658432568
+            //}
+            var request = new XMLHttpRequest();
+            request.addEventListener("load", function () {
+                console.log
+                //handle response, if success start the upload loop;
+                var parsed = JSON.parse(this.responseText);
+                for (var key in parsed) {
+                    if (key == "error") {
+                        console.log("Error:", parsed[key]);
+                        break;
+                    }
+                }
+                console.log(parsed);
+            });
+            //request.open("POST", "scheduleit.duckdns.org/api/upload");
+            request.open("POST", "http://127.0.0.1:8181/upload");
+            console.log("Sending request:", JSON.stringify({ type : type, size: size, length: chunks.length, cookie: "1234"}));
+            request.send(JSON.stringify({ type : type, size: size, length: chunks.length, cookie: "1234"}));
+            console.log("sent request");
+        }
+        function uploadchunk() {
+
+        }
+        //Adds all the chunks to the queue
+        function addQueue() {
+
+        }
+        function upload() {
+            console.log("Called upload");
+            var fileElement = document.getElementById("filePicker");
+            if (fileElement.value == null) {
+                console.log("File Element is null");
+                return;
+            }
+            var files = fileElement.files;
+            var file = files[0];
+            //console.log("File name: ", file.name, "Size: ", file.size, "mime: ", file.type);
+            var reader = new FileReader();
+            name = file.name;
+            size = file.size;
+            type = file.type;
+            reader.onload = (function(theFile) {
+                //var arr = theFile.target.result;		//This only returns the ArrayBuffer object (not an array)
+                console.log("Name:", name, "size:", size, "type:", type);
+                var buffer = theFile.target.result;
+                var newBuf = new Uint8Array(buffer);
+                console.log(theFile.target.result);
+                console.log(theFile.target.result.byteLength);
+                console.log(newBuf);
+                console.log("newbuf length: ", newBuf.length);
+                chunks = getChunks(newBuf);
+                //console.log("chunks[0] checksum: " + checksum(chunks[0]));
+                requestUpload();
+            });
+            reader.readAsArrayBuffer(file);
+        }
+        </script>
+    </head>
+
+    <body>
+    <input type="file" id="filePicker" /><button onclick="upload()">Upload</button>
+    <br />
+    <textarea rows="10" cols="50" id="rasult"></textarea>
+    </body>
+    </html>
