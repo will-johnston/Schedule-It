@@ -21,45 +21,7 @@
 		<div class="dropdown">
 			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
 			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
-				<div class="card notification-card alert-success">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Billy Bob sent you a friend request</p>
-						<button type="button" class="btn btn-primary btn-sm">Accept</button>
-						<button type="button" class="btn btn-danger btn-sm">Decline</button>
-					</div>
-				</div>
-				<div class="card notification-card alert-success">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Jimmy created an event in Work</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Larry sent you a friend request</p>
-						<p>Accepted</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Tom created an event in Purdue CS 180</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Timmy created an event in Purdue CS 180</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Jim created an event in Purdue CS 180</p>
-					</div>
-				</div>
+
 			</div>
 		</div>
 
@@ -81,19 +43,19 @@
 					<div class="form-group row">
 							<label for="..." class="col-5 col-form-label">Name</label>
 							<div class="col-7">
-								<input class="form-control" type="text" value="Vardbot">
+								<input class="form-control" type="text" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label for="..." class="col-5 col-form-label">Email</label>
 							<div class="col-7">
-								<input class="form-control" type="email" value="helloWorld123@gmail.com">
+								<input class="form-control" type="email" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label for="..." class="col-5 col-form-label">Phone number</label>
 							<div class="col-7">
-								<input class="form-control" type="tel" value="123-456-7890">
+								<input class="form-control" type="tel" value="">
 							</div>
 					</div>
 					<div class="form-group row">
@@ -104,8 +66,10 @@
 					</div>
 					<div class="form-group row">
 							<div class="col-5">
-								<label for="...">Profile picture</label>
-								<input type="file" class="form-control-file" aria-describedby="fileHelp">
+								<label>Profile picture</label>
+								<label class="btn btn-primary">
+									<input type="file" style="display: none">Choose file
+								</label>
 							</div>
 							<div class="col-7">
 								<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
@@ -178,18 +142,12 @@
 						<div class="col-6">
 							<label>Add friends to group:</label>
 							<div class="list-group">
-								<button type="button" class="list-group-item list-group-item-action">Friend 1</button>
-								<button type="button" class="list-group-item list-group-item-action">Friend 2</button>
-								<button type="button" class="list-group-item list-group-item-action">Friend 3</button>
 							</div>
 						</div>
 						<div class="col-6">
 							<label>Members:</label>
 							<br />
 							<ul class="list-group" style="width: 100%">
-								<li class="list-group-item">Member 1</li>
-								<li class="list-group-item">Member 2</li>
-								<li class="list-group-item">Member 3</li>
 							</ul>
 						</div>
 					</div>
@@ -213,30 +171,34 @@
 		<div class="col-mod-l">
 			<div class="container fill">
 
+
 				<!-- Group side list -->
-				<button type="button" class="btn btn-primary side-list-head" data-toggle="modal" data-target="#groupSettings">Create new group</button>
-				<div class="side-list">
-					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-						<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-2" role="tab">Group 1</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-3" role="tab">Group 2</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-4" role="tab">Group 3</a>
+				<div class="card side-list">
+					<label class="card-header">Groups</label>
+					<ddiv class="card-block">
+						<button type="button" class="btn btn-primary" id="addNewGroupBtn" data-toggle="modal" data-target="#groupSettings">Create new group</button>
+						<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+							<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
+						</div>
+					</ddiv>
+				</div>
+
+
+				<!-- Friends side list -->
+				<div class="card side-list">
+					<label class="card-header">Friends</label>
+					<div class="card-block">
+						<div class="form-inline">
+							<input type="text" class="form-control" id="addFriendTextbox" placeholder="Username">
+							<button type="button" class="btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+								<img src="resources/arrowRight.png" width="18px">
+							</button>
+						</div>
+						<div class="list-group">
+						</div>
 					</div>
 				</div>
 
-				<!-- Friends side list -->
-				<div class="form-inline side-list-head">
-					<input type="text" class="form-control" placeholder="Username">
-					<button type="button" class="btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
-						<img src="resources/arrowRight.png" width="18px">
-					</button>
-				</div>
-				<div class="list-group side-list">
-					<a href="#" class="list-group-item list-group-item-action">Billy Bob</a>
-					<a href="#" class="list-group-item list-group-item-action">Jimmy's Jhon</a>
-					<a href="#" class="list-group-item list-group-item-action">Mike Hoc</a>
-					<a href="#" class="list-group-item list-group-item-action">Joey</a>
-				</div>
 			</div>
 		</div>
 		<div class="col-mod-r">
@@ -245,9 +207,9 @@
 					<div id="collapseExample" class="collapse show">
 						<div class="card" style="height: 100%">
 							<div class="card-body">
-								<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
-								<h3>Group Name</h3>
-								<p>Group info</p>
+								<img style="float: right" src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail" width="100">
+								<h3>Me</h3>
+								<p>This tab is just for you! Chat with the bot and set personal events.</p>
 								<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#groupSettings">Group settings</button>
 							</div>
 						</div>
@@ -275,9 +237,6 @@
 						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
 					</div>
 				</div>
-				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>
-				<div class="tab-pane fade" id="v-pills-3" role="tabpanel">Group 2 content</div>
-				<div class="tab-pane fade" id="v-pills-4" role="tabpanel">Group 3 content</div>
 			</div>
 		</div>
 	</div>
