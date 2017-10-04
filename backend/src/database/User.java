@@ -10,6 +10,7 @@ public class User {
     String password;
     String phone;       //can be null
     ArrayList<String> friends;          //List of usernames that this user is friends with
+    ArrayList<Group> groups;
     int id;
     long lastCheckedIn = -1;
     public User(String name, String email, String password, String phone, int id, String username) {
@@ -20,6 +21,7 @@ public class User {
         this.id = id;
         this.username = username;
         this.friends = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
@@ -95,6 +97,25 @@ public class User {
         else {
             System.out.println("AddFriendsInDb.addFriend failed to remove friend");
             return false;
+        }
+    }
+    public boolean addToGroup(Group group) {
+        //check if the user is actually in the group
+        if (groups.contains(group)) {
+            return false;
+        }
+        else {
+            groups.add(group);
+            return true;
+        }
+    }
+    public boolean removeFromGroup(Group group) {
+        if (!groups.contains(group)) {
+            return false;
+        }
+        else {
+            groups.remove(group);
+            return true;
         }
     }
     public long getLastCheckedIn() {

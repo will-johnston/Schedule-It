@@ -8,10 +8,12 @@ import java.util.*;
 
 public class Tracker {
     HashMap<Integer, User> users;
+    HashMap<Integer, Group> groups;
     int count;
     int timeout;
     public Tracker() {
         users = new HashMap<>(10);
+        groups = new HashMap<>(10);
         count = 0;
         timeout = 60 * 30;      //30 Minutes
     }
