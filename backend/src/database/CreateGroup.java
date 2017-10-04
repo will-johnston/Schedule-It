@@ -1,5 +1,5 @@
+package database;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,10 +9,6 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
-    public static void main(String[] args) {
-        createGroup("Wills really cool group", "will");
-    }
-
 
     public static boolean createGroup(String name, String user) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
