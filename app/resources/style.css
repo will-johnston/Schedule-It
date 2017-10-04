@@ -19,7 +19,6 @@ body {
 .notification-card img {
 	margin-right: 10px;
 }
-}
 
 .sidelist {
 	height: 250px;
@@ -37,9 +36,6 @@ body {
 
 .col-mod-r {
 	width: 79%;
-}
-
-.card-block {
 }
 
 #skipPhoto {
