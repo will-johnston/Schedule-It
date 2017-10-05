@@ -7,12 +7,6 @@ import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 public class AddOrRemoveFriendsInDb {
-
-    public static void main(String[] args) {
-        addOrRemoveFriend("will", "testy", true);
-	addOrRemoveFriend("will", "testy", false);
-	addOrRemoveFriend("will", "testy", true);
-    }
     //This function takes adds a user to the mysql database
     //int add: 0 if you want to delete a friendship, any other int value is used to add a friendship
     //returns true if friendship has been added or remove, or if the friendship already is up to date
