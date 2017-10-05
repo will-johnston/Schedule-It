@@ -29,7 +29,7 @@ Like user login, the password should be hashed
    "username" : "{NEW USERNAME}",
    "pass" : "{NEW PASSWORD}",
    "phone" : "{NEW PHONE NUMBER}",
-   "fullname" : "{NEW FULL NAME}",
+   "name" : "{NEW FULL NAME}",
    "email" : "{NEW EMAIL}"
 }
 Returns an error (like above) or a login cookie if successful.
