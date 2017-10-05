@@ -39,7 +39,7 @@ function create(username, password, email, name, phone, callback) {
     }
     var request = new XMLHttpRequest();
     request.addEventListener("load", function() {
-        if (this.statusText == 200) {
+        if (this.status == 200) {
             var response = JSON.parse(this.responseText);
             var cookie = response.cookie;
             storeLoginCookie(cookie);
@@ -48,12 +48,12 @@ function create(username, password, email, name, phone, callback) {
             }
         }
         else {
-            console.log("Failed to create user:", this.responseText);
+            console.log("Failed to create user:", this.responseText, this.statusText, this.status);
             return null;
         }
     })
     var payload = JSON.stringify({ email : email, pass : password, name : name, phone : phone, username : username});
-    request.open("POST", "http://scheduleit.duckdns.org/api/")
+    request.open("POST", "http://scheduleit.duckdns.org/api/user/create")
     request.send(payload);
 }
 function storeLoginCookie(cookie) {
