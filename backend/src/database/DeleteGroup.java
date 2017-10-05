@@ -47,7 +47,8 @@ public class DeleteGroup {
             }
 
             //delete group
-            String removeGroup = "DELETE FROM groups where id=" + groupID;
+            String removeGroup = "DELETE FROM groups where groupid=" + groupID;
+
             statement = connection.createStatement();
             statement.executeUpdate(removeGroup);
 

@@ -4,36 +4,37 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import endpoints.Tuple;
 
 /**
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
-    //return -1 if false
-    public static int createGroup(String name, int creatorID) {
+
+    public static boolean createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
-        int groupID = -1;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
             if (ds == null) {
-                return -1;
+                return false;
+
             }
             connection = ds.getConnection(); //acquire datasource object
 
             //if userID already has a group with same name, reject.
+
             String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
                 //we have a group already
                 System.out.println("ERROR: Already a group with same name and same creator");
-                return -1;
+                return false;
             }
 
             //create group
@@ -42,7 +43,7 @@ public class CreateGroup {
             statement.executeUpdate(update);
 
             //get group id
-            groupID = getGroupId(name, creatorID, connection);
+            int groupID = getGroupId(name, creatorID, connection);
 
 
             //add user to group_user_junction with userID and groupID
@@ -53,7 +54,7 @@ public class CreateGroup {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return -1;
+            return false;
         } finally {
             try {
                 if(result != null) result.close();
@@ -61,9 +62,9 @@ public class CreateGroup {
                 if(connection != null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                return -1;
+                return false;
             }
-            return groupID;
+            return true;
         }
     }
 
@@ -96,7 +97,7 @@ public class CreateGroup {
         ResultSet result = null;
 
         try {
-            String query = "SELECT id FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
+            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
