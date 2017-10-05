@@ -70,8 +70,10 @@ body {
 
 .card-group {
 	margin-bottom: 20px;
+	height: 150px;
 }
 
 .card-group img {
 	float: right;
+	height: 100%;
 }

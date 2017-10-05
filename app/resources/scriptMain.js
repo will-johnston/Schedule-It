@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	//variables
+	var numOfGroups = 1;
 
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
@@ -22,17 +24,45 @@ $(document).ready(function(){
 		});
 	}
 
-	//Create group button in group modal function
-	$("#newGroupModalCreateButton").click(function() {
-		var name = $("#groupSettingsModalName").val();
-		console.log(name);
 
-		createGroup("Name", "Info", "pic");
-		assignFunctionality();
+	//NEW GROUP MODAL
+	$("#newGroupModalCreateButton").click(function() {
+		var nameField = $("#newGroupModalName");
+		var infoField = $("#newGroupModalInfo");
+
+		var name = nameField.val();
+		var info = infoField.val();
+
+		if(name == "") {
+			nameField.addClass("is-invalid");
+		}
+		else {
+			createGroup(name, info, "pic");
+			assignFunctionality();
+			$("#newGroupModal").modal("hide");
+
+			nameField.val("");
+			infoField.val("");
+			nameField.removeClass("is-invalid");
+		}
+	});
+	$("#newGroupModalCancelButton").click(function() {
+		$("#newGroupModalName").val("");
+		$("#newGroupModalInfo").val("");
+		$("#newGroupModalName").removeClass("is-invalid");
 	});
 
+	//GROUP SETTINGS MODAL
+	$("#groupSettingsButton").click(function() {
+		//populate the group settings modal with group information
+	});
+	$("#groupSettingsSaveButton").click(function() {
+		//Write the changed values to the database
 
-	var numOfGroups = 1;
+
+		$("#groupSettingsModal").modal("hide");
+	});
+
 
 	var createGroup = function(name, info, pic) {
 		//Call the create group endpoint with parameters
