@@ -1,9 +1,9 @@
-// 0 if failure, return cookie if success
+// null if failure, calls callback with cookie if success
 // also stores the cookie
-function login(username, password) {
+function login(username, password, callback) {
     if (username == null || password == null) {
         console.log("Request login with null parameters");
-        return 0;
+        return null;
     }
     var request = new XMLHttpRequest();
     request.addEventListener("load", function() {
@@ -12,12 +12,14 @@ function login(username, password) {
             var response = JSON.parse(this.responseText);
             var cookie = response.cookie;
             storeLoginCookie(cookie);
-	    console.log(cookie);
-            return cookie;
+            console.log(cookie);
+            if (callback != null) {
+                callback(cookie);
+            }
         }
         else {
             console.log("Failed to log in:", this.responseText);
-            return 0;
+            return null;
         }
     });
     var payload = JSON.stringify( { name : username, pass : password });
@@ -28,12 +30,12 @@ function login(username, password) {
 function makePassword(rawPassword) {
     return rawPassword;
 }
-// 0 if failure, return cookie if success
+// null if failure, calls callback with cookie if success
 // also stores the cookie
-function create(username, password, email, name, phone) {
+function create(username, password, email, name, phone, callback) {
     if (username == null || password == null || email == null || name == null || phone == null) {
         console.log("One of the parameters is null");
-        return 0;
+        return null;
     }
     var request = new XMLHttpRequest();
     request.addEventListener("load", function() {
@@ -41,11 +43,13 @@ function create(username, password, email, name, phone) {
             var response = JSON.parse(this.responseText);
             var cookie = response.cookie;
             storeLoginCookie(cookie);
-            return cookie;
+            if (callback != null) {
+                callback(cookie);
+            }
         }
         else {
             console.log("Failed to create user:", this.responseText);
-            return 0;
+            return null;
         }
     })
     var payload = JSON.stringify({ email : email, pass : password, name : name, phone : phone, username : username});
