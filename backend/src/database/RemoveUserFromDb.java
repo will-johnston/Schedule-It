@@ -47,7 +47,9 @@ public class RemoveUserFromDb {
             //remove all friendships user has
             String removeFriendships = "DELETE FROM friends WHERE userID_1 =" + id + " OR userID_2=" + id;
             statement.executeUpdate(removeFriendships);
-
+	    //remove all groups user created
+	    
+	    //remove user from all groups
             //delete user from users table
             String removeUser = "DELETE FROM users where username=" + username;
             statement = connection.createStatement();

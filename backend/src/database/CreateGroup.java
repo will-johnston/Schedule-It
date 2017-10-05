@@ -9,6 +9,7 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
+
     public static boolean createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
@@ -25,7 +26,9 @@ public class CreateGroup {
             connection = ds.getConnection(); //acquire datasource object
 
             //if userID already has a group with same name, reject.
-            String query = "SELECT id FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+
+            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
@@ -94,7 +97,7 @@ public class CreateGroup {
         ResultSet result = null;
 
         try {
-            String query = "SELECT id FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
+            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
