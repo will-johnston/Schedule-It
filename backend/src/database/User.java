@@ -98,6 +98,9 @@ public class User {
             return false;
         }
     }
+    public ArrayList<String> getFriends() {
+        return friends;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }
