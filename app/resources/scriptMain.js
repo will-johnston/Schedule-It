@@ -24,6 +24,14 @@ $(document).ready(function(){
 		});
 	}
 
+	//SETTINGS MODAL
+	$("#accountSettingsButton").click(function() {
+		//populate the account settings modal fields
+	});
+	$("#accountSettingsModalSaveButton").click(function() {
+		
+	});
+
 
 	//NEW GROUP MODAL
 	$("#newGroupModalCreateButton").click(function() {
