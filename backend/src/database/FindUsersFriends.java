@@ -12,8 +12,8 @@ import java.util.LinkedList;
  * Created by williamjohnston on 9/30/17.
  */
 public class FindUsersFriends {
-
-    /*public static void main(String[] args) {
+/*
+    public static void main(String[] args) {
 	String[] friends = findFriends("will");
 	for (String str: friends) {
 		System.out.println(str);
