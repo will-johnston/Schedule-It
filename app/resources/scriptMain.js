@@ -27,8 +27,27 @@ $(document).ready(function(){
 	//SETTINGS MODAL
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
+		var fullName;
+		var username;
+		var email;
+		var phoneNumber;
+		var changePassword;
+		var confirmPassword;
+		var picURL;
+
+		$("#settingsModalFullNameField").val(fullName);
+		$("#settingsModalUsernameField").val(username);
+		$("#settingsModalEmailField").val(email);
+		$("#settingsModalPhoneNumberField").val(phoneNumber);
+		$("#settingsModalChangePasswordField").val(changePassword);
+		$("#settingsModalConfirmPasswordField").val(confirmPassword);
+		$("#settingsModalPicture").attr("src", picURL);
+
 	});
 	$("#accountSettingsModalSaveButton").click(function() {
+		
+	});
+	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
 	});
 

@@ -43,37 +43,37 @@
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Full name</label>
 							<div class="col-7">
-								<input class="form-control" type="text" value="">
+								<input class="form-control" id="settingsModalFullNameField" type="text" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Username</label>
 							<div class="col-7">
-								<input class="form-control" type="text" value="">
+								<input class="form-control" id="settingsModalUsernameField" type="text" placeholder="Readonly username" readonly>
 							</div>
 					</div>
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Email</label>
 							<div class="col-7">
-								<input class="form-control" type="email" value="">
+								<input class="form-control" id="settingsModalEmailField" type="email" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Phone number</label>
 							<div class="col-7">
-								<input class="form-control" type="tel" value="">
+								<input class="form-control" id="settingsModalPhoneNumberField" type="tel" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Change password</label>
 							<div class="col-7">
-								<input class="form-control" type="password" value="">
+								<input class="form-control" id="settingsModalChangePasswordField" type="password" value="">
 							</div>
 					</div>
 					<div class="form-group row">
 							<label class="col-5 col-form-label">Confirm password</label>
 							<div class="col-7">
-								<input class="form-control" type="password" value="">
+								<input class="form-control" id="settingsModalConfirmPasswordField" type="password" value="">
 							</div>
 					</div>
 					<div class="form-group row">
@@ -84,7 +84,7 @@
 								</label>
 							</div>
 							<div class="col-7">
-								<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+								<img id="settingsModalPicture" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
 							</div>
 					</div>
 					<div class="form-group row">
@@ -108,8 +108,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger mr-auto">Delete account</button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-danger mr-auto" id="accountSettingsModalDeleteAccountButton">Delete account</button>
+					<button type="button" class="btn btn-secondary" id="accountSettingsModalCloseButton" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" id="accountSettingsModalSaveButton">Save</button>
 				</div>
 			</div>
