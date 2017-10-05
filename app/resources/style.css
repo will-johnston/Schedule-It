@@ -59,11 +59,15 @@ body {
 	height: 100%;
 }
 
-#addNewGroupBtn {
+#add-new-group-btn {
 	margin-bottom: 10px;
 	width: 100%;
 }
 
-#addFriendTextbox {
-	width: 173px;
+#add-friend-textbox {
+	width: 165px;
+}
+
+.card-group {
+	margin-bottom: 20px;
 }

@@ -194,4 +194,22 @@ $(document).ready(function(){
 		//TODO: not sure what to do when you log out other than redirect
 		window.location.href = "http://scheduleit.duckdns.org/createOrLogin.html";		
 	});
+
+	//Add new group button function
+	$("#addNewGroupBtn").click(function() {
+		//Don't show the leave group and delete group buttons in the modal
+		$("#groupSettingsDeleteGroupBtn").hide();
+		$("#groupSettingsLeaveGroupBtn").hide();
+	});
+
+	//Group settings funcation
+	$("#groupSettingsBtn").click(function() {
+		//Show the leave group and delete group buttons in the modal
+		$("#groupSettingsDeleteGroupBtn").show();
+		$("#groupSettingsLeaveGroupBtn").show();
+	});
+
+	var createGroup = function(name, info, pic) {
+		
+	};
 });
