@@ -22,7 +22,43 @@ $(document).ready(function(){
 				$(this).find("img").attr("src","resources/chevronUp.png");
 			}
 		});
-	}
+	};
+
+	var ajax = function(method, url, data, onSuccess, onFail) {
+		$.ajax({
+			method: method,
+			url: url,
+			data: data,
+			datatype: "jsonp"
+		}).done(onSuccess(result)).fail(onFail(result));
+	};
+
+	//SETTINGS MODAL
+	$("#accountSettingsButton").click(function() {
+		//populate the account settings modal fields
+		var fullName;
+		var username;
+		var email;
+		var phoneNumber;
+		var changePassword;
+		var confirmPassword;
+		var picURL;
+
+		$("#settingsModalFullNameField").val(fullName);
+		$("#settingsModalUsernameField").val(username);
+		$("#settingsModalEmailField").val(email);
+		$("#settingsModalPhoneNumberField").val(phoneNumber);
+		$("#settingsModalChangePasswordField").val(changePassword);
+		$("#settingsModalConfirmPasswordField").val(confirmPassword);
+		$("#settingsModalPicture").attr("src", picURL);
+
+	});
+	$("#accountSettingsModalSaveButton").click(function() {
+		
+	});
+	$("#accountSettingsModalDeleteAccountButton").click(function() {
+		
+	});
 
 	assignFunctionality();
 
