@@ -28,13 +28,6 @@ body {
 	width: 79%;
 }
 
-.card-block {
-	padding-top: 30px;
-	padding-right: 30px;
-	padding-left: 30px;
-	padding-bottom: 30px;
-}
-
 #skipPhoto {
 	margin-left: 130px;
 }
@@ -55,14 +48,32 @@ body {
 	text-align: center;
 }
 
-.side-list-head {
-	width: 100%;
-	margin-bottom: 10px;
+.side-list {
+	height: 300px;
+	margin-bottom: 20px;
 }
 
-.side-list {
-	height: 250px;
+.side-list .card-block {
+	padding: 10px;
 	overflow-y: scroll;
-	margin-bottom: 50px;
-	padding-right: 10px;
+	height: 100%;
+}
+
+#addNewGroupButton {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+#addFriendTextbox {
+	width: 165px;
+}
+
+.card-group {
+	margin-bottom: 20px;
+	height: 150px;
+}
+
+.card-group img {
+	float: right;
+	height: 100%;
 }

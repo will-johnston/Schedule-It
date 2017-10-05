@@ -9,10 +9,6 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
-    public static void main(String[] args) {
-        createGroup("A sensationally cool group", 1);
-    }
-
 
     public static boolean createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
@@ -30,7 +26,9 @@ public class CreateGroup {
             connection = ds.getConnection(); //acquire datasource object
 
             //if userID already has a group with same name, reject.
+
             String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {

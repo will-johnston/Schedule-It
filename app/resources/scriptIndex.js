@@ -1,25 +1,4 @@
 $(document).ready(function(){
-	$("#v-pills-tab a").on("shown.bs.tab", function(event) {
-		//Fix previous pill stuff
-		prevPill = event.relatedTarget.getAttribute("href");;
-		$(prevPill + " .nav a").removeClass("active");
-		$(prevPill + " .tab-content .tab-pane").removeClass("active show");
-
-		//Fix current pill stuff
-		var currPill = event.target.getAttribute("href");
-		$(currPill + " .nav a:first").tab("show");
-	});
-
-	$(".chevron").click(function() {
-		if(!$(this).hasClass("collapsed")) {
-			$(this).find("img").attr("src","resources/chevronDown.png");
-		}
-		else {
-			$(this).find("img").attr("src","resources/chevronUp.png");
-		}
-
-	});
-	
 	/**
 	 * Login button function
 	 */
@@ -194,4 +173,4 @@ $(document).ready(function(){
 		//TODO: not sure what to do when you log out other than redirect
 		window.location.href = "http://scheduleit.duckdns.org/createOrLogin.html";		
 	});
-});
+}

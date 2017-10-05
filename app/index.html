@@ -1,269 +1,100 @@
-<!doctype html>
+<!doctype html> 
 
 <html>
 <head>
-	<title>Schedule It</title>
+	<title>Schedule It - Log In or Sign Up</title>
 	<link href="dependencies/bootstrap.min.css" rel="stylesheet">
-	<link href="resources/style.css" rel="stylesheet">
+    <link href="resources/style.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("resources/frontPageBackground.png");
+            background-size: 100%;
+        }
+    </style>
 </head>
 <body>
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
-	<script src="resources/script.js"></script>
+	<script src="resources/scriptIndex.js"></script>
 
-	<!-- Heading -->
-	<h1>
-		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
-		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button
-		
-		<!-- Notification dropdown -->
-		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
-			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
-				<div class="card notification-card alert-success">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Billy Bob sent you a friend request</p>
-						<button type="button" class="btn btn-primary btn-sm">Accept</button>
-						<button type="button" class="btn btn-danger btn-sm">Decline</button>
-					</div>
-				</div>
-				<div class="card notification-card alert-success">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Jimmy created an event in Work</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Larry sent you a friend request</p>
-						<p>Accepted</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Tom created an event in Purdue CS 180</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Timmy created an event in Purdue CS 180</p>
-					</div>
-				</div>
-				<div class="card notification-card">
-					<div class="card-block">
-						<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-left" width="80">
-						<p>Jim created an event in Purdue CS 180</p>
-					</div>
-				</div>
-			</div>
-		</div>
+    <div class="container">
+        <div class="row">
+            <div class="col"> <!-- Column 1-->
+                <!--Login Side-->
+                <div style="height:90px;"> </div>
+                <h1 style="color: white" class="display-5" id="loginLabel">Login</h1>
+                <div class="form-group">
+                    <!--Login Username-->
+                        <div style="height:10px;"> </div>
+                        <label style="color: white" for="loginUsername">Username</label>
+                        <input class="form-control" id="loginUsername" placeholder="Username">
 
-		<span>Schedule It</span>
-	</h1>
+                        <!--Login password-->
+                        <div style="height:5px;"> </div>
+                        <label style="color: white" for="loginPassword">Password</label>
+                        <input class="form-control" id="loginPassword" type="password"  placeholder="Password">
+                        <div class="form-control-feedback invisible" id="loginError" style="color: red">placeholder</div>  
 
+                        <!--Login button-->
+                        <div style="height:15px;"> </div>                        
+                        <button type="button" id="login" class="btn btn-secondary"> Log In </button>
+                </div>
+            </div>
+            <div class="col"> <!-- Column 2-->
+                <!--Webpage Title-->
+                <div style="height:10px;"> </div>
+                <h1 style="color: #000061" class="display-3">Schedule It</h1>
+            </div>
+            <div class="col"> <!-- Column 3-->
+                <!--Register Side-->
+                <div style="height:90px;"> </div>
+                <h1 color: style="color: white" class="display-5" id="registerLabel">Register</h1>
+                <div class="form-group">
 
-	<!-- Settings modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Settings</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Name</label>
-							<div class="col-7">
-								<input class="form-control" type="text" value="Vardbot">
-							</div>
-					</div>
-					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Email</label>
-							<div class="col-7">
-								<input class="form-control" type="email" value="helloWorld123@gmail.com">
-							</div>
-					</div>
-					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Phone number</label>
-							<div class="col-7">
-								<input class="form-control" type="tel" value="123-456-7890">
-							</div>
-					</div>
-					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Change password</label>
-							<div class="col-7">
-								<input class="form-control" type="password" value="">
-							</div>
-					</div>
-					<div class="form-group row">
-							<div class="col-5">
-								<label for="...">Profile picture</label>
-								<input type="file" class="form-control-file" aria-describedby="fileHelp">
-							</div>
-							<div class="col-7">
-								<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
-							</div>
-					</div>
-					<div class="form-group row">
-							<div class="col-5">
-								<p>Send notifications to</p>
-							</div>
-							<div class="col-3">
-								<label class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input">
-									<span class="custom-control-indicator"></span>
-									<span class="custom-control-description">Email</span>
-								</label>
-							</div>
-							<div class="col-4">
-								<label class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input">
-									<span class="custom-control-indicator"></span>
-									<span class="custom-control-description">Phone</span>
-								</label>
-							</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger mr-auto">Delete account</button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <!--Register Full Name-->
+                    <div style="height:10px;"> </div>
+                    <label style="color: white" for="fullName">* Full Name</label>
+                    <input class="form-control" id="fullName" placeholder="Full Name">
 
-	<!-- Group settings modal -->
-	<div class="modal fade" id="groupSettings" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Group settings</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group row">
-						<label class="col-4 col-form-label">Name</label>
-						<div class="col-8">
-							<input class="form-control" type="text">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-4 col-form-label" for="exampleTextarea">Information</label>
-						<div class="col-8">
-							<textarea class="form-control" rows="3"></textarea>
-						</div>
-					</div>
-					<div class="form-group row">
-						<div class="col-4">
-							<label>Group picture</label>
-						</div>
-						<div class="col-8">
-							<label class="btn btn-primary">
-								<input type="file" style="display: none">Choose file
-							</label>
-							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<div class="mr-auto">
-						<button type="button" class="btn btn-danger">Delete group</button>
-						<button type="button" class="btn btn-danger">Leave group</button>
-					</div>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary">Create</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <!--Register Display Name-->
+                    <div style="height:5px;"> </div>                        
+                    <label style="color: white" for="displayname">* Display Name</label>
+                    <input class="form-control" id="displayname" placeholder="Display Name">
+                    <div class="form-control-feedback invisible" id="usernameError" style="color: red">Username already exists.</div>                                                                        
 
-	<hr />
+                    <!--Register Email-->
+                    <div style="height:5px;"> </div>   
+                    <label style="color: white" for="email">* Email</label>
+                    <input class="form-control" id="email" placeholder="Email">
 
-	<!-- Main content -->
-	<div class="row">
-		<div class="col-mod-l">
-			<div class="container fill">
+                    <!--Register Phone Number-->
+                    <div style="height:5px;"> </div>   
+                    <label style="color: white"for="phoneNumber">Phone Number</label>
+                    <input class="form-control" id="phoneNumber" placeholder="Phone Number">
 
-				<!-- Group side list -->
-				<button type="button" class="btn btn-primary side-list-head" data-toggle="modal" data-target="#groupSettings">Create new group</button>
-				<div class="side-list">
-					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-						<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-2" role="tab">Group 1</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-3" role="tab">Group 2</a>
-						<a class="nav-link" data-toggle="pill" href="#v-pills-4" role="tab">Group 3</a>
-					</div>
-				</div>
+                    <!--Register New Password-->
+                    <div style="height:5px;"> </div>   
+                    <label style="color: white" for="newPassword">* New Password</label>
+                    <input class="form-control" id="newPassword" type="password" maxlength="32" placeholder="Please provide your new password">
 
-				<!-- Friends side list -->
-				<div class="form-inline side-list-head">
-					<input type="text" class="form-control" placeholder="Username">
-					<button type="button" class="btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
-						<img src="resources/arrowRight.png" width="18px">
-					</button>
-				</div>
-				<div class="list-group side-list">
-					<a href="#" class="list-group-item list-group-item-action">Billy Bob</a>
-					<a href="#" class="list-group-item list-group-item-action">Jimmy's Jhon</a>
-					<a href="#" class="list-group-item list-group-item-action">Mike Hoc</a>
-					<a href="#" class="list-group-item list-group-item-action">Joey</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-mod-r">
-			<div class="tab-content" id="v-pills-tabContent">
-				<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel">
-					<div id="collapseExample" class="collapse show">
-						<div class="card" style="height: 100%">
-							<div class="card-body">
-								<img style="float: right" src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
-								<h3>Group Name</h3>
-								<p>Group info</p>
-								<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#groupSettings">Group settings</button>
-							</div>
-						</div>
-					</div>
+                        <!--...Progress Bar...-->
+                    <div class="progress invisible" id="invisibility"> <!-- red:bg-danger, yellow: bg-warning, blue: bg-info, green: bg-success-->
+                        <div class="progress-bar bg-danger" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="44"></div>
+                    </div>
 
-					<div style="height: 15px"></div>
-					
-					<ul class="nav nav-tabs nav-fill" role="tablist">
-						<li class="nav-item">
-							<a class="nav-link active" data-toggle="tab" href="#v-pills-1-chat" role="tab">Chat</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" data-toggle="tab" href="#v-pills-1-cal" role="tab">Calendar</a>
-						</li>
-						<button class="btn chevron" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" style="margin-left: 10px">
-							<img src="resources/chevronUp.png">
-						</button>
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active show" id="v-pills-1-chat" role="tabpanel">
-							<div class="chat">
-								chat
-							</div>
-						</div>
-						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
-					</div>
-				</div>
-				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>
-				<div class="tab-pane fade" id="v-pills-3" role="tabpanel">Group 2 content</div>
-				<div class="tab-pane fade" id="v-pills-4" role="tabpanel">Group 3 content</div>
-			</div>
-		</div>
-	</div>
+                    <!--Register Verify Password-->
+                    <div style="height:5px;"> </div>   
+                    <label style="color: white" for="verifyPassword">* Verify Password</label>
+                    <input class="form-control" id="verifyPassword" type="password" maxlength="32" placeholder="Please verify your password">
+                    <div class="form-control-feedback invisible" id="passwordError" style="color: red">Passwords do not match.</div>
 
-
+                    <div style="height:15px;"> </div>                        
+                    <button type="button" id="create" class="btn btn-secondary"> Create Account </button>
+                </div>
+            </div>
+        </div> <!--End row 1-->
+    </div> <!--End Container-->
 
 </body>
 </html>

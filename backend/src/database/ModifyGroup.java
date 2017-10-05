@@ -31,6 +31,7 @@ public class ModifyGroup {
 
             //change group name
             String update = "UPDATE groups set name ='" + newName + "' WHERE groupid=" + groupID;
+
             statement = connection.createStatement();
             statement.executeUpdate(update);
 
@@ -129,7 +130,9 @@ public class ModifyGroup {
             }
 
             //make sure user is not creator
+
             String queryGroup = "SELECT * from groups WHERE creatorID =" + userID + " AND groupid=" + groupID;
+
             statement = connection.createStatement();
             result = statement.executeQuery(queryGroup);
             if (result.isBeforeFirst()) {
