@@ -20,16 +20,6 @@ body {
 	margin-right: 10px;
 }
 
-.sidelist {
-	height: 250px;
-	overflow-y: scroll;
-	margin-bottom: 40px;
-}
-
-.sidelistBtn {
-	width: 100%;
-}
-
 .col-mod-l {
 	width: 20%;
 }
@@ -58,14 +48,32 @@ body {
 	text-align: center;
 }
 
-.side-list-head {
-	width: 100%;
-	margin-bottom: 10px;
+.side-list {
+	height: 300px;
+	margin-bottom: 20px;
 }
 
-.side-list {
-	height: 250px;
+.side-list .card-block {
+	padding: 10px;
 	overflow-y: scroll;
-	margin-bottom: 50px;
-	padding-right: 10px;
+	height: 100%;
+}
+
+#addNewGroupButton {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+#addFriendTextbox {
+	width: 165px;
+}
+
+.card-group {
+	margin-bottom: 20px;
+	height: 150px;
+}
+
+.card-group img {
+	float: right;
+	height: 100%;
 }

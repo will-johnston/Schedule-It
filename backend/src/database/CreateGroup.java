@@ -10,56 +10,50 @@ import java.sql.Statement;
  */
 public class CreateGroup {
 
-    public static boolean createGroup(String name, String user) {
+    public static int  createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
+	int groupID = -1;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
             if (ds == null) {
-                return false;
+                return -1;
 
             }
             connection = ds.getConnection(); //acquire datasource object
 
-            //get userID
-            int userID = getUserId(user, connection);
-            if (userID == -1) {
-                System.out.println("ERROR: cannot find ID for user: " + user);
-                return false;
-            }
-
             //if userID already has a group with same name, reject.
-            String query = "SELECT id FROM groups WHERE name='" + name + "' AND creatorID=" + userID;
+            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
                 //we have a group already
                 System.out.println("ERROR: Already a group with same name and same creator");
-                return false;
+                return -1;
             }
 
             //create group
-            String update = "INSERT INTO groups (name, creatorID) VALUES('" + name + "'," + userID + ")";
+            String update = "INSERT INTO groups (name, creatorID) VALUES('" + name + "'," + creatorID + ")";
             statement = connection.createStatement();
             statement.executeUpdate(update);
 
             //get group id
-            int groupID = getGroupId(name, userID, connection);
+            groupID = getGroupId(name, creatorID, connection);
 
 
             //add user to group_user_junction with userID and groupID
-            String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + userID + ", " + groupID + ")";
+            String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + creatorID + ", " + groupID + ")";
             statement = connection.createStatement();
             statement.executeUpdate(updateJT);
 
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return -1;
         } finally {
             try {
                 if(result != null) result.close();
@@ -67,9 +61,9 @@ public class CreateGroup {
                 if(connection != null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                return false;
+                return -1;
             }
-            return true;
+            return groupID;
         }
     }
 
@@ -102,7 +96,7 @@ public class CreateGroup {
         ResultSet result = null;
 
         try {
-            String query = "SELECT id FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
+            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creator;
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
