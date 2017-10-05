@@ -12,6 +12,7 @@ function login(username, password) {
             var response = JSON.parse(this.responseText);
             var cookie = response.cookie;
             storeLoginCookie(cookie);
+	    console.log(cookie);
             return cookie;
         }
         else {
@@ -57,10 +58,11 @@ function storeLoginCookie(cookie) {
     }
     else {
         var cookietime = new Date();
-        cookietime = cookietime.setFullYear(cookietime.getFullYear() + 1);          //Expire in a year
+        cookietime.setFullYear(cookietime.getFullYear() + 1);          //Expire in a year
         var date = cookietime.toUTCString();
-        var cookiestring = "_schedlogin={0}; expires={1};path=/".format(cookie, date);
-        document.cookie = cookiestring;
+        //var cookiestring = "_schedlogin={0}; expires={1};path=/".format(cookie, date);
+        var cookiestring = "_schedlogin=" + cookie +"; expires=" + date + ";path=/";
+	document.cookie = cookiestring;
     }
 }
 //returns cookie on success,0 on failure
