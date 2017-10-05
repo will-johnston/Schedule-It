@@ -14,7 +14,7 @@
 
 	<!-- Heading -->
 	<h1>
-		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
+		<button type="button" class="btn btn-primary float-right" id="accountSettingsButton" data-toggle="modal" data-target="#settingsModal">Settings</button>
 		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button
 		
 		<!-- Notification dropdown -->
@@ -30,7 +30,7 @@
 
 
 	<!-- Settings modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -41,25 +41,37 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Name</label>
+							<label class="col-5 col-form-label">Full name</label>
 							<div class="col-7">
 								<input class="form-control" type="text" value="">
 							</div>
 					</div>
 					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Email</label>
+							<label class="col-5 col-form-label">Username</label>
+							<div class="col-7">
+								<input class="form-control" type="text" value="">
+							</div>
+					</div>
+					<div class="form-group row">
+							<label class="col-5 col-form-label">Email</label>
 							<div class="col-7">
 								<input class="form-control" type="email" value="">
 							</div>
 					</div>
 					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Phone number</label>
+							<label class="col-5 col-form-label">Phone number</label>
 							<div class="col-7">
 								<input class="form-control" type="tel" value="">
 							</div>
 					</div>
 					<div class="form-group row">
-							<label for="..." class="col-5 col-form-label">Change password</label>
+							<label class="col-5 col-form-label">Change password</label>
+							<div class="col-7">
+								<input class="form-control" type="password" value="">
+							</div>
+					</div>
+					<div class="form-group row">
+							<label class="col-5 col-form-label">Confirm password</label>
 							<div class="col-7">
 								<input class="form-control" type="password" value="">
 							</div>
@@ -98,7 +110,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger mr-auto">Delete account</button>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-primary" id="accountSettingsModalSaveButton">Save</button>
 				</div>
 			</div>
 		</div>
