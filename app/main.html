@@ -10,7 +10,7 @@
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
-	<script src="resources/script.js"></script>
+	<script src="resources/scriptMain.js"></script>
 
 	<!-- Heading -->
 	<h1>
@@ -19,7 +19,7 @@
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
+			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">0</span></button>
 			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
 
 			</div>
@@ -105,7 +105,7 @@
 	</div>
 
 	<!-- Group settings modal -->
-	<div class="modal fade" id="groupSettings" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal fade" id="groupSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -118,11 +118,11 @@
 					<div class="form-group row">
 						<label class="col-4 col-form-label">Name</label>
 						<div class="col-8">
-							<input class="form-control" type="text">
+							<input class="form-control" type="text" id="groupSettingsModalName">
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-4 col-form-label" for="exampleTextarea">Information</label>
+						<label class="col-4 col-form-label" id="groupSettingsModalInfo" maxlength="150">Information</label>
 						<div class="col-8">
 							<textarea class="form-control" rows="3"></textarea>
 						</div>
@@ -154,11 +154,68 @@
 				</div>
 				<div class="modal-footer">
 					<div class="mr-auto">
-						<button type="button" class="btn btn-danger" id="groupSettingsDeleteGroupBtn">Delete group</button>
-						<button type="button" class="btn btn-danger" id="groupSettingsLeaveGroupBtn">Leave group</button>
+						<button type="button" class="btn btn-danger">Delete group</button>
+						<button type="button" class="btn btn-danger">Leave group</button>
 					</div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary">Create</button>
+					<button type="button" class="btn btn-primary" id="groupSettingsSaveButton">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- New group modal -->
+	<div class="modal fade" id="newGroupModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">New group</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Name</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="newGroupModalName">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Information</label>
+						<div class="col-8">
+							<textarea class="form-control" rows="3" id="newGroupModalInfo" maxlength="150"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Group picture</label>
+						</div>
+						<div class="col-8">
+							<label class="btn btn-primary">
+								<input type="file" style="display: none">Choose file
+							</label>
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-6">
+							<label>Add friends to group:</label>
+							<div class="list-group">
+							</div>
+						</div>
+						<div class="col-6">
+							<label>Members:</label>
+							<br />
+							<ul class="list-group" style="width: 100%">
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="newGroupModalCancelButton" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="newGroupModalCreateButton">Create</button>
 				</div>
 			</div>
 		</div>
@@ -176,9 +233,9 @@
 				<div class="card side-list">
 					<label class="card-header">Groups</label>
 					<ddiv class="card-block">
-						<button type="button" class="btn btn-primary" id="add-new-group-btn" data-toggle="modal" data-target="#groupSettings">Create new group</button>
-						<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-							<a class="nav-link active" data-toggle="pill" href="#v-pills-1" role="tab">Me</a>
+						<button type="button" class="btn btn-primary" id="addNewGroupButton" data-toggle="modal" data-target="#newGroupModal">Create new group</button>
+						<div class="nav flex-column nav-pills" id="vPillsTab" role="tablist">
+							<a class="nav-link active" data-toggle="pill" href="#group1Content" role="tab">Me</a>
 						</div>
 					</ddiv>
 				</div>
@@ -189,7 +246,7 @@
 					<label class="card-header">Friends</label>
 					<div class="card-block">
 						<div class="form-inline">
-							<input type="text" class="form-control" id="add-friend-textbox" placeholder="Username">
+							<input type="text" class="form-control" id="addFriendTextbox" placeholder="Username">
 							<button type="button" class="btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
 								<img src="resources/arrowRight.png" width="18px">
 							</button>
@@ -201,40 +258,42 @@
 
 			</div>
 		</div>
+
+
 		<div class="col-mod-r">
-			<div class="tab-content" id="v-pills-tabContent">
-				<div class="tab-pane fade show active" id="v-pills-content-1" role="tabpanel">
-					<div class="collapse show" id="v-pills-content-1-collapse">
+			<div class="tab-content" id="vPillsContent">
+
+				<!-- Me group -->
+				<div class="tab-pane fade show active" id="group1Content" role="tabpanel">
+					<div class="collapse show" id="group1ContentCollapse">
 						<div class="card card-group">
 							<div class="card-body">
-								<img style="float: right" src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail" width="100">
+								<img src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail">
 								<h3>Me</h3>
 								<p>This tab is just for you! Chat with the bot and set personal events.</p>
-								<button type="button" class="btn btn-secondary btn-sm" id="groupSettings" data-toggle="modal" data-target="#groupSettings">Group settings</button>
+								<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
 							</div>
 						</div>
 					</div>
 					
 					<ul class="nav nav-tabs nav-fill" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" data-toggle="tab" href="#v-pills-content-1-chat" role="tab">Chat</a>
+							<a class="nav-link active" data-toggle="tab" href="#group1ContentChat" role="tab">Chat</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" data-toggle="tab" href="#v-pills-content-1-cal" role="tab">Calendar</a>
+							<a class="nav-link" data-toggle="tab" href="#group1ContentCal" role="tab">Calendar</a>
 						</li>
-						<button class="btn chevron" type="button" data-toggle="collapse" data-target="#v-pills-content-1-collapse" aria-expanded="false" style="margin-left: 10px">
+						<button class="btn chevron" type="button" data-toggle="collapse" data-target="#group1ContentCollapse" aria-expanded="false">
 							<img src="resources/chevronUp.png">
 						</button>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active show" id="v-pills-content-1-chat" role="tabpanel">
-							<div class="chat">
-								chat
-							</div>
-						</div>
-						<div class="tab-pane" id="v-pills-content-1-cal" role="tabpanel">cal</div>
+						<div class="tab-pane active show" id="group1ContentChat" role="tabpanel">chat...</div>
+						<div class="tab-pane" id="group1ContentCal" role="tabpanel">cal...</div>
 					</div>
 				</div>
+
+
 			</div>
 		</div>
 	</div>
