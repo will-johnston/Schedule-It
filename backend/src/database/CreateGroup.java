@@ -9,11 +9,6 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
-   /* public static void main(String[] args) {
-        int id =createGroup("test group", 3);
-	System.out.println(id);
-    }*/
-
 
     public static int  createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
