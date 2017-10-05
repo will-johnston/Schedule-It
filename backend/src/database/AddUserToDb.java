@@ -1,4 +1,4 @@
-//package database;
+package database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 public class AddUserToDb {
 	
 	public static void main(String[] args) {
-		addUser("FLEM", "frem rogers", "passy", null, null);
+		addUser("asdlfkj", "fremasdfogers", "passone", "mailOO", "4563456");
 	}		
 	//This function takes adds a user to the mysql database		
 	public static boolean addUser(String username,String fullname,String  password,String email,String phoneNumber) {
@@ -34,7 +34,7 @@ public class AddUserToDb {
 			
 			if (!result.isBeforeFirst()) {	
 			//perform add user functionality
-			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "')";
+			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "', null)";
 			statement = connection.createStatement();
 			//send an add user query to the database
 			int ex = statement.executeUpdate(update);
