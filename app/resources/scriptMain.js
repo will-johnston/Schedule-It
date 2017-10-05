@@ -93,6 +93,21 @@ $(document).ready(function(){
 	//GROUP SETTINGS MODAL
 	$("#groupSettingsButton").click(function() {
 		//populate the group settings modal with group information
+
+		cookie = document.cookie;
+		console.log(cookie);
+
+		ajax("GET", "http://scheduleit.duckdns.org/api/user/getsettings", 
+			JSON.stringify({cookie: cookie}),
+			function(result) {
+				console.log("success");
+				console.log(result);
+			},
+			function(result) {
+				console.log("failed");
+				console.log(result);
+			});
+
 	});
 	$("#groupSettingsSaveButton").click(function() {
 		//Write the changed values to the database
