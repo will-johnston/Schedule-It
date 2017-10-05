@@ -31,9 +31,10 @@ public class GroupCreate implements IAPIRoute {
             return;
         }
         User owner = tracker.getUser(cookie);
-        if (CreateGroup.createGroup(owner.getUsername(), groupname)) {
-            //String message = "{\"error\":\"User not logged in\"}";
-            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+        int groupid = CreateGroup.createGroup(groupname, owner.getId());
+        if (groupid > 0) {
+            String message = String.format("{\"groupid\":\"%d\"}", groupid);
+            Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
         else {
