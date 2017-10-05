@@ -22,7 +22,16 @@ $(document).ready(function(){
 				$(this).find("img").attr("src","resources/chevronUp.png");
 			}
 		});
-	}
+	};
+
+	var ajax = function(method, url, data, onSuccess, onFail) {
+		$.ajax({
+			method: method,
+			url: url,
+			data: data,
+			datatype: "jsonp"
+		}).done(onSuccess(result)).fail(onFail(result));
+	};
 
 	//SETTINGS MODAL
 	$("#accountSettingsButton").click(function() {
