@@ -5,21 +5,27 @@ import java.sql.SQLException;
 import java.sql.Statement;		
 import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import java.io.*;
 		
 public class AddUserToDb {
-	//This function takes adds a user to the mysql database		
+	//This function takes adds a user to the mysql database
+	//
+/*	public static void main(String[] args) {
+		boolean bool = AddUserToDb.addUser("tes", "for", "some", "stuff", null);
+		System.out.println(bool);		}*/
 	public static boolean addUser(String username,String fullname,String  password,String email,String phoneNumber) {
 		MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 						
 		Connection connection = null;
 		Statement statement = null; 
 		ResultSet result = null;
+		boolean ret = true;
 		try {
 			//call the DataSourceFactory class to create a pooled datasource 
 			ds = DataSourceFactory.getDataSource();	
 			//check for potential failed connection
 			if (ds == null) {
-				return false;
+				ret = false;
 			 
 			}	
 			connection = ds.getConnection(); //acquire datasource object
@@ -37,12 +43,12 @@ public class AddUserToDb {
 			} else {
 				//duplicate user send false
 				System.out.println("shit");
-				return false;
+				ret = false;
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return ret;
 		} finally {
 			try {
 				if(result != null) result.close();
@@ -50,9 +56,9 @@ public class AddUserToDb {
 				if(connection != null) connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return false;
+				return ret;
 			}
-			return true;
+			return ret;
 		}
 	}
 }
