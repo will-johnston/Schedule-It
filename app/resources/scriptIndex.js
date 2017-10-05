@@ -66,8 +66,11 @@ $(document).ready(function(){
 					}
 				});
 				request.open("POST", "http://scheduleit.duckdns.org/api/user/create");
-				request.send(JSON.stringify({"username" : userName,"pass" : password,
-				"phone" : phoneNumber,"fullname" : fullName,"email" : email}));
+				request.send(JSON.stringify({	"email": email,
+												"pass": password,
+												"name": fullName,
+												"phone": phoneNumber,
+												"username": userName}));
 			}
 		}
 	});
