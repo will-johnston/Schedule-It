@@ -1,7 +1,5 @@
 $(document).ready(function(){
-	//variables
-	var numOfGroups = 1;
-
+	
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
 			//Fix previous pill stuff
@@ -106,7 +104,7 @@ $(document).ready(function(){
 		//Call the create group endpoint with parameters
 
 
-		var id = "group" + ++numOfGroups + "Content";
+		var id = "group" + ++$("#vPillsContent").children().length + "Content";
 
 		var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 		
