@@ -9,6 +9,7 @@ public class User {
     String email;
     String password;
     String phone;       //can be null
+    String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
     int id;
     long lastCheckedIn = -1;
@@ -125,6 +126,8 @@ public class User {
         return id;
     }
 
+    public String getImageUrl() { return imageUrl; }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -144,4 +147,6 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public void setImageUrl(String url) {this.imageUrl = url; }
 }
