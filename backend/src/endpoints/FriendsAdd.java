@@ -32,8 +32,15 @@ public class FriendsAdd implements IAPIRoute {
         }
         User requester = tracker.getUser(cookie);
         if (requester.addFriend(username)) {
-            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-            return;
+            if (tracker.updateUser(cookie, requester)) {
+                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
+            else {
+                String response = "{ \"error\" : \"Failed to update user in API Server\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                return;
+            }
         }
         else {
             String response = "{ \"error\" : \"Failed to add friends\"}";

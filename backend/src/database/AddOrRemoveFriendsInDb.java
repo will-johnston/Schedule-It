@@ -1,3 +1,4 @@
+package database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,14 +7,10 @@ import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 public class AddOrRemoveFriendsInDb {
-
-    public static void main(String[] args) {
-        addOrRemoveFriend("chico", "bro", 0);
-    }
     //This function takes adds a user to the mysql database
     //int add: 0 if you want to delete a friendship, any other int value is used to add a friendship
     //returns true if friendship has been added or remove, or if the friendship already is up to date
-    public static boolean addOrRemoveFriend(String user1, String user2, int add) {
+    public static boolean addOrRemoveFriend(String user1, String user2, boolean add) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 
         Connection connection = null;
@@ -52,17 +49,17 @@ public class AddOrRemoveFriendsInDb {
             result = statement.executeQuery(check);
             if (result.next()) {
                 //already friends, if trying to add, no work is necessary
-                if (add != 0) {
+                if (add) {
                     return true;
                 }
             } else {
                 //not friends, if trying to remove, no work is necessary
-                if (add == 0) {
+                if (!add) {
                     return true;
                 }
             }
             String update;
-            if (add != 0) {
+            if (add) {
                 //perform add friendship functionality
                 update = "INSERT INTO friends VALUES(" + id1 + ", " + id2 + ")";
             } else {

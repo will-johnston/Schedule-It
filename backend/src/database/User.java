@@ -33,18 +33,67 @@ public class User {
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
     }
+    private boolean areFriendsInDb(String username) {
+        String[] dbfriends = FindUsersFriends.findFriends(this.username);
+        if (friends == null) {
+            return false;
+        }
+        for (String friend : dbfriends) {
+            if (!friends.contains(friend)) {
+                //System.out.println("Added ");
+                friends.add(friend);
+            }
+            //System.out.println(friend);
+        }
+        return friends.contains(username);
+    }
     //We assume that the database has already been checked to see if the user exists
     public boolean addFriend(String username) {
         if (friends.contains(username)) {
+            System.out.println("Already contained in friends list");
             System.out.println("The Users are already friends");
             return false;
         }
-        if (AddFriendsInDb.addFriend(username, this.username)) {
+        else {
+            System.out.println("Not in friends list");
+            if (areFriendsInDb(username)) {
+                System.out.println("Friends after db update, returning false");
+                friends.add(username);
+                return false;           //Were already friends
+            }
+            else {
+                System.out.println("Not in friends list after update");
+            }
+        }
+        if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
             return true;
         }
         else {
             System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
+    }
+    //We assume that the database has already been checked to see if the user exists
+    public boolean removeFriend(String username) {
+        if (!friends.contains(username)) {
+            if (areFriendsInDb(username)) {
+                //This is silly, but it works
+                friends.add(username);
+                System.out.println("In friends list: " + friends.contains(username));
+                //continue to remove from db
+            }
+            else {
+                System.out.println("Are not friends");
+                return false;
+            }
+        }
+        if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, false)) {
+            friends.remove(username);
+            return true;
+        }
+        else {
+            System.out.println("AddFriendsInDb.addFriend failed to remove friend");
             return false;
         }
     }

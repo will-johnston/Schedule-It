@@ -19,3 +19,62 @@ body {
 .notification-card img {
 	margin-right: 10px;
 }
+
+.col-mod-l {
+	width: 20%;
+}
+
+.col-mod-r {
+	width: 79%;
+}
+
+#skipPhoto {
+	margin-left: 130px;
+}
+
+#filePath {
+	margin-left: 10px;
+}
+
+.is-invalid {
+	border: 2px solid red;
+}
+
+#loginLabel {
+	text-align: center;
+}
+
+#registerLabel {
+	text-align: center;
+}
+
+.side-list {
+	height: 300px;
+	margin-bottom: 20px;
+}
+
+.side-list .card-block {
+	padding: 10px;
+	overflow-y: scroll;
+	height: 100%;
+}
+
+#addNewGroupButton {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+#addFriendTextbox {
+	width: 165px;
+}
+
+.card-group {
+	margin-bottom: 20px;
+	height: 150px;
+}
+
+.card-group img {
+	float: right;
+	height: 100%;
+}
+
