@@ -79,6 +79,14 @@ public class Tracker {
         user.checkin();
         return user;
     }
+    public User getUser(String username) {
+        for (User user : users.values()) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
     public boolean updateUser(int cookie, User newUser) {
         if (!users.containsKey(cookie)) {
             return false;

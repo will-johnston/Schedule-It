@@ -63,4 +63,52 @@ public class GetFromDb {
             }
         }
     }
+    public static String[] getGroupInfo(int groupid) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            String query = "SELECT *"
+                    + " from groups where id='" + groupid + "'";
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            System.out.println("Checking for null");
+            /*if (result == null) {
+                return null;
+            }*/
+            result.first();
+
+            String[] results = new String[3];
+            results[0] = result.getString("id");
+            results[1] = result.getString("name");
+            results[2] = result.getString("creator");
+            return results;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

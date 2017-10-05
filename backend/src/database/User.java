@@ -109,14 +109,35 @@ public class User {
             return true;
         }
     }
-    public boolean removeFromGroup(Group group) {
-        if (!groups.contains(group)) {
+    private boolean removeWithGroupId(int groupid) {
+        for (Group group : groups) {
+            if (group.id == groupid) {
+                if (group.removeUser(this)) {
+                    groups.remove(group);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean removeFromGroup(int groupid) {
+        if (!inGroup(groupid)) {
             return false;
         }
         else {
-            groups.remove(group);
-            return true;
+            return removeWithGroupId(groupid);
         }
+    }
+    public boolean inGroup(int groupid) {
+        for (Group group : groups) {
+            if (groupid == group.id) {
+                return true;
+            }
+        }
+        return false;
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

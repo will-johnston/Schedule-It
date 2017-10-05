@@ -37,9 +37,20 @@ Returns an error (like above) or a login cookie if successful.
 /api/user/friends/remove - Remove friend
 /api/user/search - Search all user's in the system
 /api/user/groups/create - Create a new group
+Request object
+{
+	"cookie" : {LOGIN COOKIE},
+	"groupname" : "{NEW GROUP NAME}"
+}
+Returns on success with status 200 OK
+{
+	"groupid" : {NEW GROUP ID}
+}
+Returns an error code on failure 
 /api/user/groups/add - Add a friend to group
 /api/user/groups/join - Join a group from an invitation
 /api/user/groups/leave - Leave the group
+/api/user/groups/get - Gets all the groups that a user belongs to
 /api/notifications/getnew - Get the new notifications for the user
 /api/user/calendar/get - Get the user's calendar
 /api/user/groups/calendar/get - Get the group's calendar

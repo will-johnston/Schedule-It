@@ -18,7 +18,7 @@ public class Main {
             router.add("/user/edit", new UserEdit(tracker));
             router.add("/user/groups/calendar/get", new GroupGetCalendar());
             router.add("/user/calendar/get", new UserGetCalendar());
-            router.add("/user/groups/leave", new GroupLeave());
+            router.add("/user/groups/leave", new GroupLeave(tracker));
             router.add("/user/groups/join", new GroupJoin());
             router.add("/user/search", new UserSearch());
             router.add("/user/groups/add", new GroupAdd());

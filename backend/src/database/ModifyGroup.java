@@ -99,7 +99,7 @@ public class ModifyGroup {
             }
         }
     }
-    public  static boolean removeUserFromGroup(int groupID, int userID) {
+    public static boolean removeUserFromGroup(int groupID, int userID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
         Statement statement = null;
