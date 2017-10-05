@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
 			//Fix previous pill stuff
@@ -19,24 +20,13 @@ $(document).ready(function(){
 				$(this).find("img").attr("src","resources/chevronUp.png");
 			}
 		});
-
-		//Group settings function
-		$("#groupSettingsButton").click(function() {
-			//Show the leave group and delete group buttons in the modal
-			$("#groupSettingsDeleteGroupBtn").show();
-			$("#groupSettingsLeaveGroupBtn").show();
-		});
 	}
 
-	//Add new group button function
-	$("#addNewGroupButton").click(function() {
-		//Don't show the leave group and delete group buttons in the modal
-		$("#groupSettingsDeleteGroupBtn").hide();
-		$("#groupSettingsLeaveGroupBtn").hide();
-	});
-
 	//Create group button in group modal function
-	$("#groupSettingsConfirm").click(function() {
+	$("#newGroupModalCreateButton").click(function() {
+		var name = $("#groupSettingsModalName").val();
+		console.log(name);
+
 		createGroup("Name", "Info", "pic");
 		assignFunctionality();
 	});
@@ -45,7 +35,7 @@ $(document).ready(function(){
 	var numOfGroups = 1;
 
 	var createGroup = function(name, info, pic) {
-		//do some backend shit...
+		//Call the create group endpoint with parameters
 
 
 		var id = "group" + ++numOfGroups + "Content";
