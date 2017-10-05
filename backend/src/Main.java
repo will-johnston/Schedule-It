@@ -28,6 +28,7 @@ public class Main {
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
             router.add("/user/getsettings", new UserGetSettings(tracker));
+            router.add("/user/friends/get", new FriendsGet(tracker));
             return router;
         }
         catch (Exception e) {
