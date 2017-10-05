@@ -24,6 +24,8 @@ $(document).ready(function(){
 		});
 	}
 
+	assignFunctionality();
+
 
 	//NEW GROUP MODAL
 	$("#newGroupModalCreateButton").click(function() {
@@ -78,7 +80,7 @@ $(document).ready(function(){
 				<div class="collapse show" id="` + id + "Collapse" + `">
 					<div class="card card-group">
 						<div class="card-body">
-							<img src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail" width="100">
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 							<h3>` + name + `</h3>
 							<p>` + info + `</p>
 							<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
