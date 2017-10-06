@@ -168,7 +168,7 @@ $(document).ready(function(){
 		//Call the create group endpoint with parameters
 
 
-		var id = "group" + ++$("vPillsContent").childre().length + "Content";
+		var id = "group" + ++$("#vPillsContent").children().length + "Content";
 
 		var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 		
