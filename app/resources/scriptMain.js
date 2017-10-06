@@ -22,6 +22,13 @@ $(document).ready(function(){
 				$(this).find("img").attr("src","resources/chevronUp.png");
 			}
 		});
+
+		$("#datepicker").datepicker({
+			inline: true,
+			firstDay: 1,
+			showOtherMonths: true,
+			dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		});
 	};
 
 	var accessServer = function(method, url, data, onSuccess, onFail) {
@@ -207,7 +214,9 @@ $(document).ready(function(){
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel">chat...</div>
-					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">cal...</div>
+					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
+						<div id="datepicker"></div>
+					</div>
 				</div>
 			</div>`;
 
