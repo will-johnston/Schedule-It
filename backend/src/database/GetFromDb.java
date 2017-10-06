@@ -81,6 +81,7 @@ public class GetFromDb {
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
+            System.out.println("Formatting query getFriends");
             String query = String.format("select * from friends where userID_1=%d OR userID_2=%d;", id);
             System.out.println(query);
             result = statement.executeQuery(query);
@@ -142,6 +143,7 @@ public class GetFromDb {
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
+            System.out.println("Formatting query getName");
             String query = String.format("SELECT * from users where id=%d", id);
             System.out.println(query);
             result = statement.executeQuery(query);
