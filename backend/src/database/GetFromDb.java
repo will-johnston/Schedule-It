@@ -161,6 +161,7 @@ public class GetFromDb {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
         try {
             if(result != null) result.close();
@@ -170,7 +171,8 @@ public class GetFromDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return results;
+
     }
     //return {id, username, password, name, email, phone}
     public static String[] getUserFromId(int id) {
