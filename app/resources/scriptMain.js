@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	//variables
 	var numOfGroups = 1;
+	var cookie = -1035393116;
 
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
@@ -38,58 +39,84 @@ $(document).ready(function(){
 	};
 
 	//SETTINGS MODAL
+	var fullName;
+	var username;
+	var email;
+	var phoneNumber;
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
 
 		//cookie = document.cookie;
-		/*var c = 1182395656;
-		var data = JSON.stringify({cookie: c});
-		console.log(data);
+		var data = JSON.stringify({cookie: cookie});
 
-		accessServer("GET", "http://scheduleit.duckdns.org/api/user/getsettings", data,
-			function(result) {
-				console.log("success");
-				console.log(result);
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/getsettings", data,
+			function(result) { //success
+				var json = JSON.parse(result);
+
+				fullName = json.fullname;
+				username = json.username;
+				email = json.email
+				phoneNumber = json.phone;
+
+				$("#settingsModalFullNameField").val(fullName);
+				$("#settingsModalUsernameField").val(username);
+				$("#settingsModalEmailField").val(email);
+				$("#settingsModalPhoneNumberField").val(phoneNumber);
+				$("#settingsModalChangePasswordField").val("");
+				$("#settingsModalConfirmPasswordField").val("");
+				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
 			},
-			function(result) {
-				console.log("failed");
+			function(result) { //fail
+				alert("Failed to obtain user account settings");
 				console.log(result);
-			});*/
-
-		var data = JSON.stringify({cookie: 1182395656});
-
-		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "http://scheduleit.duckdns.org/api/user/getsettings");
-		xhr.onload = function () {
-			if (xhr.status === 200) {
-				console.log(xhr.response);
-			}
-			else {
-				console.log(xhr.response);
-			}
-		};
-
-		xhr.send(data);
-
-		var fullName;
-		var username;
-		var email;
-		var phoneNumber;
-		var changePassword;
-		var confirmPassword;
-		var picURL;
-
-		$("#settingsModalFullNameField").val(fullName);
-		$("#settingsModalUsernameField").val(username);
-		$("#settingsModalEmailField").val(email);
-		$("#settingsModalPhoneNumberField").val(phoneNumber);
-		$("#settingsModalChangePasswordField").val(changePassword);
-		$("#settingsModalConfirmPasswordField").val(confirmPassword);
-		$("#settingsModalPicture").attr("src", picURL);
-
+			});
 	});
 	$("#accountSettingsModalSaveButton").click(function() {
-		
+		var fullNameChanged = $("#settingsModalFullNameField").val();
+		var emailChanged = $("#settingsModalEmailField").val();
+		var phoneNumberChanged = $("#settingsModalPhoneNumberField").val();
+		var passwordChanged = $("#settingsModalChangePasswordField").val();
+		var confirmPasswordChanged = $("#settingsModalConfirmPasswordField").val();
+		//var picURL = ...
+
+		var data = {};
+		data["username"] = username;
+		data["cookie"] = cookie;
+
+		if(fullName != fullNameChanged) {
+			data["fullname"] = fullNameChanged;
+		}
+
+		if(email != emailChanged) {
+			data["email"] = emailChanged;
+		}
+
+		if(phoneNumber != phoneNumberChanged) {
+			data["phone"] = phoneNumberChanged;
+		}
+
+		if(passwordChanged != "") {
+			if(passwordChanged == confirmPasswordChanged) {
+				data["pass"] = passwordChanged;
+			}
+			else {
+				alert("Passwords do not match");
+				return;
+			}
+		}
+
+		console.log(data);
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/edit", JSON.stringify(data),
+			function(result) { //success
+				console.log("Successfully changed user account settings");
+				$("#accountSettingsModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to change user account settings");
+				console.log(result);
+			});
+
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
