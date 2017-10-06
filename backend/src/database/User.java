@@ -70,6 +70,16 @@ public class User {
                 System.out.println("Not in friends list after update");
             }
         }
+        try {
+            if (RetrieveUserInfo.retrieveUserInfo(username) == null) {
+                System.out.println("AddFriendsInDb.addFriend failed to add friend");
+                return false;
+            }
+        }
+        catch (Exception e) {
+            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
             return true;
