@@ -44,8 +44,8 @@ public class Group {
     public void updateUsers() {
 
     }
-    public boolean removeUser(User user) {
-        if (user.inGroup(id)) {
+    public boolean removeUser(User user, Tracker tracker) {
+        if (user.inGroup(id, tracker)) {
             if (ModifyGroup.removeUserFromGroup(id, user.getId())) {
                 users.remove(user);
                 return true;

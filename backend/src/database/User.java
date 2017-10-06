@@ -1,5 +1,7 @@
 package database;
 
+import java.lang.reflect.Array;
+import management.Tracker;
 import java.util.*;
 
 //represents a user in the Database
@@ -123,10 +125,10 @@ public class User {
             return true;
         }
     }
-    private boolean removeWithGroupId(int groupid) {
+    private boolean removeWithGroupId(int groupid, Tracker tracker) {
         for (Group group : groups) {
             if (group.id == groupid) {
-                if (group.removeUser(this)) {
+                if (group.removeUser(this, tracker)) {
                     groups.remove(group);
                     return true;
                 }
@@ -137,17 +139,29 @@ public class User {
         }
         return true;
     }
-    public boolean removeFromGroup(int groupid) {
-        if (!inGroup(groupid)) {
+    public boolean removeFromGroup(int groupid, Tracker tracker) {
+        if (!inGroup(groupid, tracker)) {
             return false;
         }
         else {
-            return removeWithGroupId(groupid);
+            return removeWithGroupId(groupid, tracker);
         }
     }
-    public boolean inGroup(int groupid) {
+    //TODO get all groups of user in db
+    public boolean inGroup(int groupid, Tracker tracker) {
+        //check if in group in database
         for (Group group : groups) {
             if (groupid == group.id) {
+                return true;
+            }
+        }
+        ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
+        for (String member : members) {
+            if (member.equals(this.username)) {
+                Group group = Group.fromDatabase(tracker, groupid);
+                if (group != null) {
+                    groups.add(group);
+                }
                 return true;
             }
         }

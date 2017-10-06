@@ -29,22 +29,15 @@ public class GroupLeave implements IAPIRoute {
         }
         //remove from group
         User user = tracker.getUser(args[0]);
-        if (user.inGroup(args[1])) {
-            if (user.removeFromGroup(args[1])) {
-                //send success
-                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-                return;
-            }
-            else {
-                //send false
-                String response = "{\"error\":\"Failed to remove from group\"}\n";
-                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-                return;
-            }
+        //Should already check if in group
+        if (user.removeFromGroup(args[1], tracker)) {
+            //send success
+            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+            return;
         }
         else {
-            //fail to remove when not in group
-            String response = "{\"error\":\"User not in group\"}\n";
+            //send false
+            String response = "{\"error\":\"Failed to remove from group\"}\n";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
