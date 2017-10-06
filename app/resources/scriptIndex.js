@@ -225,12 +225,4 @@ $(document).ready(function(){
 		//TODO: upload file to DB
 		window.location.href = "http://scheduleit.duckdns.org/main.html";		
 	});
-
-	/**
-	 * Logout button function
-	 */
-	$("#logoutButton").click(function() {
-		//TODO: not sure what to do when you log out other than redirect
-		window.location.href = "http://scheduleit.duckdns.org/index.html";		
-	});
 });

@@ -214,4 +214,12 @@ $(document).ready(function(){
 		$("#vPillsContent").append(contentHTML);
 		$("#vPillsTab").append(tabHTML);
 	};
+
+	/**
+	 * Logout button function
+	 */
+	$("#logoutButton").click(function() {
+		//TODO: not sure what to do when you log out other than redirect
+		window.location.href = "http://scheduleit.duckdns.org/index.html";		
+	});
 });
