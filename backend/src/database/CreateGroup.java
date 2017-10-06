@@ -15,7 +15,7 @@ public class CreateGroup {
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
-	int groupID = -1;
+	    int groupID = -1;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
@@ -33,7 +33,7 @@ public class CreateGroup {
             if (result.isBeforeFirst()) {
                 //we have a group already
                 System.out.println("ERROR: Already a group with same name and same creator");
-                return -1;
+                groupID = -1;
             }
 
             //create group
@@ -53,18 +53,24 @@ public class CreateGroup {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return -1;
-        } finally {
+            groupID = -1;
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return -1;
+                if (result != null) result.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
             return groupID;
         }
+        try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groupID;
     }
 
     public static int getUserId(String username, Connection connection) {

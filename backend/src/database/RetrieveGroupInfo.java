@@ -24,49 +24,55 @@ public class RetrieveGroupInfo {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
+            boolean flag = true;  //catches datasource errors
             if (ds == null) {
                 System.out.println("ERROR: could not get datasource object");
-                return -1;
-
+                flag = false;
             }
             connection = ds.getConnection(); //acquire datasource object
             if (connection == null) {
                 System.out.println("ERROR: could not connect to the datasource");
-                return -1;
+                flag = false;
             }
+            if (flag) {
+                //find group
+                String query = "SELECT id FROM groups WHERE name='" + groupName + "' AND creatorID=" + creatorID;
 
-            //find group
-            String query = "SELECT id FROM groups WHERE name='" + groupName + "' AND creatorID=" + creatorID;
+                statement = connection.createStatement();
 
-            statement = connection.createStatement();
-
-            result = statement.executeQuery(query);
-            //query the database
-            if (result.isBeforeFirst()) {
-                //this group exists
-                result.next();
-                groupID = result.getInt(1);
-                //sanity check
-                if (result.next()) {
-                    System.out.println("ERROR: found multiple groups with same name and creator.");
-                    return -1;
+                result = statement.executeQuery(query);
+                //query the database
+                if (result.isBeforeFirst()) {
+                    //this group exists
+                    result.next();
+                    groupID = result.getInt(1);
+                    //sanity check
+                    if (result.next()) {
+                        System.out.println("ERROR: found multiple groups with same name and creator.");
+                        groupID = -1;
+                    }
                 }
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return -1;
-        } finally {
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-                return groupID;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return -1;
+                if (result != null) result.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
+            return groupID;
         }
+        try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+            return groupID;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groupID;
     }
 
     public static String getGroupName(int groupID) {

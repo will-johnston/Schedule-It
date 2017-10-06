@@ -15,19 +15,20 @@ public class DeleteGroup {
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
+        boolean ret = true;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
             if (ds == null) {
                 System.out.println("ERROR: could not get data source object");
-                return false;
+                ret = false;
             }
 
             connection = ds.getConnection(); //acquire datasource object
             if (connection == null) {
                 System.out.println("ERROR: could not connect to data source");
-                return false;
+                ret = false;
             }
             //remove creator from groups (ModifyGroup.removeUserFromGroup does not allow removal of creator)
             String removeCreator = "DELETE FROM group_user_junction WHERE userID=" + creatorID + " AND groupID=" + groupID;
@@ -52,18 +53,23 @@ public class DeleteGroup {
             statement.executeUpdate(removeGroup);
 
         } catch (SQLException e) {
+            ret = false;
             e.printStackTrace();
-            return false;
-        } finally {
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+                if (result != null) result.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
-            return true;
         }
+        try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        } catch (SQLException r) {
+            r.printStackTrace();
+        }
+        return ret;
     }
 }
