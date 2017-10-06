@@ -82,7 +82,7 @@ public class GetFromDb {
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
             System.out.println("Formatting query getFriends");
-            String query = String.format("select * from friends where userID_1=%d OR userID_2=%d;", id);
+            String query = String.format("select * from friends where userID_1=%d OR userID_2=%d;", id, id);
             System.out.println(query);
             result = statement.executeQuery(query);
             System.out.println("Checking for null");

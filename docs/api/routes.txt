@@ -6,7 +6,7 @@ Password should be securely hashed before sending, preferably
 }
 Returns a login cookie upon success with status OK
 {
-  "cookie" : {COOKIE}
+  "cookie" : "{COOKIE}"
 }
 If failure, returns a status appropriate to the error (BadRequest, MethodNotAvailable) and returns an error string
 {
@@ -17,7 +17,7 @@ If failure, returns a status appropriate to the error (BadRequest, MethodNotAvai
 Fields that need to be changed are supplied in the request, if you only want to change the password do;
 {
    "username" : "{USERNAME}",
-   "cookie" : {LOGIN COOKIE},
+   "cookie" : "{LOGIN COOKIE}",
    "pass" : "{NEW PASSWORD}"
 
 }
@@ -34,7 +34,33 @@ Like user login, the password should be hashed
 }
 Returns an error (like above) or a login cookie if successful.
 /api/user/friends/add - Add a friend
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"username" : "{FRIEND USER NAME}"
+}
+Successful Response:
 /api/user/friends/remove - Remove friend
+Returns an empty string on success, an error code on failure
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"username" : "{FRIEND USER NAME}"
+}
+Successful Response:
+/api/user/friends/get - Get List of friends
+Returns an empty string on success, an error code on failure
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}"
+}
+Successful Response:
+{
+	"friends" : [
+		"{FRIEND USERNAME}",
+		"{ANOTHER FRIEND USERNAME}"
+	]
+}
 /api/user/search - Search all user's in the system
 /api/user/groups/create - Create a new group
 /api/user/groups/add - Add a friend to group
