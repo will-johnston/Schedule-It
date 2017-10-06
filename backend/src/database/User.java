@@ -70,11 +70,16 @@ public class User {
                 System.out.println("Not in friends list after update");
             }
         }
+	System.out.println("checking if the user in the database");
         try {
-            if (RetrieveUserInfo.retrieveUserInfo(username) == null) {
-                System.out.println("AddFriendsInDb.addFriend failed to add friend");
-                return false;
+	    boolean exists = GetFromDb.usernameExists(username);
+            if (exists) {
+		System.out.println("User exists in database"); 
             }
+	    else {
+		System.out.println("Not a valid user");
+                return false;
+	    }
         }
         catch (Exception e) {
             System.out.println("AddFriendsInDb.addFriend failed to add friend");
@@ -82,6 +87,7 @@ public class User {
         }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
+	    System.out.println("AddfriendsInDb returned true");
             return true;
         }
         else {
@@ -177,12 +183,27 @@ public class User {
         }
         return false;
     }
+	private boolean groupContainsId(int groupid) {
+		for (Group group : groups) {
+			if (group.getId() == groupid) {
+				return true;
+			}
+		}
+		return false;
+	}
     public void refreshGroups(Tracker tracker) {
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
+		groups.get(0).printDebug();
+		//HERE IS THE ISSUE
         for (Group group : groups) {
-            if (!groups.contains(group)) {
-                groups.add(group);
+            if (!groupContainsId(group.getId())) {
+				System.out.println("adding group: " + group.getId());
+                this.groups.add(group);
+				System.out.println("Added group");
             }
+			else {
+				System.out.println("Already contains group");
+			}
         }
     }
     public String[] getGroups(Tracker tracker) {

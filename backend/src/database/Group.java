@@ -15,6 +15,7 @@ public class Group {
         this.owner = owner;
         this.imagePath = imagePath;
         this.users = new ArrayList<>(1);
+		this.admins = new ArrayList<>(1);
         users.add(owner.username);
     }
     public static Group fromDatabase(Tracker tracker, int groupid) {
@@ -62,6 +63,17 @@ public class Group {
     public int getId() {
         return id;
     }
+	public void printDebug() {
+		lprint("GROUP DEBUG INFO");
+		lprint("ID: " + id);
+		lprint("name: " + name);
+		lprint("owner: " + owner.getName());
+		lprint("users.length: " + users.size());
+		lprint("admins.length: " + admins.size());
+	}
+	private void lprint(String message) {
+		System.out.println(message);
+	}
 
     public String getImagePath() {
         return imagePath;
