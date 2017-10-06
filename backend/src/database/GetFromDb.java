@@ -144,7 +144,7 @@ public class GetFromDb {
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
             System.out.println("Formatting query getName");
-            String query = String.format("SELECT * from users where id=%d", id);
+            String query = String.format("SELECT * from users where id=%d;", id);
             System.out.println(query);
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
