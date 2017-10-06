@@ -24,18 +24,53 @@ $(document).ready(function(){
 		});
 	};
 
-	var ajax = function(method, url, data, onSuccess, onFail) {
-		$.ajax({
-			method: method,
-			url: url,
-			data: data,
-			datatype: "jsonp"
-		}).done(onSuccess(result)).fail(onFail(result));
+	var accessServer = function(method, url, data, onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+		xhr.onload = function () {
+			if (xhr.status === 200)
+				onSuccess(xhr.response);
+			else
+				onFail(xhr.response);
+		};
+
+		xhr.send(data);
 	};
 
 	//SETTINGS MODAL
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
+
+		//cookie = document.cookie;
+		/*var c = 1182395656;
+		var data = JSON.stringify({cookie: c});
+		console.log(data);
+
+		accessServer("GET", "http://scheduleit.duckdns.org/api/user/getsettings", data,
+			function(result) {
+				console.log("success");
+				console.log(result);
+			},
+			function(result) {
+				console.log("failed");
+				console.log(result);
+			});*/
+
+		var data = JSON.stringify({cookie: 1182395656});
+
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "http://scheduleit.duckdns.org/api/user/getsettings");
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				console.log(xhr.response);
+			}
+			else {
+				console.log(xhr.response);
+			}
+		};
+
+		xhr.send(data);
+
 		var fullName;
 		var username;
 		var email;
@@ -93,20 +128,6 @@ $(document).ready(function(){
 	//GROUP SETTINGS MODAL
 	$("#groupSettingsButton").click(function() {
 		//populate the group settings modal with group information
-
-		cookie = document.cookie;
-		console.log(cookie);
-
-		ajax("GET", "http://scheduleit.duckdns.org/api/user/getsettings", 
-			JSON.stringify({cookie: cookie}),
-			function(result) {
-				console.log("success");
-				console.log(result);
-			},
-			function(result) {
-				console.log("failed");
-				console.log(result);
-			});
 
 	});
 	$("#groupSettingsSaveButton").click(function() {
