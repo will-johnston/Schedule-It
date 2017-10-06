@@ -67,9 +67,9 @@ $(document).ready(function(){
 				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
 			},
 			function(result) { //fail
-				alert("Failed to obtain user account settings");
 				console.log(data);
 				console.log(result);
+				alert("Failed to obtain user account settings");
 			});
 	});
 	$("#accountSettingsModalSaveButton").click(function() {
@@ -215,11 +215,49 @@ $(document).ready(function(){
 		$("#vPillsTab").append(tabHTML);
 	};
 
-	/**
-	 * Logout button function
-	 */
-	$("#logoutButton").click(function() {
-		//TODO: not sure what to do when you log out other than redirect
-		window.location.href = "http://scheduleit.duckdns.org/index.html";		
+	//FRIENDS --------------------------------
+	var updateFriends = function() {
+		var data = {};
+		data["cookie"] = cookie;
+
+		console.log(JSON.stringify(data));
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/friends/get", JSON.stringify(data),
+			function(result) { //success
+				console.log(result);
+				//var friendHTML = '<a href="#" class="list-group-item list-group-item-action">'Billy Bob'</a>';
+				//$("#friendsList").append();
+
+				var json = JSON.parse(result);
+
+				for(var i = 0; i < json.friends.length; i++) {
+					var friendHTML = '<button type="button" class="btn btn-secondary">' + json.friends[i] + '</button>';
+					$("#friendsList").append(friendHTML);
+				}
+			},
+			function(result) { //fail
+				console.log(result);
+				alert("Failed to get friends");
+			});
+	};
+	updateFriends();
+
+	$("#sendFriendRequestButton").click(function() {
+		var otherUsername = $("#sendFriendRequestTextbox").val();
+
+		var data = {};
+		data["cookie"] = cookie;
+		data["username"] = otherUsername;
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/friends/add", JSON.stringify(data),
+			function(result) { //success
+				$("#sendFriendRequestTextbox").val("");
+				updateFriends();
+				alert("Successfully added friend");
+			},
+			function(result) { //fail
+				alert("Failed to add friend");
+				console.log(result);
+			});
 	});
 });
