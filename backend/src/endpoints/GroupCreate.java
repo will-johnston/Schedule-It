@@ -30,12 +30,14 @@ public class GroupCreate implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        System.out.println("Checking if group exists");
         User owner = tracker.getUser(cookie);
         if (tracker.groupExists(groupname)) {
             String message = "{\"error\":\"Group already exists\"}";
             Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        System.out.println("Creating group");
         int groupid = CreateGroup.createGroup(groupname, owner.getId());
         if (groupid > 0) {
             Group group = Group.fromDatabase(tracker, groupid);
