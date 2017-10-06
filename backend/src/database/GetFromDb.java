@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.sql.DataSource;
+import management.Tracker;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 //TODO Merge this witb RetrieveUserInfo
@@ -303,6 +304,63 @@ public class GetFromDb {
                 }
                 else {
                     list.add(username);
+                }
+            }
+
+            return list;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if(result != null) result.close();
+            if(statement != null) statement.close();
+            if(connection != null) connection.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static ArrayList<Group> getGroups(int userid, Tracker tracker) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query getFriends");
+            //select * from group_user_junction where groupID=3;
+            String query = String.format("SELECT * FROM group_user_junction WHERE userID=%d;", userid);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            System.out.println("Checking for null");
+            ArrayList<Group> list = new ArrayList<Group>();
+            while (result.next()) {
+                int groupid = result.getInt("groupID");
+                //get username from id
+                try {
+                    Group group = Group.fromDatabase(tracker, groupid);
+                    if (group == null) {
+                        System.out.println("Couldn't get group from id: " + groupid);
+                    }
+                    else {
+                        list.add(group);
+                    }
+                }
+                catch (Exception e) {
+                    continue;
                 }
             }
 

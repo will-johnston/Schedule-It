@@ -167,6 +167,22 @@ public class User {
         }
         return false;
     }
+    public void refreshGroups(Tracker tracker) {
+        ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
+        for (Group group : groups) {
+            if (!groups.contains(group)) {
+                groups.add(group);
+            }
+        }
+    }
+    public String[] getGroups(Tracker tracker) {
+        refreshGroups(tracker);
+        String[] strings = new String[groups.size()];
+        for (int i = 0; i < groups.size(); i++) {
+            strings[i] = groups.get(i).name;
+        }
+        return strings;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }

@@ -68,6 +68,7 @@ public class UserLogin implements IAPIRoute {
             return arr;
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Caught an exception");
             return null;
         }
