@@ -20,7 +20,7 @@ $(document).ready(function(){
 		userName = document.getElementById("loginUsername").value;
 		passWord = document.getElementById("loginPassword").value;
 
-		/*//Check for blank or null
+		//Check for blank or null
 		if(userName == "" || userName == null || passWord == "" || passWord == null) {
 			document.getElementById("loginError").innerHTML = "The input combination didn't match.";
 			$("#loginError").removeClass("invisible");	
@@ -46,9 +46,9 @@ $(document).ready(function(){
 			});
 			request.open("POST", "http://scheduleit.duckdns.org/api/user/login");
 			request.send(JSON.stringify({ "name": userName, "pass": passWord }));
-		}*/
+		}
 
-		var data = {};
+		/*var data = {};
 		data["name"] = userName;
 		data["pass"] = passWord;
 
@@ -62,14 +62,14 @@ $(document).ready(function(){
 				alert("Failed to log user in");
 				console.log(data);
 				console.log(result);
-			});
+			});*/
 	});
 
 	/**
 	 * Register account button function
 	 */
 	$("#create").click(function() {
-		/*var s1 = new String($("#newPassword").val()).trim();
+		var s1 = new String($("#newPassword").val()).trim();
 		var s2 = new String($("#verifyPassword").val()).trim();
 		if(!(s1 === s2)) { //Passwords don't match, stop
 			$("#passwordError").removeClass("invisible");
@@ -101,14 +101,14 @@ $(document).ready(function(){
 				});
 				request.open("POST", "http://scheduleit.duckdns.org/api/user/create");
 				request.send(JSON.stringify({	"email": email,
-												"pass": password,
-												"name": fullName,
-												"phone": phoneNumber,
-												"username": userName}));
+								"pass": password,
+								"name": fullName,
+								"phone": phoneNumber,
+								"username": userName}));
 			}
-		}*/
+		}
 
-		var data = {};
+		/*var data = {};
 		data["name"] = $("#fullName").val();
 		data["username"] = $("#userName").val();
 		data["email"] = $("#email").val();
@@ -125,7 +125,7 @@ $(document).ready(function(){
 				alert("Failed to create account");
 				console.log(data);
 				console.log(result);
-			});
+			});*/
 	});
 
 	/**
