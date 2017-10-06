@@ -120,7 +120,7 @@ public class Tracker {
     //TODO check if group exists in db (by name)
     public boolean groupExists(String groupname) {
         for (Group group : groups.values()) {
-            if (group.getName().equals(groupname)) {
+            if (group != null && group.getName().equals(groupname)) {
                 return true;
             }
         }
