@@ -90,6 +90,14 @@ public class Tracker {
         }
         return null;
     }
+    public User getUserById(int id) {
+        for (User user : users.values()) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
     public boolean updateUser(int cookie, User newUser) {
         if (!users.containsKey(cookie)) {
             return false;

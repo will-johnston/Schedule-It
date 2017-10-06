@@ -23,7 +23,8 @@ public class Group {
         if (result == null) {
             return null;
         }
-        User owner = tracker.getUserByName((String)result[2]);
+        int creatorid = (int)result[2];
+        User owner = tracker.getUserById(creatorid);
         if (owner == null) {
             return null;
         }
