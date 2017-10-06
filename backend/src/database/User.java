@@ -9,6 +9,7 @@ public class User {
     String email;
     String password;
     String phone;       //can be null
+    String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
     ArrayList<Group> groups;
     int id;
@@ -99,6 +100,19 @@ public class User {
             return false;
         }
     }
+    private boolean inFriends(String name) {
+        return friends.contains(name);
+    }
+    public ArrayList<String> getFriends() {
+        //update from database
+        ArrayList<String> names = GetFromDb.getFriendIds(this.id);
+        for (String name : names) {
+            if (!inFriends(name)) {
+                friends.add(name);
+            }
+        }
+        return friends;
+    }
     public boolean addToGroup(Group group) {
         //check if the user is actually in the group
         if (groups.contains(group)) {
@@ -166,6 +180,8 @@ public class User {
     public int getId() {
         return id;
     }
+
+    public String getImageUrl() { return imageUrl; }
 
     public void setEmail(String email) {
         this.email = email;

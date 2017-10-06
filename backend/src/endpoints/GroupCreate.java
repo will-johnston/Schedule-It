@@ -31,12 +31,24 @@ public class GroupCreate implements IAPIRoute {
             return;
         }
         User owner = tracker.getUser(cookie);
+        if (tracker.groupExists(groupname)) {
+            String message = "{\"error\":\"Group already exists\"}";
+            Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
         int groupid = CreateGroup.createGroup(groupname, owner.getId());
         if (groupid > 0) {
-            String message = String.format("{\"groupid\":\"%d\"}", groupid);
-            //Add to group in tracker
-            Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
-            return;
+            Group group = Group.fromDatabase(tracker, groupid);
+            if (group == null) {
+                String message = "{\"error\":\"Could not create Group\"}";
+                Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                return;
+            }
+            else {
+                String message = String.format("{\"groupid\":\"%d\"}", groupid);
+                Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
         }
         else {
             String message = "{\"error\":\"Could not create group\"}";
