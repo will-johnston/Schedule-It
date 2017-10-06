@@ -48,17 +48,22 @@ public class AddUserToDb {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return ret;
-		} finally {
 			try {
 				if(result != null) result.close();
 				if(statement != null) statement.close();
 				if(connection != null) connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return ret;
+			} catch (SQLException etwo) {
+				etwo.printStackTrace();
 			}
 			return ret;
 		}
+		try {
+			if(result != null) result.close();
+			if(statement != null) statement.close();
+			if(connection != null) connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 }

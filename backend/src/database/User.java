@@ -9,6 +9,7 @@ public class User {
     String email;
     String password;
     String phone;       //can be null
+    String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
     int id;
     long lastCheckedIn = -1;
@@ -97,6 +98,19 @@ public class User {
             return false;
         }
     }
+    private boolean inFriends(String name) {
+        return friends.contains(name);
+    }
+    public ArrayList<String> getFriends() {
+        //update from database
+        ArrayList<String> names = GetFromDb.getFriendIds(this.id);
+        for (String name : names) {
+            if (!inFriends(name)) {
+                friends.add(name);
+            }
+        }
+        return friends;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }
@@ -125,6 +139,8 @@ public class User {
         return id;
     }
 
+    public String getImageUrl() { return imageUrl; }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -144,4 +160,6 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public void setImageUrl(String url) {this.imageUrl = url; }
 }
