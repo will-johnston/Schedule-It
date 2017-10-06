@@ -49,9 +49,9 @@ public class GroupGet implements IAPIRoute {
                 return;
             }
             else {
-
-            }Socketeer.send(HTTPMessage.makeResponse(json, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+                Socketeer.send(HTTPMessage.makeResponse(json, HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
         }
         //Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
     }
@@ -75,6 +75,7 @@ public class GroupGet implements IAPIRoute {
         String[] groups;
         public Response(String[] groups) {
             this.groups = groups;
+            System.out.println("Groups length: " + groups.length);
         }
         public String toJson() {
             try {

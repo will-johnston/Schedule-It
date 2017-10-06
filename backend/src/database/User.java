@@ -179,6 +179,7 @@ public class User {
         refreshGroups(tracker);
         String[] strings = new String[groups.size()];
         for (int i = 0; i < groups.size(); i++) {
+            System.out.println("adding " + groups.get(i).name);
             strings[i] = groups.get(i).name;
         }
         return strings;
