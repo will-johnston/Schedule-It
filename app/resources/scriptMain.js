@@ -1,6 +1,5 @@
 $(document).ready(function(){
 	//variables
-	var numOfGroups = 1;
 	var cookie = -1035393116;
 
 	var assignFunctionality = function() {
@@ -169,7 +168,7 @@ $(document).ready(function(){
 		//Call the create group endpoint with parameters
 
 
-		var id = "group" + ++numOfGroups + "Content";
+		var id = "group" + ++$("vPillsContent").childre().length + "Content";
 
 		var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 		
