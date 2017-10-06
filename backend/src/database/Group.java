@@ -18,7 +18,8 @@ public class Group {
         users.add(owner.username);
     }
     public static Group fromDatabase(Tracker tracker, int groupid) {
-        Object[] result = GetFromDb.getGroupInfo(groupid);      //returns id, name, creator, imagePath
+        System.out.println("Parsing from database");
+        Object[] result = GetFromDb.getGroupInfo(groupid);      //{ grupid, groupname, creatorid, imagePath};
         if (result == null) {
             return null;
         }
@@ -26,7 +27,7 @@ public class Group {
         if (owner == null) {
             return null;
         }
-        Group group = new Group((int)result[0], owner, (String)result[1], (String)result[3]);
+        Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
         ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
         for (String member : members) {
             if (!group.users.contains(member)) {

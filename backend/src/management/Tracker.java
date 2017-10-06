@@ -14,6 +14,7 @@ public class Tracker {
     int timeout;
     public Tracker() {
         users = new HashMap<>(10);
+        groups = new HashMap<>(10);
         userCount = 0;
         groupCount = 0;
         timeout = 60 * 30;      //30 Minutes
