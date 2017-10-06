@@ -9,6 +9,10 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/4/17.
  */
 public class DeleteGroup {
+	public static void main(String[] args) {
+		boolean bool = DeleteGroup.deleteGroup(16, 16);
+		System.out.println(bool);
+	}
 
     public static boolean deleteGroup(int groupID, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
