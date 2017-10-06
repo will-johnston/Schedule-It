@@ -36,7 +36,7 @@ public class AddUserToDb {
 			
 			if (!result.isBeforeFirst()) {	
 			//perform add user functionality
-			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "', null)";
+			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + password + "','" + fullname + "','" + email + "','" + phoneNumber + "', null)";
 			statement = connection.createStatement();
 			//send an add user query to the database
 			int ex = statement.executeUpdate(update);
