@@ -69,7 +69,7 @@ $(document).ready(function(){
 	 * Register account button function
 	 */
 	$("#create").click(function() {
-		var s1 = new String($("#newPassword").val()).trim();
+		/*var s1 = new String($("#newPassword").val()).trim();
 		var s2 = new String($("#verifyPassword").val()).trim();
 		if(!(s1 === s2)) { //Passwords don't match, stop
 			$("#passwordError").removeClass("invisible");
@@ -106,7 +106,26 @@ $(document).ready(function(){
 												"phone": phoneNumber,
 												"username": userName}));
 			}
-		}
+		}*/
+
+		var data = {};
+		data["name"] = $("#fullName").val();
+		data["username"] = $("#userName").val();
+		data["email"] = $("#email").val();
+		data["phone"] = $("#phoneNumber").val();
+		data["pass"] = ("#newPassword").val();
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/create", JSON.stringify(data),
+			function(result) { //success
+				var json = JSON.parse(result);
+				document.cookie = "cookie=" + json.cookie;
+				window.location.href = "http://scheduleit.duckdns.org/main.html";
+			},
+			function(result) { //fail
+				alert("Failed to create account");
+				console.log(data);
+				console.log(result);
+			});
 	});
 
 	/**
