@@ -27,6 +27,7 @@ public class Group {
         if (owner == null) {
             return null;
         }
+        System.out.println("Creating the new group");
         Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
         ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
         for (String member : members) {

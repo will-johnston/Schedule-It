@@ -245,6 +245,7 @@ public class GetFromDb {
             }*/
             //groupid | name | creatorid | image_path
             if (result.next()) {
+                System.out.println("Getting values");
                 int grupid = result.getInt("groupid");
                 String groupname = result.getString("name");
                 int creatorid = result.getInt("creatorid");
