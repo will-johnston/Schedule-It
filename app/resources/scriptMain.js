@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	//variables
-	var cookie = -1035393116;
+	var cookie = document.cookie.split("=")[1];
 
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
@@ -46,9 +46,10 @@ $(document).ready(function(){
 		//populate the account settings modal fields
 
 		//cookie = document.cookie;
-		var data = JSON.stringify({cookie: cookie});
+		var data = {};
+		data["cookie"] = cookie;
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/getsettings", data,
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
 			function(result) { //success
 				var json = JSON.parse(result);
 
@@ -67,6 +68,7 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				alert("Failed to obtain user account settings");
+				console.log(data);
 				console.log(result);
 			});
 	});
@@ -122,6 +124,12 @@ $(document).ready(function(){
 	});
 
 	assignFunctionality();
+
+	//LOGOUT BUTTON
+	$("#logoutButton").click(function() {
+		document.cookie = "cookie=";
+		window.location.href = "http://scheduleit.duckdns.org/";
+	});
 
 
 	//NEW GROUP MODAL
