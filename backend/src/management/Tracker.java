@@ -119,6 +119,14 @@ public class Tracker {
     }
     //TODO check if group exists in db (by name)
     public boolean groupExists(String groupname) {
+        if (groupname == null) {
+            System.out.println("Groupname is null");
+            return false;
+        }
+        if (groups == null || groups.values() == null) {
+            System.out.println("Groups or groups.values is null");
+            return false;
+        }
         for (Group group : groups.values()) {
             if (group != null && group.getName().equals(groupname)) {
                 return true;
