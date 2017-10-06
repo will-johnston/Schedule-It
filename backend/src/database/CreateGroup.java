@@ -28,8 +28,8 @@ public class CreateGroup {
             connection = ds.getConnection(); //acquire datasource object
 
             //if userID already has a group with same name, reject.
-
             String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+            System.out.println(query);
 
             statement = connection.createStatement();
             result = statement.executeQuery(query);
@@ -41,6 +41,7 @@ public class CreateGroup {
 
             //create group
             String update = "INSERT INTO groups (name, creatorID) VALUES('" + name + "'," + creatorID + ")";
+            System.out.println(update);
             statement = connection.createStatement();
             statement.executeUpdate(update);
 
@@ -50,24 +51,31 @@ public class CreateGroup {
 
             //add user to group_user_junction with userID and groupID
             String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + creatorID + ", " + groupID + ")";
+            System.out.println(updateJT);
             statement = connection.createStatement();
             statement.executeUpdate(updateJT);
 
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return groupID;
-        } finally {
             try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return groupID;
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
             }
-            return groupID;
+            return 0;
         }
+        try {
+            if(result != null) result.close();
+            if(statement != null) statement.close();
+            if(connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return groupID;
     }
 
     public static int getUserId(String username, Connection connection) {
