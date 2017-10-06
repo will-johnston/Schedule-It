@@ -113,7 +113,7 @@ $(document).ready(function(){
 		data["username"] = $("#userName").val();
 		data["email"] = $("#email").val();
 		data["phone"] = $("#phoneNumber").val();
-		data["pass"] = ("#newPassword").val();
+		data["pass"] = $("#newPassword").val();
 
 		accessServer("POST", "http://scheduleit.duckdns.org/api/user/create", JSON.stringify(data),
 			function(result) { //success
