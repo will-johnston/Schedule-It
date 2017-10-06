@@ -98,6 +98,19 @@ public class User {
             return false;
         }
     }
+    private boolean inFriends(String name) {
+        return friends.contains(name);
+    }
+    public ArrayList<String> getFriends() {
+        //update from database
+        ArrayList<String> names = GetFromDb.getFriendIds(this.id);
+        for (String name : names) {
+            if (!inFriends(name)) {
+                friends.add(name);
+            }
+        }
+        return friends;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }

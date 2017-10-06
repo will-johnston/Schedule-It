@@ -1,4 +1,17 @@
 $(document).ready(function(){
+	var accessServer = function(method, url, data, onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+		xhr.onload = function () {
+			if (xhr.status === 200)
+				onSuccess(xhr.response);
+			else
+				onFail(xhr.response);
+		};
+
+		xhr.send(data);
+	};
+
 	/**
 	 * Login button function
 	 */
@@ -20,17 +33,36 @@ $(document).ready(function(){
 				var recieved = this.responseText;
 				var json = JSON.parse(recieved);
 				if(request.status === 200) { //200 status = success
-					window.location.href = "http://scheduleit.duckdns.org/main.html";					
+					var json = JSON.parse(recieved);
+						document.cookie = "cookie=" + json.cookie;
+						window.location.href = "http://scheduleit.duckdns.org/main.html";
 				} else { //invalid loging credentials
 					document.getElementById("loginError").innerHTML = "The input combination didn't match.";
 					$("#loginError").removeClass("invisible");	
 					document.getElementById("loginUsername").value = "";
 					document.getElementById("loginPassword").value = "";
+					console.log(this.responseText);
 				}
 			});
 			request.open("POST", "http://scheduleit.duckdns.org/api/user/login");
 			request.send(JSON.stringify({ "name": userName, "pass": passWord }));
 		}
+
+		/*var data = {};
+		data["name"] = userName;
+		data["pass"] = passWord;
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/login", JSON.stringify(data),
+			function(result) { //success
+				var json = JSON.parse(result);
+				document.cookie = "cookie=" + json.cookie;
+				window.location.href = "http://scheduleit.duckdns.org/main.html";
+			},
+			function(result) { //fail
+				alert("Failed to log user in");
+				console.log(data);
+				console.log(result);
+			});*/
 	});
 
 	/**
@@ -59,7 +91,9 @@ $(document).ready(function(){
 				request.addEventListener("load", function () {
 					var recieved = this.responseText;
 					if(request.status == 200) { //Valid registration, continue
-						window.location.href = "http://scheduleit.duckdns.org/pictureUpload.html";							
+						var json = JSON.parse(recieved);
+						document.cookie = "cookie=" + json.cookie;
+						window.location.href = "http://scheduleit.duckdns.org/main.html";
 					} else { //Invalid registration, stop
 						window.alert("Failed to create account.");
 						document.getElementById("userName").value = "";
@@ -67,12 +101,31 @@ $(document).ready(function(){
 				});
 				request.open("POST", "http://scheduleit.duckdns.org/api/user/create");
 				request.send(JSON.stringify({	"email": email,
-												"pass": password,
-												"name": fullName,
-												"phone": phoneNumber,
-												"username": userName}));
+								"pass": password,
+								"name": fullName,
+								"phone": phoneNumber,
+								"username": userName}));
 			}
 		}
+
+		/*var data = {};
+		data["name"] = $("#fullName").val();
+		data["username"] = $("#userName").val();
+		data["email"] = $("#email").val();
+		data["phone"] = $("#phoneNumber").val();
+		data["pass"] = $("#newPassword").val();
+
+		accessServer("POST", "http://scheduleit.duckdns.org/api/user/create", JSON.stringify(data),
+			function(result) { //success
+				var json = JSON.parse(result);
+				document.cookie = "cookie=" + json.cookie;
+				window.location.href = "http://scheduleit.duckdns.org/main.html";
+			},
+			function(result) { //fail
+				alert("Failed to create account");
+				console.log(data);
+				console.log(result);
+			});*/
 	});
 
 	/**
@@ -190,13 +243,5 @@ $(document).ready(function(){
 		//TODO: get filename from choose file button
 		//TODO: upload file to DB
 		window.location.href = "http://scheduleit.duckdns.org/main.html";		
-	});
-
-	/**
-	 * Logout button function
-	 */
-	$("#logoutButton").click(function() {
-		//TODO: not sure what to do when you log out other than redirect
-		window.location.href = "http://scheduleit.duckdns.org/index.html";		
 	});
 });
