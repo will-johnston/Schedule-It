@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.sound.midi.SysexMessage;
 import javax.sql.DataSource;
 import management.Tracker;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
@@ -351,15 +352,18 @@ public class GetFromDb {
                 int groupid = result.getInt("groupID");
                 //get username from id
                 try {
+                    System.out.println("Trying to add " + groupid);
                     Group group = Group.fromDatabase(tracker, groupid);
                     if (group == null) {
                         System.out.println("Couldn't get group from id: " + groupid);
                     }
                     else {
+                        System.out.println("add " + groupid);
                         list.add(group);
                     }
                 }
                 catch (Exception e) {
+                    System.out.println("Caught exception");
                     continue;
                 }
             }
