@@ -2,13 +2,13 @@
 
 <html>
 <head>
-	<title>Schedule It - Upload A Photo</title>
+	<title>Schedule It</title>
 	<link href="dependencies/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/style.css" rel="stylesheet">
-
+    <link href="resources/styleIndex.css" rel="stylesheet">
     <style>
         body {
-            background-color: #007bff
+            background: url("resources/calendarBackground.jpeg") no-repeat center center fixed;
+            background-size: cover;
         }
     </style>
 </head>
@@ -18,41 +18,26 @@
 	<script src="dependencies/bootstrap.min.js"></script>
 	<script src="resources/scriptIndex.js"></script>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3"> <!-- Column 1-->
+    <div class="card" style="margin-left: auto; margin-right: auto; margin-top: 2%; width:35em; background-color: black; opacity: 0.95">
+        <div class="card-block" id="pictureUploadFrame" style="padding: 4%">
+            <img class="card-img-top" src="resources/profileDefaultPhoto.png" style="border: 3px solid #868686; opacity: 1">
+            <div style="height:10px;"> </div>
+            
+            <!--Upload photo input-->
+            <label class="btn btn-primary" for="my-file-selector" style="width:25%; margin-top: 3%">
+                <input id="my-file-selector" type="file" style="display:none" 
+                onchange="$('#upload-file-info').html(this.files[0].name)">
+                Choose file
+            </label>
+            <span class='label label-info' id="upload-file-info" style="color:white"></span>
 
-            </div>
-            <div class="col-sm-5"> <!-- Column 2-->
-                <div style="height:30px;"> </div>
-                <h1 align="center" style="color: #FFFFFF;font-size:400%;" class="display-4">Upload A Photo</h1>       
-                <div style="height:10px;"> </div>                
-                <div class="card">
-                    <div class="card-block" id="pictureUploadFrame">
-                        <img class="card-img-top" src="resources/profileDefaultPhoto.png" style="border: 3px solid #868686;">
-                        <div style="height:10px;"> </div>
-                        
-                        <!--Upload photo input-->
-                        <label class="btn btn-primary" for="my-file-selector">
-                            <input id="my-file-selector" type="file" style="display:none" 
-                            onchange="$('#upload-file-info').html(this.files[0].name)">
-                            Choose file
-                        </label>
-                        <span class='label label-info' id="upload-file-info"></span>
-
-                        <!--Upload or skip-->
-                        <div style="height:20px;"> </div>
-                        <div style="display: inline-block">
-                                <button type="button" id="uploadPhoto" class="btn btn-secondary" style="width:120px"> Upload </button>
-                                <button type="button" id="skipPhoto" class="btn btn-secondary" style="width:120px"> Skip </button>                             
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3"> <!-- Column 3-->
-                
-            </div>
+            <!--Upload or skip-->
+            <div style="height:20px;"> </div>
+            <button type="button" id="uploadPhoto" class="btn btn-secondary" style="background-color:#000000; color:#FFFFFF; width:30%; float:left"> Upload </button>
+            <button type="button" id="skipPhoto" class="btn btn-secondary" style="background-color:#000000; color:#FFFFFF; width:30%; float:right"> Skip </button>                             
         </div>
+    </div>
+          
     </div>
 </body>
 </html>

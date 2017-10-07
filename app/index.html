@@ -2,98 +2,118 @@
 
 <html>
 <head>
-	<title>Schedule It - Log In or Sign Up</title>
+	<title>Schedule It</title>
 	<link href="dependencies/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/style.css" rel="stylesheet">
+    <link href="resources/styleIndex.css" rel="stylesheet">
     <style>
         body {
-            background-image: url("resources/frontPageBackground.png");
-            background-size: 100%;
+            background: url("resources/clockBackground.jpeg") no-repeat center center fixed;
+            background-size: cover;
         }
     </style>
 </head>
-<body>
+<body style="margin:2%">
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
 	<script src="resources/scriptIndex.js"></script>
 
-    <div class="container">
-        <div class="row">
-            <div class="col"> <!-- Column 1-->
-                <!--Login Side-->
-                <div style="height:90px;"> </div>
-                <h1 style="color: white" class="display-5" id="loginLabel">Login</h1>
+    <div class="container-fluid">
+        <h1 style="font-family:helvetica; font-size:800%" class="display-1">Schedule It</h1>        
+    </div>
+
+    <div class="tabs">
+        <ul class="tab-links" style="padding:0%">
+            <li class="active"><a href="#tab1">Home</a></li>
+            <li><a href="#tab2">Sign In</a></li>
+            <li><a href="#tab3">Sign Up</a></li>
+            <li><a href="#tab4">About Us</a></li>
+        </ul>
+     
+        <div class="tab-content">
+            <div id="tab1" class="tab active">
+               <p style="color:black">
+                    This is where we will fill in a description of the app.
+               </p>
+            </div>
+     
+            <div id="tab2" class="tab">
                 <div class="form-group">
                     <!--Login Username-->
-                        <div style="height:10px;"> </div>
-                        <label style="color: white" for="loginUsername">Username</label>
-                        <input class="form-control" id="loginUsername" placeholder="Username">
+                        <label style="color: #000000; font-size:150%" for="loginUsername">Username</label>
+                        <input class="form-control"style="border:1px solid #FFFFFF; width:55%" maxlength="32" id="loginUsername" placeholder="Username">
 
                         <!--Login password-->
                         <div style="height:5px;"> </div>
-                        <label style="color: white" for="loginPassword">Password</label>
-                        <input class="form-control" id="loginPassword" type="password"  placeholder="Password">
+                        <label style="color: #000000; font-size:150%" for="loginPassword">Password</label>
+                        <input class="form-control" style="border:1px solid #FFFFFF; width:55%" maxlength="32" id="loginPassword" type="password"  placeholder="Password">
                         <div class="form-control-feedback invisible" id="loginError" style="color: red"></div>  
 
                         <!--Login button-->
                         <div style="height:15px;"> </div>                        
-                        <button type="button" id="login" class="btn btn-secondary"> Log In </button>
+                        <button type="button" style="background-color:black; color:white; width:30%" id="login" class="btn">Sign In</button>
                 </div>
             </div>
-            <div class="col"> <!-- Column 2-->
-                <!--Webpage Title-->
-                <div style="height:10px;"> </div>
-                <h1 style="color: #000061" class="display-3">Schedule It</h1>
-            </div>
-            <div class="col"> <!-- Column 3-->
+     
+            <div id="tab3" class="tab">
                 <!--Register Side-->
-                <div style="height:90px;"> </div>
-                <h1 color: style="color: white" class="display-5" id="registerLabel">Register</h1>
                 <div class="form-group">
 
                     <!--Register Full Name-->
-                    <div style="height:10px;"> </div>
-                    <label style="color: white" for="fullName">* Full Name</label>
-                    <input class="form-control" id="fullName" placeholder="Full Name">
+                    <div style="display:inline-block; width:45%">
+                        <label style="color: #000000; font-size:150%" for="fullName">* Full Name</label>
+                        <input class="form-control" style="border:1px solid #FFFFFF" id="fullName" maxlength="32" placeholder="Full Name">
+                    </div>
 
                     <!--Register Display Name-->
-                    <div style="height:5px;"> </div>                        
-                    <label style="color: white" for="userName">* Username</label>
-                    <input class="form-control" id="userName" placeholder="Username">
+                    <div style="display:inline-block; width:54%; padding-left:5%">
+                        <label style="color: #000000; font-size:150%" for="userName">* Username</label>
+                        <input class="form-control" style="border:1px solid #FFFFFF" id="userName" maxlength="32" placeholder="Username">
+                    </div>
 
+                    <div style="height:28px;"> </div>                        
+                    
                     <!--Register Email-->
-                    <div style="height:5px;"> </div>   
-                    <label style="color: white" for="email">* Email</label>
-                    <input class="form-control" id="email" placeholder="Email">
+                    <div style="display:inline-block; width:45%">
+                        <label style="color: #000000; font-size:150%" for="email">* Email</label>
+                        <input class="form-control" style="border:1px solid #FFFFFF" id="email" maxlength="32" placeholder="Email">
+                    </div>
 
                     <!--Register Phone Number-->
-                    <div style="height:5px;"> </div>   
-                    <label style="color: white"for="phoneNumber">Phone Number</label>
-                    <input class="form-control" id="phoneNumber" placeholder="Phone Number">
+                    <div style="display:inline-block; width:54%; padding-left:5%">
+                        <label style="color: #000000; font-size:150%"for="phoneNumber">Phone Number</label>
+                        <input class="form-control" style="border:1px solid #FFFFFF" id="phoneNumber" maxlength="32" placeholder="Phone Number">
+                    </div>
 
+                    <div style="height:28px;"> </div>                        
+                    
                     <!--Register New Password-->
-                    <div style="height:5px;"> </div>   
-                    <label style="color: white" for="newPassword">* New Password</label>
-                    <input class="form-control" id="newPassword" type="password" maxlength="32" placeholder="Please provide your new password">
-
-                        <!--...Progress Bar...-->
-                    <div class="progress invisible" id="invisibility"> <!-- red:bg-danger, yellow: bg-warning, blue: bg-info, green: bg-success-->
-                        <div class="progress-bar bg-danger noProgressBar"  id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="44"></div>
+                    <div style="display:inline-block; width:45%">
+                            <label style="color: #000000; font-size:150%" for="newPassword">* New Password</label>
+                            <input class="form-control" style="border:1px solid #FFFFFF" id="newPassword" type="password" maxlength="32" placeholder="Please provide a password">
                     </div>
 
                     <!--Register Verify Password-->
-                    <div style="height:5px;"> </div>   
-                    <label style="color: white" for="verifyPassword">* Verify Password</label>
-                    <input class="form-control" id="verifyPassword" type="password" maxlength="32" placeholder="Please verify your password">
-                    <div class="form-control-feedback invisible" id="passwordError" style="color: red"></div>
+                    <div style="display:inline-block; width:54%; padding-left:5%">
+                            <label style="color: #000000; font-size:150%" for="verifyPassword">* Verify Password</label>
+                            <input class="form-control" style="border:1px solid #FFFFFF" id="verifyPassword" type="password" maxlength="32" placeholder="Please verify your password">
+                    </div>
+                    <!--...Progress Bar...-->
+                        <div class="progress invisible" style="width:45%" id="invisibility"> <!-- red:bg-danger, yellow: bg-warning, blue: bg-info, green: bg-success-->
+                            <div class="progress-bar bg-danger noProgressBar"  id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="44"></div>
+                        </div>
 
-                    <div style="height:15px;"> </div>                        
-                    <button type="button" id="create" class="btn btn-secondary"> Create Account </button>
-                </div>
+                    <div class="form-control-feedback invisible" id="passwordError" style="color: red">Passwords did not match. Please try again.</div>                    
+                    <button type="button" style="background-color:black; color:white; width:30%" id="create" class="btn">Sign Up</button>
+                    </div>
             </div>
-        </div> <!--End row 1-->
-    </div> <!--End Container-->
-
+     
+            <div id="tab4" class="tab">
+                    <p style="color:black">
+                            This is where we will fill in our team member descriptions and project background.
+                    </p>
+            </div>
+        </div>
+    </div>
+    
 </body>
-</html>
