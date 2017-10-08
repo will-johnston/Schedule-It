@@ -14,7 +14,7 @@ public class FriendsGet implements IAPIRoute {
     }
 
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         int cookie = parseArgs(request.getBody());
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";

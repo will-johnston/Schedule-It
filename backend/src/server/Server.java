@@ -63,7 +63,8 @@ public class Server {
             //Run until the program has requested stop/quit
             while (!calledQuit) {
                 try {
-                    Socket recievedSock = mainServer.accept();
+                    //Socket recievedSock = mainServer.accept();
+                    SSocket recievedSock = new SSocket(mainServer.accept());
                     new Handler(recievedSock, router).run();
                 } catch (SocketException e) {
 
@@ -80,9 +81,9 @@ public class Server {
 
     class Handler extends Thread {
         Router router;
-        Socket sock;
+        SSocket sock;
 
-        public Handler(Socket sock, Router router) {
+        public Handler(SSocket sock, Router router) {
             this.router = router;
             this.sock = sock;
         }

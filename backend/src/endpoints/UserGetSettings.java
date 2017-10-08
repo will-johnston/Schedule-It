@@ -1,7 +1,7 @@
 package endpoints;
 
 import com.google.gson.*;
-import server.HTTPMessage;
+import server.*;
 import management.Tracker;
 import database.User;
 import server.Socketeer;
@@ -26,7 +26,7 @@ public class UserGetSettings implements IAPIRoute {
     "imageURL" : ""
     }
      */
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         int cookie = parseArgs(request.getBody());
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";

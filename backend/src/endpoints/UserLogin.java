@@ -16,7 +16,7 @@ public class UserLogin implements IAPIRoute {
         this.tracker = tracker;
     }
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         Gson gson = new Gson();
         try {
             String[] args = parseArgs(request.getBody());

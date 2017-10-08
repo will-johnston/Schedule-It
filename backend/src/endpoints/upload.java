@@ -1,6 +1,6 @@
 package endpoints;
 
-import server.HTTPMessage;
+import server.*;
 
 import java.math.BigInteger;
 import java.net.Socket;
@@ -30,7 +30,7 @@ public class upload implements IAPIRoute {
     }
 
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         if (request.getMethod().equals("/upload")) {
             //starting a new upload
             // {{"type": "image/jpg",

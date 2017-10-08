@@ -14,7 +14,7 @@ public class RedirectTest {
         router.add("/api/test/redirect", new IAPIRoute() {
 
             @Override
-            public void execute(Socket sock, HTTPMessage request) {
+            public void execute(SSocket sock, HTTPMessage request) {
                 try {
                     OutputStream out = sock.getOutputStream();
                     String response = HTTPMessage.makeRedirect("http://www.google.com");
