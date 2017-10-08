@@ -36,7 +36,8 @@ public class Server {
             isListening = false;
             listenThread = null;
         } catch (IOException e) {
-            System.out.println(String.format("server.Server cannot bind to port %d, already in use!", port));
+            e.printStackTrace();
+            //System.out.println(String.format("server.Server cannot bind to port %d or port , already in use!", port));
         }
     }
 
