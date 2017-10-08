@@ -9,7 +9,7 @@ public class RedirectTest {
 
     public static void main(String[] args) throws Exception {
         // write your code here
-        Server server = new Server(8181);
+        Server server = new Server(8181, 8282);
         Router router = new Router();
         router.add("/api/test/redirect", new IAPIRoute() {
 

@@ -9,13 +9,13 @@ public class SSocket {
     private Socket sock;
     private SSLSocket sslsock;
     private boolean isSSL;
-    public SSocket (Socket sock) {
+    public SSocket (Socket sock, boolean isSSL) {
         this.sock = sock;
         isSSL = false;
     }
-    public SSocket (SSLSocket sslsock) {
+    public SSocket (SSLSocket sslsock, boolean isSSL) {
         this.sslsock = sslsock;
-        isSSL = true;
+        this.isSSL = isSSL;
     }
     public void close() throws IOException {
         if (isSSL) {

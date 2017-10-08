@@ -19,12 +19,19 @@ public class Server {
     private Boolean isSSL;
     Boolean isListening;
     private ServerSocket sock;
-    protected SSLServerSocket sslSock;
+    private SSLServerSocket sslSock;
     private Thread listenThread;
+    private Thread securelistenThread;
 
-    public Server(int port) {
+    public Server(int port, int secureport) {
         try {
+            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
+            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+
             sock = new ServerSocket(port);
+            SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+            sslSock = (SSLServerSocket)factory.createServerSocket(secureport);
             isSSL = false;
             isListening = false;
             listenThread = null;
@@ -33,14 +40,13 @@ public class Server {
         }
     }
 
-    public Server(int port, String sslCertificate) {
-        throw new NotImplementedException();
-    }
-
     public void startListening(Router router) {
         isListening = true;
         listenThread = new Listener(sock, router);
+        securelistenThread = new Listener(sslSock, router);
+
         listenThread.start();
+        securelistenThread.start();
         System.out.println("Started listening");
     }
 
@@ -50,22 +56,36 @@ public class Server {
 
     class Listener extends Thread {
         ServerSocket mainServer;
-        Boolean calledQuit;
+        SSLServerSocket secureMainServer;
+        boolean calledQuit;
         Router router;
+        boolean isSsl;
 
         public Listener(ServerSocket server, Router router) {
             mainServer = server;
             calledQuit = false;
             this.router = router;
+            this.isSsl = false;
+        }
+        public Listener(SSLServerSocket server, Router router) {
+            secureMainServer = server;
+            calledQuit = false;
+            this.router = router;
+            this.isSsl = true;
         }
 
         public void run() {
             //Run until the program has requested stop/quit
             while (!calledQuit) {
                 try {
-                    //Socket recievedSock = mainServer.accept();
-                    SSocket recievedSock = new SSocket(mainServer.accept());
-                    new Handler(recievedSock, router).run();
+                    if (isSsl) {
+                        SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
+                    else {
+                        SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
                 } catch (SocketException e) {
 
                 } catch (IOException e) {
