@@ -42,13 +42,18 @@ public class Server {
     }
 
     public void startListening(Router router) {
-        isListening = true;
-        listenThread = new Listener(sock, router);
-        securelistenThread = new Listener(sslSock, router);
+        try {
+            isListening = true;
+            listenThread = new Listener(sock, router);
+            securelistenThread = new Listener(sslSock, router);
 
-        listenThread.start();
-        securelistenThread.start();
-        System.out.println("Started listening");
+            listenThread.start();
+            securelistenThread.start();
+            System.out.println("Started listening");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopListening() {
@@ -90,11 +95,11 @@ public class Server {
             while (!calledQuit) {
                 try {
                     if (isSsl) {
-                        SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
+                        SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
                         new Handler(recievedSock, router).run();
                     }
                     else {
-                        SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
+                        SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
                         new Handler(recievedSock, router).run();
                     }
                 } catch (SocketException e) {
