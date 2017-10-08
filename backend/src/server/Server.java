@@ -63,16 +63,26 @@ public class Server {
         boolean isSsl;
 
         public Listener(ServerSocket server, Router router) {
-            mainServer = server;
-            calledQuit = false;
-            this.router = router;
-            this.isSsl = false;
+            try {
+                mainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         public Listener(SSLServerSocket server, Router router) {
-            secureMainServer = server;
-            calledQuit = false;
-            this.router = router;
-            this.isSsl = true;
+            try {
+                secureMainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = true;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         public void run() {
@@ -88,9 +98,9 @@ public class Server {
                         new Handler(recievedSock, router).run();
                     }
                 } catch (SocketException e) {
-
+                    e.printStackTrace();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -150,6 +160,7 @@ public class Server {
                 out.flush();
                 sock.close();*/
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("e.Message: " + e.getLocalizedMessage());
             }
         }
