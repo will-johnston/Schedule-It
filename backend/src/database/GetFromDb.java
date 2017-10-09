@@ -53,14 +53,14 @@ public class GetFromDb {
         }
         catch (SQLException e) {
             e.printStackTrace();
-            try {
+            /*try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
 
             } catch (SQLException r) {
                 r.printStackTrace();
-            }
+            }*/
             return null;
         }
     }
@@ -118,14 +118,14 @@ public class GetFromDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
+        /*try {
             if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
@@ -150,25 +150,25 @@ public class GetFromDb {
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
             if (result.next()) {
-                try {
+                /*try {
                     if(result != null) result.close();
                     if(statement != null) statement.close();
                     if(connection != null) connection.close();
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                }
+                }*/
                 return result.getString("username");
             }
             else {
-                try {
+                /*try {
                     if(result != null) result.close();
                     if(statement != null) statement.close();
                     if(connection != null) connection.close();
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                }
+                }*/
                 return null;
             }
         } catch (SQLException e) {
@@ -217,14 +217,14 @@ public class GetFromDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
+        /*try {
             if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 }
