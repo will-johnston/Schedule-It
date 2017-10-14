@@ -26,7 +26,7 @@ public class HTTPMessage {
             if (i == 0) {
                 //Should be GET or POST or other HTTP methods
                 String[] topSplit = line.split(" ");
-                if (topSplit.length != 3) {
+                if (topSplit.length < 3) {
                     throw new Exception("Invalid Request");
                 }
                 switch (topSplit[0].toUpperCase()) {
@@ -189,6 +189,19 @@ public class HTTPMessage {
             default:
                 //Return Internal server.Server Error
                 return "Internal server.Server Error";
+        }
+    }
+    public static String getHTTPMethodName(HTTPMethod method) {
+	    switch (method){
+            case GET:
+                return "GET";
+            case POST:
+                return "POST";
+            case DELETE:
+                return "DELETE";
+            case UNKNOWN:
+            default:
+                return "UNKNOWN";
         }
     }
 	public static String getMimeTypeName(MimeType type) {
