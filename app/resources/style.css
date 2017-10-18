@@ -65,7 +65,11 @@ body {
 }
 
 #sendFriendRequestTextbox {
-	width: 150px;
+	width: 165px;
+}
+
+#friendsListCard {
+	margin-top: 10px;
 }
 
 .card-group {
