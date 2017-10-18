@@ -49,20 +49,20 @@ public class GetFromDb {
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
-
-        } catch (SQLException e) {
+            return results;
+        }
+        catch (SQLException e) {
             e.printStackTrace();
-            try {
+            /*try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
 
             } catch (SQLException r) {
                 r.printStackTrace();
-            }
+            }*/
             return null;
         }
-        return results;
     }
     public static ArrayList<String> getFriendIds(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
@@ -150,9 +150,25 @@ public class GetFromDb {
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
             if (result.next()) {
+                /*try {
+                    if(result != null) result.close();
+                    if(statement != null) statement.close();
+                    if(connection != null) connection.close();
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }*/
                 return result.getString("username");
             }
             else {
+                /*try {
+                    if(result != null) result.close();
+                    if(statement != null) statement.close();
+                    if(connection != null) connection.close();
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }*/
                 return null;
             }
         } catch (SQLException e) {
@@ -209,14 +225,14 @@ public class GetFromDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
+        /*try {
             //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 }

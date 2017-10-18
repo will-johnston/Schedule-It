@@ -64,7 +64,7 @@ $(document).ready(function(){
 		data["cookie"] = cookie;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/getsettings", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
 			function(result) { //success
 				console.log("Successfully obtained account settings");
 
@@ -124,7 +124,7 @@ $(document).ready(function(){
 
 		data = JSON.stringify(data);
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/edit", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
 			function(result) { //success
 				console.log("Successfully saved user account settings");
 
@@ -142,7 +142,7 @@ $(document).ready(function(){
 	//LOGOUT BUTTON
 	$("#logoutButton").click(function() {
 		document.cookie = "cookie=";
-		window.location.href = "http://scheduleit.duckdns.org/";
+		window.location.href = "https://scheduleit.duckdns.org/";
 	});
 
 

@@ -15,7 +15,7 @@ public class FriendsRemove implements IAPIRoute {
         this.tracker = tracker;
     }
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         //Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
         // { "cookie" : 3434,
         // "username" : "friend to add"}
