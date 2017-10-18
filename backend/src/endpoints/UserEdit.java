@@ -15,7 +15,7 @@ public class UserEdit implements IAPIRoute {
         this.tracker = tracker;
     }
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         System.out.println("Called UserEdit");
         Object[] args = parseArgs(request.getBody());
         if (args == null) {

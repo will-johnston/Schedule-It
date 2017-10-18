@@ -56,7 +56,7 @@ $(document).ready(function(){
 		var data = {};
 		data["cookie"] = cookie;
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
 			function(result) { //success
 				var json = JSON.parse(result);
 
@@ -115,7 +115,7 @@ $(document).ready(function(){
 
 		console.log(data);
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/edit", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", JSON.stringify(data),
 			function(result) { //success
 				console.log("Successfully changed user account settings");
 				$("#accountSettingsModal").modal("hide");
@@ -135,7 +135,7 @@ $(document).ready(function(){
 	//LOGOUT BUTTON
 	$("#logoutButton").click(function() {
 		document.cookie = "cookie=";
-		window.location.href = "http://scheduleit.duckdns.org/";
+		window.location.href = "https://scheduleit.duckdns.org/";
 	});
 
 
@@ -226,21 +226,21 @@ $(document).ready(function(){
 
 	//FRIENDS --------------------------------
 	var updateFriends = function() {
+		$("#friendsList").empty();
+
 		var data = {};
 		data["cookie"] = cookie;
 
 		console.log(JSON.stringify(data));
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/friends/get", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", JSON.stringify(data),
 			function(result) { //success
 				console.log(result);
-				//var friendHTML = '<a href="#" class="list-group-item list-group-item-action">'Billy Bob'</a>';
-				//$("#friendsList").append();
 
 				var json = JSON.parse(result);
 
 				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<button type="button" class="btn btn-secondary">' + json.friends[i] + '</button>';
+					var friendHTML = '<button type="button" class="btn btn btn-outline-secondary">' + json.friends[i] + '</button>';
 					$("#friendsList").append(friendHTML);
 				}
 			},
@@ -258,7 +258,7 @@ $(document).ready(function(){
 		data["cookie"] = cookie;
 		data["username"] = otherUsername;
 
-		accessServer("POST", "http://scheduleit.duckdns.org/api/user/friends/add", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", JSON.stringify(data),
 			function(result) { //success
 				$("#sendFriendRequestTextbox").val("");
 				updateFriends();
