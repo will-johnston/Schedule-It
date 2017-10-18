@@ -119,7 +119,7 @@ public class GetFromDb {
             e.printStackTrace();
         }
         /*try {
-            if(result != null) result.close();
+            //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
@@ -175,6 +175,14 @@ public class GetFromDb {
             e.printStackTrace();
             return null;
         }
+        /*try {
+            //if(result != null) result.close();
+            if(statement != null) statement.close();
+            if(connection != null) connection.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
 
     }
     //return {id, username, password, name, email, phone}
@@ -218,7 +226,7 @@ public class GetFromDb {
             e.printStackTrace();
         }
         /*try {
-            if(result != null) result.close();
+            //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
