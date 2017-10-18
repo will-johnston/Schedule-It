@@ -53,7 +53,8 @@ public class UserLogin implements IAPIRoute {
     }
     //Returns an array of [email, password]
     private String[] parseArgs(String message) {
-        try {
+        System.out.println(message);
+	try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
             if (!bodyObj.has("name")) {
@@ -68,6 +69,7 @@ public class UserLogin implements IAPIRoute {
             return arr;
         }
         catch (Exception e) {
+	    e.printStackTrace();
             System.out.println("Caught an exception");
             return null;
         }

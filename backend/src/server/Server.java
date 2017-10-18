@@ -129,11 +129,13 @@ public class Server {
                 InputStream in = sock.getInputStream();
                 OutputStream out = sock.getOutputStream();
                 //Max recieve size is 8 KB, allow for overhead
+				Thread.sleep(5);			//Sleep 5 whole seconds
                 byte[] buffer = new byte[9216];
                 int readResult = in.read(buffer);
+				System.out.println("In available: " + in.available());
                 String header = new String(buffer, 0, readResult, StandardCharsets.UTF_8);
-                //System.out.println("header: " + header);
-                //System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
+                System.out.println("header: " + header);
+                System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
                 HTTPMessage mess;
                 try {
                     mess = new HTTPMessage(header);
