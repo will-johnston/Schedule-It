@@ -23,7 +23,7 @@ $(document).ready(function(){
 			}
 		});
 
-		$("#datepicker").datepicker({
+		$(".datepicker").datepicker({
 			inline: true,
 			firstDay: 1,
 			showOtherMonths: true,
@@ -215,7 +215,7 @@ $(document).ready(function(){
 				<div class="tab-content">
 					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel">chat...</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div id="datepicker"></div>
+						<div class="datepicker"></div>
 					</div>
 				</div>
 			</div>`;
