@@ -20,7 +20,9 @@ $(document).ready(function(){
 				var recieved = this.responseText;
 				var json = JSON.parse(recieved);
 				if(request.status === 200) { //200 status = success
-					window.location.href = "http://scheduleit.duckdns.org/main.html";					
+					/* HAVE TO STORE COOKIE BEFORE HYPERLINKING #RYAN */
+					storeLoginCookie(json.cookie);
+					window.location.href = "https://scheduleit.duckdns.org/main.html";					
 				} else { //invalid loging credentials
 					document.getElementById("loginError").innerHTML = "The input combination didn't match.";
 					$("#loginError").removeClass("invisible");	
@@ -28,7 +30,7 @@ $(document).ready(function(){
 					document.getElementById("loginPassword").value = "";
 				}
 			});
-			request.open("POST", "http://scheduleit.duckdns.org/api/user/login");
+			request.open("POST", "https://scheduleit.duckdns.org/api/user/login");
 			request.send(JSON.stringify({ "name": userName, "pass": passWord }));
 		}
 	});
@@ -59,13 +61,15 @@ $(document).ready(function(){
 				request.addEventListener("load", function () {
 					var recieved = this.responseText;
 					if(request.status == 200) { //Valid registration, continue
-						window.location.href = "http://scheduleit.duckdns.org/pictureUpload.html";							
+						var json = JSON.parse(recieved);
+						storeLoginCookie(json.cookie);
+						window.location.href = "https://scheduleit.duckdns.org/pictureUpload.html";
 					} else { //Invalid registration, stop
 						window.alert("Failed to create account.");
 						document.getElementById("userName").value = "";
 					}
 				});
-				request.open("POST", "http://scheduleit.duckdns.org/api/user/create");
+				request.open("POST", "https://scheduleit.duckdns.org/api/user/create");
 				request.send(JSON.stringify({	"email": email,
 												"pass": password,
 												"name": fullName,
@@ -131,6 +135,21 @@ $(document).ready(function(){
 		}
 		return strength;
 	}
+	
+	//FROM backend.js #Ryan
+	function storeLoginCookie(cookie) {
+		if (cookie == 0) {
+			return;
+		}
+		else {
+			var cookietime = new Date();
+			cookietime.setFullYear(cookietime.getFullYear() + 1);          //Expire in a year
+			var date = cookietime.toUTCString();
+			//var cookiestring = "_schedlogin={0}; expires={1};path=/".format(cookie, date);
+			var cookiestring = "cookie=" + cookie +"; expires=" + date + ";path=/";
+			document.cookie = cookiestring;
+		}
+	}
 
 	/**
 	 * Password verification error message updater
@@ -180,7 +199,7 @@ $(document).ready(function(){
 	 */
 	$("#skipPhoto").click(function() {
 		//TODO: assign default photo to user in DB
-		window.location.href = "http://scheduleit.duckdns.org/main.html";		
+		window.location.href = "https://scheduleit.duckdns.org/main.html";		
 	});
 
 	/**
