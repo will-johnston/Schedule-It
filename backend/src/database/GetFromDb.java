@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
-//TODO Merge this witb RetrieveUserInfo
+//TODO Merge this with RetrieveUserInfo
 public class GetFromDb {
     //return {id, username, password, name, email, phone}
     public static String[] getUserFromName(String username) {
@@ -23,6 +23,7 @@ public class GetFromDb {
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
         ResultSet result = null;  //output after query
+        String[] results = new String[6];
         try {
             //set up connection
             connection = ds.getConnection();
@@ -35,33 +36,33 @@ public class GetFromDb {
                     + " from users where username='" + username + "'";
             System.out.println(query);
             result = statement.executeQuery(query);
-            System.out.println("Checking for null");
+            //System.out.println("Checking for null");
             /*if (result == null) {
                 return null;
             }*/
             result.first();
 
-            String[] results = new String[6];
+
             results[0] = result.getString("id");
             results[1] = result.getString("username");
             results[2] = result.getString("password");
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
-            return results;
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        try {
-            if(result != null) result.close();
-            if(statement != null) statement.close();
-            if(connection != null) connection.close();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException r) {
+                r.printStackTrace();
+            }
+            return null;
         }
-        return null;
+        return results;
     }
     public static ArrayList<String> getFriendIds(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
@@ -117,14 +118,14 @@ public class GetFromDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            if(result != null) result.close();
+        /*try {
+            //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
@@ -156,16 +157,17 @@ public class GetFromDb {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        try {
-            if(result != null) result.close();
+        /*try {
+            //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        return null;
+        }*/
+
     }
     //return {id, username, password, name, email, phone}
     public static String[] getUserFromId(int id) {
@@ -208,7 +210,7 @@ public class GetFromDb {
             e.printStackTrace();
         }
         try {
-            if(result != null) result.close();
+            //if(result != null) result.close();
             if(statement != null) statement.close();
             if(connection != null) connection.close();
 

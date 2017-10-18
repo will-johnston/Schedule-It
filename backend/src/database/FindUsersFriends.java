@@ -28,12 +28,13 @@ public class FindUsersFriends {
         Statement statement = null;
         ResultSet result = null;
         String[] friends = null;
+        boolean flag = true;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
             if (ds == null) {
-                return null;
+                flag = false;
 
             }
             connection = ds.getConnection(); //acquire datasource object
@@ -41,47 +42,53 @@ public class FindUsersFriends {
             int id = getId(username, connection);
             //handle bad query
             if (id == -1) {
-                return null;
+                flag = false;
             }
-
-            LinkedList<Integer> friendsids = new LinkedList<Integer>();
-            //perform add friendship functionality
-            String query = "SELECT * FROM friends WHERE userID_1=" + id + " OR userID_2=" + id;
-            statement = connection.createStatement();
-            //send an add user query to the database
-            result = statement.executeQuery(query);
-            if (result.isBeforeFirst()) {
-                //this user has friends
-                while (result.next()) {
-                    int id1 = result.getInt(1);
-                    int id2 = result.getInt(2);
-                    if (id1 == id) {
-                        friendsids.addFirst(id2);
-                    } else {
-                        friendsids.addFirst(id1);
+            if (flag) {
+                LinkedList<Integer> friendsids = new LinkedList<Integer>();
+                //perform add friendship functionality
+                String query = "SELECT * FROM friends WHERE userID_1=" + id + " OR userID_2=" + id;
+                statement = connection.createStatement();
+                //send an add user query to the database
+                result = statement.executeQuery(query);
+                if (result.isBeforeFirst()) {
+                    //this user has friends
+                    while (result.next()) {
+                        int id1 = result.getInt(1);
+                        int id2 = result.getInt(2);
+                        if (id1 == id) {
+                            friendsids.addFirst(id2);
+                        } else {
+                            friendsids.addFirst(id1);
+                        }
                     }
                 }
+                //now need to get username for each id
+                friends = getUsernames(friendsids, connection);
+                if (friends == null) {
+                    return null;
+                }
             }
-            //now need to get username for each id
-            friends = getUsernames(friendsids, connection);
-            if (friends == null) {
-                return null;
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
-        } finally {
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-                return friends;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
+                if (result != null) result.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
+            return friends;
+
         }
+        try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends;
     }
 
     public static int getId(String username, Connection connection) {
@@ -127,7 +134,7 @@ public class FindUsersFriends {
                 e.printStackTrace();
             }
         }
-	Arrays.sort(usernames);
+	    Arrays.sort(usernames);
         return usernames;
     }
 }

@@ -1,0 +1,98 @@
+/*Sets form control background when not click in*/
+.form-control {
+    background-color: transparent;
+}
+
+/*Sets placeholder text for inputs*/
+input::-webkit-input-placeholder {
+    color: #FFFFFF !important;
+}
+     
+input:-moz-placeholder { /* Firefox 18- */
+    color: #FFFFFF !important;  
+}
+     
+input::-moz-placeholder {  /* Firefox 19+ */
+    color: #FFFFFF !important;  
+}
+  
+input:-ms-input-placeholder {  
+    color: #FFFFFF !important;  
+}
+
+/*Color of text in inputs when not clicked in*/
+input, select, textarea{
+    color: #FFFFFF !important;
+}
+    
+/*Color of text and background when clicked in*/
+textarea:focus, input:focus {
+    color: #000000 !important;
+    background-color:transparent !important;
+}
+
+/*Width of tabs area*/
+.tabs {
+    width:50%;
+}
+ 
+/*----- Tab Links -----*/
+/* Clearfix */
+.tab-links:after {
+    display:block;
+    clear:both;
+    content:'';
+}
+ 
+.tab-links li {
+    margin:15px 15px;
+    float:left;
+    list-style:none;
+}
+ 
+.tab-links a {
+    padding:9px 15px;
+    display:inline-block;
+    border-radius:3px 3px 0px 0px;
+    font-size:28px;
+    font-weight:600;
+    color:#FFFFFF;
+    opacity: .55;
+    transition:all linear 0.15s;
+    border-bottom:1px solid #FFFFFF;
+    font-family:helvetica;
+}
+ 
+.tab-links a:hover {
+    text-decoration:none;
+    opacity: .8;
+}
+ 
+li.active a, li.active a:hover {
+    color: #ffffff;
+    opacity: 1;
+    font-size: 36px;
+    border-bottom:3px solid #FFFFFF;
+}
+ 
+/*----- Content of Tabs -----*/
+.tab-content {
+        padding:15px;
+        border-radius:3px;
+        box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+        width:85%;
+}
+ 
+.tab {
+    display:none;
+}
+ 
+.tab.active {
+    display:block;
+}
+
+.noProgressBar {
+	display: none;
+}
+
+/*PICTURE UPLOAD SECTION*/

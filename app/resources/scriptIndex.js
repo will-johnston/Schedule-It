@@ -192,11 +192,18 @@ $(document).ready(function(){
 		window.location.href = "http://scheduleit.duckdns.org/main.html";		
 	});
 
-	/**
-	 * Logout button function
-	 */
-	$("#logoutButton").click(function() {
-		//TODO: not sure what to do when you log out other than redirect
-		window.location.href = "http://scheduleit.duckdns.org/index.html";		
+	//THIS IS THE CODE FOR THE INDEXTEMPLATE
+	jQuery(document).ready(function() {
+		jQuery('.tabs .tab-links a').on('click', function(e)  {
+			var currentAttrValue = jQuery(this).attr('href');
+	 
+			// Show/Hide Tabs
+			jQuery('.tabs ' + currentAttrValue).fadeIn(400).siblings().hide();
+			
+			// Change/remove current tab to active
+			jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+	 
+			e.preventDefault();
+		});
 	});
 });

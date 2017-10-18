@@ -11,11 +11,12 @@
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
 	<script src="resources/scriptMain.js"></script>
+	<script src="dependencies/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 	<!-- Heading -->
 	<h1>
 		<button type="button" class="btn btn-primary float-right" id="accountSettingsButton" data-toggle="modal" data-target="#accountSettingsModal">Settings</button>
-		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button
+		<button type="button" class="btn btn-primary float-right" id="logoutButton" style="margin-right: 10px">Logout</button
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
@@ -303,7 +304,9 @@
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active show" id="group1ContentChat" role="tabpanel">chat...</div>
-						<div class="tab-pane" id="group1ContentCal" role="tabpanel">cal...</div>
+						<div class="tab-pane" id="group1ContentCal" role="tabpanel">
+							<div class="datepicker"></div>
+						</div>
 					</div>
 				</div>
 
