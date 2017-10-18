@@ -1,5 +1,8 @@
 $(document).ready(function(){
 	
+	//variables
+	var cookie = document.cookie.split("=")[1];
+
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
 			//Fix previous pill stuff
@@ -20,45 +23,128 @@ $(document).ready(function(){
 				$(this).find("img").attr("src","resources/chevronUp.png");
 			}
 		});
+
+		$(".datepicker").datepicker({
+			inline: true,
+			firstDay: 1,
+			showOtherMonths: true,
+			dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		});
 	};
 
-	var ajax = function(method, url, data, onSuccess, onFail) {
-		$.ajax({
-			method: method,
-			url: url,
-			data: data,
-			datatype: "jsonp"
-		}).done(onSuccess(result)).fail(onFail(result));
+	assignFunctionality();
+
+	var accessServer = function(method, url, data, onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				onSuccess(xhr.response);
+			}
+			else {
+				console.log("FAILED TO ACCESS SERVER");
+				console.log("DATA: " + data);
+				console.log("RESULT: " + xhr.response);
+				onFail(xhr.response);
+			}
+		};
+
+		xhr.send(data);
 	};
 
 	//SETTINGS MODAL
+	var fullName;
+	var username;
+	var email;
+	var phoneNumber;
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
-		var fullName;
-		var username;
-		var email;
-		var phoneNumber;
-		var changePassword;
-		var confirmPassword;
-		var picURL;
 
-		$("#settingsModalFullNameField").val(fullName);
-		$("#settingsModalUsernameField").val(username);
-		$("#settingsModalEmailField").val(email);
-		$("#settingsModalPhoneNumberField").val(phoneNumber);
-		$("#settingsModalChangePasswordField").val(changePassword);
-		$("#settingsModalConfirmPasswordField").val(confirmPassword);
-		$("#settingsModalPicture").attr("src", picURL);
+		//cookie = document.cookie;
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
 
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+			function(result) { //success
+				console.log("Successfully obtained account settings");
+
+				var json = JSON.parse(result);
+
+				fullName = json.fullname;
+				username = json.username;
+				email = json.email
+				phoneNumber = json.phone;
+
+				$("#settingsModalFullNameField").val(fullName);
+				$("#settingsModalUsernameField").val(username);
+				$("#settingsModalEmailField").val(email);
+				$("#settingsModalPhoneNumberField").val(phoneNumber);
+				$("#settingsModalChangePasswordField").val("");
+				$("#settingsModalConfirmPasswordField").val("");
+				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
+			},
+			function(result) { //fail
+				alert("Failed to obtain account settings");
+			});
 	});
+
 	$("#accountSettingsModalSaveButton").click(function() {
-		
+		var fullNameChanged = $("#settingsModalFullNameField").val();
+		var emailChanged = $("#settingsModalEmailField").val();
+		var phoneNumberChanged = $("#settingsModalPhoneNumberField").val();
+		var passwordChanged = $("#settingsModalChangePasswordField").val();
+		var confirmPasswordChanged = $("#settingsModalConfirmPasswordField").val();
+		//var picURL = ...
+
+		var data = {};
+		data["username"] = username;
+		data["cookie"] = cookie;
+
+		if(fullName != fullNameChanged) {
+			data["fullname"] = fullNameChanged;
+		}
+
+		if(email != emailChanged) {
+			data["email"] = emailChanged;
+		}
+
+		if(phoneNumber != phoneNumberChanged) {
+			data["phone"] = phoneNumberChanged;
+		}
+
+		if(passwordChanged != "") {
+			if(passwordChanged == confirmPasswordChanged) {
+				data["pass"] = passwordChanged;
+			}
+			else {
+				alert("Passwords do not match");
+				return;
+			}
+		}
+
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
+			function(result) { //success
+				console.log("Successfully saved user account settings");
+
+				$("#accountSettingsModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to save user account settings");
+			});
+
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
 	});
 
-	assignFunctionality();
+	//LOGOUT BUTTON
+	$("#logoutButton").click(function() {
+		document.cookie = "cookie=";
+		window.location.href = "https://scheduleit.duckdns.org/";
+	});
 
 
 	//NEW GROUP MODAL
@@ -91,6 +177,7 @@ $(document).ready(function(){
 	//GROUP SETTINGS MODAL
 	$("#groupSettingsButton").click(function() {
 		//populate the group settings modal with group information
+
 	});
 	$("#groupSettingsSaveButton").click(function() {
 		//Write the changed values to the database
@@ -135,11 +222,79 @@ $(document).ready(function(){
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel">chat...</div>
-					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">cal...</div>
+					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
+						<div class="datepicker"></div>
+					</div>
 				</div>
 			</div>`;
 
 		$("#vPillsContent").append(contentHTML);
 		$("#vPillsTab").append(tabHTML);
 	};
+
+	//FRIENDS --------------------------------
+	var updateFriends = function() {
+		$("#friendsList").empty();
+		$("body").off("click", "#friendsList img");
+
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
+			function(result) { //success
+				console.log("Successfully retrieved friends");
+
+				var json = JSON.parse(result);
+
+				for(var i = 0; i < json.friends.length; i++) {
+					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
+					$("#friendsList").append(friendHTML);
+				}
+			},
+			function(result) { //fail
+				alert("Failed to retrieved friends");
+			});
+
+		$("body").on("click", "#friendsList img", function() {
+			console.log("clicked");
+			var data = {};
+			data["cookie"] = cookie;
+			data["username"] = $(this).parent().text();
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/remove", data,
+				function(result) { //success
+					console.log("Successfully removed friend");
+					updateFriends();
+				},
+				function(result) { //fail
+					alert("Failed to remove friend");
+				});
+
+		});
+	};
+
+	updateFriends();
+
+	//This needs to be changed to send a friend request instead of automatically add them as a friend
+	$("#sendFriendRequestButton").click(function() {
+		var otherUsername = $("#sendFriendRequestTextbox").val();
+
+		var data = {};
+		data["cookie"] = cookie;
+		data["username"] = otherUsername;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
+			function(result) { //success
+				console.log("Successfully added friend");
+
+				$("#sendFriendRequestTextbox").val("");
+				updateFriends();
+			},
+			function(result) { //fail
+				alert("Failed to add friend");
+			});
+	});
 });

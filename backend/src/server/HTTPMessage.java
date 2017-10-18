@@ -13,6 +13,7 @@ public class HTTPMessage {
     String method;
     float HTTPversion;
     public HTTPMessage(String rawHTTP) throws Exception {
+	//System.out.println(rawHTTP);
         String[] lines = rawHTTP.split("[\n]");
         Boolean headerBoundary = false;
         StringBuilder bodyBuilder = new StringBuilder();
@@ -21,12 +22,13 @@ public class HTTPMessage {
             if (line.length() <= 1 && !headerBoundary) {
                 //We've encountered the end of the header, it's all body from here
                 headerBoundary = true;
+				System.out.println("Encountered boundary: " + line);
                 continue;
             }
             if (i == 0) {
                 //Should be GET or POST or other HTTP methods
                 String[] topSplit = line.split(" ");
-                if (topSplit.length != 3) {
+                if (topSplit.length < 3) {
                     throw new Exception("Invalid Request");
                 }
                 switch (topSplit[0].toUpperCase()) {
@@ -55,6 +57,7 @@ public class HTTPMessage {
                 continue;
             }
             if (headerBoundary) {
+				System.out.println("Adding" + line);
                 bodyBuilder.append(line);
                 bodyBuilder.append('\n');
             }
@@ -83,7 +86,8 @@ public class HTTPMessage {
         response.append("Accept-Ranges: bytes\n");
         response.append("Content-Type: application/json\n");
         response.append(String.format("Content-Length: %d\n", message.length()));
-        response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org\n\n");
+        //response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
+		response.append("Access-Control-Allow-Origin: *\n\n");
         response.append(message);
         response.append('\n');
         return response.toString();
@@ -97,8 +101,8 @@ public class HTTPMessage {
         response.append("Accept-Ranges: bytes\n");
         response.append(String.format("Content-Type: %s\n", getMimeTypeName(type)));
         response.append(String.format("Content-Length: %d\n", message.length()));
-        //response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org, http://127.0.0.1:8181\n\n");
-        response.append("Access-Control-Allow-Origin: http://127.0.0.1:8181\n\n");
+        //response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
+        response.append("Access-Control-Allow-Origin: *\n\n");
         response.append(message);
         response.append('\n');
         return response.toString();
@@ -112,7 +116,8 @@ public class HTTPMessage {
 		response.append("Connection: close\n");
 		response.append(String.format("Location: %s\n", location));
 		response.append("Accept-Ranges: bytes\n");
-		response.append("Access-Control-Allow-Origin: http://scheduleit.duckdns.org\n\n");
+		response.append("Access-Control-Allow-Origin: *\n\n");
+		//response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
 		return response.toString();
 	}
 	public static String makeNotImplemented(){
@@ -189,6 +194,19 @@ public class HTTPMessage {
             default:
                 //Return Internal server.Server Error
                 return "Internal server.Server Error";
+        }
+    }
+    public static String getHTTPMethodName(HTTPMethod method) {
+	    switch (method){
+            case GET:
+                return "GET";
+            case POST:
+                return "POST";
+            case DELETE:
+                return "DELETE";
+            case UNKNOWN:
+            default:
+                return "UNKNOWN";
         }
     }
 	public static String getMimeTypeName(MimeType type) {

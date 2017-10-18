@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 //Handles misc Socket tasks
 public class Socketeer {
     //Return true if send was successful, false if could not send
-    public static Boolean send(String message, Socket sock) {
+    public static Boolean send(String message, SSocket sock) {
         if (sock.isClosed()) {
             System.out.println("Socket is Closed");
             return false;
