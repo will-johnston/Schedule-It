@@ -207,7 +207,7 @@ $(document).ready(function(){
 		$("#vPillsTab").append(tabHTML);
 	};
 
-	//FRIENDS --------------------------------
+	//FRIENDS -------------------------------
 	var updateFriends = function() {
 		var data = {};
 		data["cookie"] = cookie;
