@@ -31,14 +31,21 @@ $(document).ready(function(){
 		});
 	};
 
+	assignFunctionality();
+
 	var accessServer = function(method, url, data, onSuccess, onFail) {
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
-			if (xhr.status === 200)
+			if (xhr.status === 200) {
 				onSuccess(xhr.response);
-			else
+			}
+			else {
+				console.log("FAILED TO ACCESS SERVER");
+				console.log("DATA: " + data);
+				console.log("RESULT: " + xhr.response);
 				onFail(xhr.response);
+			}
 		};
 
 		xhr.send(data);
@@ -55,9 +62,12 @@ $(document).ready(function(){
 		//cookie = document.cookie;
 		var data = {};
 		data["cookie"] = cookie;
+		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
 			function(result) { //success
+				console.log("Successfully obtained account settings");
+
 				var json = JSON.parse(result);
 
 				fullName = json.fullname;
@@ -74,11 +84,10 @@ $(document).ready(function(){
 				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
 			},
 			function(result) { //fail
-				console.log(data);
-				console.log(result);
-				alert("Failed to obtain user account settings");
+				alert("Failed to obtain account settings");
 			});
 	});
+
 	$("#accountSettingsModalSaveButton").click(function() {
 		var fullNameChanged = $("#settingsModalFullNameField").val();
 		var emailChanged = $("#settingsModalEmailField").val();
@@ -113,24 +122,22 @@ $(document).ready(function(){
 			}
 		}
 
-		console.log(data);
+		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
 			function(result) { //success
-				console.log("Successfully changed user account settings");
+				console.log("Successfully saved user account settings");
+
 				$("#accountSettingsModal").modal("hide");
 			},
 			function(result) { //fail
-				alert("Failed to change user account settings");
-				console.log(result);
+				alert("Failed to save user account settings");
 			});
 
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
 	});
-
-	assignFunctionality();
 
 	//LOGOUT BUTTON
 	$("#logoutButton").click(function() {
@@ -227,46 +234,66 @@ $(document).ready(function(){
 	//FRIENDS --------------------------------
 	var updateFriends = function() {
 		$("#friendsList").empty();
+		$("body").off("click", "#friendsList img");
 
 		var data = {};
 		data["cookie"] = cookie;
+		data = JSON.stringify(data);
 
-		console.log(JSON.stringify(data));
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
 			function(result) { //success
-				console.log(result);
+				console.log("Successfully retrieved friends");
 
 				var json = JSON.parse(result);
 
 				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<button type="button" class="btn btn btn-outline-secondary">' + json.friends[i] + '</button>';
+					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
 					$("#friendsList").append(friendHTML);
 				}
 			},
 			function(result) { //fail
-				console.log(result);
-				alert("Failed to get friends");
+				alert("Failed to retrieved friends");
 			});
+
+		$("body").on("click", "#friendsList img", function() {
+			console.log("clicked");
+			var data = {};
+			data["cookie"] = cookie;
+			data["username"] = $(this).parent().text();
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/remove", data,
+				function(result) { //success
+					console.log("Successfully removed friend");
+					updateFriends();
+				},
+				function(result) { //fail
+					alert("Failed to remove friend");
+				});
+
+		});
 	};
+
 	updateFriends();
 
+	//This needs to be changed to send a friend request instead of automatically add them as a friend
 	$("#sendFriendRequestButton").click(function() {
 		var otherUsername = $("#sendFriendRequestTextbox").val();
 
 		var data = {};
 		data["cookie"] = cookie;
 		data["username"] = otherUsername;
+		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", JSON.stringify(data),
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
 			function(result) { //success
+				console.log("Successfully added friend");
+
 				$("#sendFriendRequestTextbox").val("");
 				updateFriends();
-				alert("Successfully added friend");
 			},
 			function(result) { //fail
 				alert("Failed to add friend");
-				console.log(result);
 			});
 	});
 });
