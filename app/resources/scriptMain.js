@@ -23,7 +23,7 @@ $(document).ready(function(){
 			}
 		});
 
-		$("#datepicker").datepicker({
+		$(".datepicker").datepicker({
 			inline: true,
 			firstDay: 1,
 			showOtherMonths: true,
@@ -215,7 +215,7 @@ $(document).ready(function(){
 				<div class="tab-content">
 					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel">chat...</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div id="datepicker"></div>
+						<div class="datepicker"></div>
 					</div>
 				</div>
 			</div>`;
@@ -226,6 +226,8 @@ $(document).ready(function(){
 
 	//FRIENDS --------------------------------
 	var updateFriends = function() {
+		$("#friendsList").empty();
+
 		var data = {};
 		data["cookie"] = cookie;
 
@@ -234,13 +236,11 @@ $(document).ready(function(){
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", JSON.stringify(data),
 			function(result) { //success
 				console.log(result);
-				//var friendHTML = '<a href="#" class="list-group-item list-group-item-action">'Billy Bob'</a>';
-				//$("#friendsList").append();
 
 				var json = JSON.parse(result);
 
 				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<button type="button" class="btn btn-secondary">' + json.friends[i] + '</button>';
+					var friendHTML = '<button type="button" class="btn btn btn-outline-secondary">' + json.friends[i] + '</button>';
 					$("#friendsList").append(friendHTML);
 				}
 			},
