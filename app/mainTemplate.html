@@ -10,12 +10,13 @@
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
-	<script src="resources/script.js"></script>
+	<script src="resources/scriptMain.js"></script>
+	<script src="dependencies/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 	<!-- Heading -->
 	<h1>
 		<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Settings</button>
-		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button
+		<button type="button" class="btn btn-primary float-right" style="margin-right: 10px">Logout</button>
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
@@ -268,7 +269,17 @@
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active show" id="v-pills-1-chat" role="tabpanel">chat</div>
-						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">cal</div>
+						<div class="tab-pane" id="v-pills-1-cal" role="tabpanel">
+								<div id="datepicker"></div>
+								<script>
+									$("#datepicker").datepicker({
+										inline: true,
+										firstDay: 1,
+										showOtherMonths: true,
+										dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+									});
+								</script>
+						</div>
 					</div>
 				</div>
 				<div class="tab-pane fade" id="v-pills-2" role="tabpanel">Group 1 content</div>

@@ -14,7 +14,7 @@ public class UserCreate implements IAPIRoute {
         this.tracker = tracker;
     }
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
 	System.out.println("Called Create User");
         String[] args = parseArgs(request.getBody());
         //args[0] - email

@@ -1,74 +1,74 @@
 package database;
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-
+/*
+Created by Ryan
+ */
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
+import javax.sql.DataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
-/**
- * Created by williamjohnston on 9/30/17.
- */
+//TODO Merge this with RetrieveUserInfo
 public class RetrieveUserInfo {
-
-    public static void main(String[] args) {
-	String[] info = retrieveUserInfo("fernando");
-	System.out.println();
-	for (String str: info) {
-		System.out.println(str);
-	}	
-
-    }
-    //returns: String[] of size 6, format={id, username, password, fullname, email, phone #}
-    public static String[] retrieveUserInfo(String username) {
-        MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet result = null;
-        String[] info = new String[6];  //user info array
+    //return {id, username, password, name, email, phone}
+    public static String[] getUserFromName(String username) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        String[] results = new String[6];
         try {
-            //call the DataSourceFactory class to create a pooled datasource
-            ds = DataSourceFactory.getDataSource();
-            //check for potential failed connection
-            if (ds == null) {
-                return null;
-
-            }
-            connection = ds.getConnection(); //acquire datasource object
-            //get user info
-            String query = "SELECT * FROM users WHERE username='" + username + "'";
-            statement = connection.createStatement();
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            String query = "SELECT *"
+                    + " from users where username='" + username + "'";
+            System.out.println(query);
             result = statement.executeQuery(query);
-            if (result.next()) {
-                //this user exists
-                info[0] = result.getString(1);
-                info[1] = result.getString(2);
-                info[2] = result.getString(3);
-                info[3] = result.getString(4);
-                info[4] = result.getString(5);
-                info[5] = result.getString(6);
-            } else {
-                System.out.println("ERROR: Failed to locate user with username = " + username + ".");
+            //System.out.println("Checking for null");
+            /*if (result == null) {
                 return null;
-            }
-            if (result.next()) {
-                System.out.println("ERROR: Found duplicate users with same username = " + username + ".");
-                return null;
-            }
+            }*/
+            result.first();
+
+
+            results[0] = result.getString("id");
+            results[1] = result.getString("username");
+            results[2] = result.getString("password");
+            results[3] = result.getString("fullname");
+            results[4] = result.getString("email");
+            results[5] = result.getString("phone_number");
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
-        } finally {
             try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
-                return info;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
+
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
+            return null;
         }
+        try {
+            if(result != null) result.close();
+            if(statement != null) statement.close();
+            if(connection != null) connection.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 }

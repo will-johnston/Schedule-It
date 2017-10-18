@@ -36,7 +36,7 @@ public class AddUserToDb {
 			
 			if (!result.isBeforeFirst()) {	
 			//perform add user functionality
-			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + fullname + "','" + password + "','" + email + "','" + phoneNumber + "', null)";
+			String update = "INSERT INTO users VALUES(null " +  ",'" + username + "','"  + password + "','" + fullname + "','" + email + "','" + phoneNumber + "', null)";
 			statement = connection.createStatement();
 			//send an add user query to the database
 			int ex = statement.executeUpdate(update);
@@ -48,17 +48,22 @@ public class AddUserToDb {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return ret;
-		} finally {
 			try {
 				if(result != null) result.close();
 				if(statement != null) statement.close();
 				if(connection != null) connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return ret;
+			} catch (SQLException etwo) {
+				etwo.printStackTrace();
 			}
 			return ret;
 		}
+		try {
+			if(result != null) result.close();
+			if(statement != null) statement.close();
+			if(connection != null) connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 }

@@ -19,29 +19,41 @@ public class Server {
     private Boolean isSSL;
     Boolean isListening;
     private ServerSocket sock;
-    protected SSLServerSocket sslSock;
+    private SSLServerSocket sslSock;
     private Thread listenThread;
+    private Thread securelistenThread;
 
-    public Server(int port) {
+    public Server(int port, int secureport) {
         try {
+            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
+            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+
             sock = new ServerSocket(port);
+            SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+            sslSock = (SSLServerSocket)factory.createServerSocket(secureport);
             isSSL = false;
             isListening = false;
             listenThread = null;
         } catch (IOException e) {
-            System.out.println(String.format("server.Server cannot bind to port %d, already in use!", port));
+            e.printStackTrace();
+            //System.out.println(String.format("server.Server cannot bind to port %d or port , already in use!", port));
         }
     }
 
-    public Server(int port, String sslCertificate) {
-        throw new NotImplementedException();
-    }
-
     public void startListening(Router router) {
-        isListening = true;
-        listenThread = new Listener(sock, router);
-        listenThread.start();
-        System.out.println("Started listening");
+        try {
+            isListening = true;
+            listenThread = new Listener(sock, router);
+            securelistenThread = new Listener(sslSock, router);
+
+            listenThread.start();
+            securelistenThread.start();
+            System.out.println("Started listening");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopListening() {
@@ -50,25 +62,50 @@ public class Server {
 
     class Listener extends Thread {
         ServerSocket mainServer;
-        Boolean calledQuit;
+        SSLServerSocket secureMainServer;
+        boolean calledQuit;
         Router router;
+        boolean isSsl;
 
         public Listener(ServerSocket server, Router router) {
-            mainServer = server;
-            calledQuit = false;
-            this.router = router;
+            try {
+                mainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        public Listener(SSLServerSocket server, Router router) {
+            try {
+                secureMainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = true;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         public void run() {
             //Run until the program has requested stop/quit
             while (!calledQuit) {
                 try {
-                    Socket recievedSock = mainServer.accept();
-                    new Handler(recievedSock, router).run();
+                    if (isSsl) {
+                        SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
+                    else {
+                        SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
                 } catch (SocketException e) {
-
+                    e.printStackTrace();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -80,9 +117,9 @@ public class Server {
 
     class Handler extends Thread {
         Router router;
-        Socket sock;
+        SSocket sock;
 
-        public Handler(Socket sock, Router router) {
+        public Handler(SSocket sock, Router router) {
             this.router = router;
             this.sock = sock;
         }
@@ -128,6 +165,7 @@ public class Server {
                 out.flush();
                 sock.close();*/
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("e.Message: " + e.getLocalizedMessage());
             }
         }

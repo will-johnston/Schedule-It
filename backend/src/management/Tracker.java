@@ -32,6 +32,7 @@ public class Tracker {
         if (exists != null) {
             return (int)exists.Item2;
         }
+        //else login to the system
         int cookie = -1;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
@@ -44,7 +45,7 @@ public class Tracker {
     private Tuple isInUsers(User user) {
         for (Map.Entry value : users.entrySet()) {
             User userValue = (User)value.getValue();
-            if (userValue.getUsername() == user.getUsername()) {
+            if (userValue.getUsername().equals(user.getUsername())) {
                 return new Tuple(true, value.getKey());
             }
         }

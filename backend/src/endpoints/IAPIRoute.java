@@ -10,5 +10,5 @@ import server.*;
 //All API endpoints should be registered as an IAPIRoute implementing object
 //TODO fill out routing functions
 public interface IAPIRoute {
-    void execute(Socket sock, HTTPMessage request);
+    void execute(SSocket sock, HTTPMessage request);
 }

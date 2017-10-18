@@ -15,18 +15,19 @@ public class ModifyGroup {
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
+        boolean ret = true;
         try {
             //call the DataSourceFactory class to create a pooled datasource
             ds = DataSourceFactory.getDataSource();
             //check for potential failed connection
             if (ds == null) {
                 System.out.println("ERROR: could get data source");
-                return false;
+                ret = false;
             }
             connection = ds.getConnection(); //acquire datasource object
             if (connection == null) {
                 System.out.println("ERROR: could not connect to data source");
-                return false;
+                ret = false;
             }
 
             //change group name
@@ -36,18 +37,25 @@ public class ModifyGroup {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
-        } finally {
+            ret = false;
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+                if (result != null) result.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException r) {
+                r.printStackTrace();
             }
+            return ret;
         }
+        try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ret;
+
     }
 
     public static boolean addUserToGroup(int groupID, int userID) {
