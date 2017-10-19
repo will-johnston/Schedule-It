@@ -150,6 +150,37 @@ $(document).ready(function(){
 
 
 	//NEW GROUP MODAL
+	$("#addNewGroupButton").click(function() {
+		$("#groupFriendsList").empty();
+		$("body").off("click", "#groupFriendsList img");
+
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
+			function(result) { //success
+				console.log("Successfully retrieved friends");
+
+				var json = JSON.parse(result);
+
+				for(var i = 0; i < json.friends.length; i++) {
+					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/plus.png" width="18px" />' + json.friends[i] + '</li>';
+					$("#groupFriendsList").append(friendHTML);
+				}
+			},
+			function(result) { //fail
+				alert("Failed to retrieved friends");
+			});
+
+		$("body").on("click", "#groupFriendsList img", function() {
+			//call endpoint to invite user to group
+
+			console.log("clicked");
+
+		});
+	});
+
 	$("#newGroupModalCreateButton").click(function() {
 		var nameField = $("#newGroupModalName");
 		var infoField = $("#newGroupModalInfo");
@@ -170,6 +201,7 @@ $(document).ready(function(){
 			nameField.removeClass("is-invalid");
 		}
 	});
+
 	$("#newGroupModalCancelButton").click(function() {
 		$("#newGroupModalName").val("");
 		$("#newGroupModalInfo").val("");
@@ -181,6 +213,7 @@ $(document).ready(function(){
 		//populate the group settings modal with group information
 
 	});
+
 	$("#groupSettingsSaveButton").click(function() {
 		//Write the changed values to the database
 
@@ -188,9 +221,20 @@ $(document).ready(function(){
 		$("#groupSettingsModal").modal("hide");
 	});
 
-
 	var createGroup = function(name, info, pic) {
-		//Call the create group endpoint with parameters
+		var data = {};
+		data["cookie"] = cookie;
+		data["name"] = name;
+		data["info"] = info;
+		data = JSON.stringify(data);
+
+		/*accessServer("POST", "...", data,
+			function(result) { //success
+				console.log("Successfully created group");
+			},
+			function(result) { //fail
+				alert("Failed to create group");
+			});*/
 
 
 		var id = "group" + ++$("#vPillsContent").children().length + "Content";

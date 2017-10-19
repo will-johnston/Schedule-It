@@ -59,6 +59,11 @@ body {
 	height: 100%;
 }
 
+.groupOverflowList {
+	overflow-y: scroll;
+	height: 200px;
+}
+
 #addNewGroupButton {
 	margin-bottom: 10px;
 	width: 100%;
@@ -70,6 +75,18 @@ body {
 
 #friendsListCard {
 	margin-top: 10px;
+}
+
+#groupFriendsList img {
+	cursor: pointer;
+}
+
+#friendsList img {
+	cursor: pointer;
+}
+
+.btn {
+	cursor: pointer;
 }
 
 .card-group {
