@@ -16,7 +16,7 @@
 	<!-- Heading -->
 	<h1>
 		<button type="button" class="btn btn-primary float-right" id="accountSettingsButton" data-toggle="modal" data-target="#accountSettingsModal">Settings</button>
-		<button type="button" class="btn btn-primary float-right" id="logoutButton" style="margin-right: 10px">Logout</button
+		<button type="button" class="btn btn-primary float-right" id="logoutButton" style="margin-right: 10px">Logout</button>
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
@@ -303,7 +303,20 @@
 						</button>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active show" id="group1ContentChat" role="tabpanel">chat...</div>
+						<div class="tab-pane active show" id="group1ContentChat" role="tabpanel" style="padding: 2%">
+
+							<!--Group Chat-->
+							<div id="_wrapper">
+								<div id="chatbox_" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;
+									transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+								 
+								<form name="message" action="">
+									<input name="usermsg" type="text" id="_message" style="width: 53em; border:1px solid rgb(220, 220, 220)">
+									<button type="button" class="btn btn-primary" id="_sendMessage"  style="width: 5em; margin-right:2.5em; margin-left: 0.5em">Send</button>
+									<button type="button" class="btn btn-secondary" id="_sendBot"  style="width: 6em">Chatbot</button>
+								</form>
+							</div>
+						</div>
 						<div class="tab-pane" id="group1ContentCal" role="tabpanel">
 							<div class="datepicker"></div>
 						</div>
