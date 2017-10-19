@@ -73,6 +73,55 @@ public class HTTPMessage {
         }
         body = bodyBuilder.toString();
     }
+    public HTTPMessage(String headers, String body) throws Exception {
+        //do it ourselves
+        System.out.println("Recieved headers: " + headers);
+        System.out.println("Recieved body: " + body);
+        //Parse HTTP type, method, and HTTP version
+        this.body = body;
+        String[] lines = headers.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i == 0) {
+                //Should be GET or POST or other HTTP methods
+                String[] topSplit = line.split(" ");
+                if (topSplit.length < 3) {
+                    throw new Exception("Invalid Request");
+                }
+                switch (topSplit[0].toUpperCase()) {
+                    case "POST":
+                        methodType = HTTPMethod.POST;
+                        break;
+                    case "GET":
+                        methodType = HTTPMethod.GET;
+                        break;
+                    case "DELETE":
+                        methodType = HTTPMethod.DELETE;
+                        break;
+                    default:
+                        methodType = HTTPMethod.UNKNOWN;
+                        break;
+                }
+                method = topSplit[1];
+                String[] versionSplit = topSplit[2].split("/");
+                try {
+                    HTTPversion = Float.parseFloat(versionSplit[1]);
+                } catch (Exception e) {
+                    //I don't care about resolving this Exception
+                    HTTPversion = -1f;
+                }
+                continue;
+            }
+            else {
+                Header header = new Header(line);
+                if (header.Key == null || header.Value == null) {
+                    System.out.println(line + " did not parse as a header");
+                } else {
+                    this.headers.put(header.Key, header);
+                }
+            }
+        }
+    }
     // This method creates a generic response
     public static String makeBasicResponse(String message) {
         StringBuilder response = new StringBuilder();
@@ -147,6 +196,7 @@ public class HTTPMessage {
         MethodNotAllowed,
         RedirectFound,
         NotFound,
+        GatewayTimeout,
         Unknown
     }
 	public enum MimeType {
@@ -170,6 +220,8 @@ public class HTTPMessage {
                 return 405;
             case RedirectFound:
                 return 302;
+            case GatewayTimeout:
+                return 504;
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -190,6 +242,8 @@ public class HTTPMessage {
                 return "Method Not Allowed";
             case RedirectFound:
                 return "Redirect Found";
+            case GatewayTimeout:
+                return "Gateway Timeout";
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -258,6 +312,7 @@ public class HTTPMessage {
     public String getBody() {
         return body;
     }
+    public String setBody() { return body; }
 
     public HTTPMethod getMethodType() {
         return methodType;
