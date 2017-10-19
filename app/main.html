@@ -215,16 +215,15 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<div class="col-6">
-							<label>Add friends to group:</label>
-							<div class="list-group">
-							</div>
+						<div class="col-4">
+							<label>Invite friends</label>
 						</div>
-						<div class="col-6">
-							<label>Members:</label>
-							<br />
-							<ul class="list-group" style="width: 100%">
-							</ul>
+						<div class="col-8">
+							<div class="card groupOverflowList">
+								<ul id="groupFriendsList" class="list-group list-group-flush">
+
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -247,12 +246,12 @@
 				<!-- Group side list -->
 				<div class="card side-list">
 					<label class="card-header">Groups</label>
-					<ddiv class="card-block">
+					<div class="card-block">
 						<button type="button" class="btn btn-primary" id="addNewGroupButton" data-toggle="modal" data-target="#newGroupModal">Create new group</button>
 						<div class="nav flex-column nav-pills" id="vPillsTab" role="tablist">
 							<a class="nav-link active" data-toggle="pill" href="#group1Content" role="tab">Me</a>
 						</div>
-					</ddiv>
+					</div>
 				</div>
 
 
@@ -288,7 +287,6 @@
 								<img src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail" width="100">
 								<h3>Me</h3>
 								<p>This tab is just for you! Chat with the bot and set personal events.</p>
-								<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
 							</div>
 						</div>
 					</div>
