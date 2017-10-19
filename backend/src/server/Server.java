@@ -25,9 +25,9 @@ public class Server {
 
     public Server(int port, int secureport) {
         try {
-            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
-            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
-            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+            //System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            //System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
+            //java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
 
             sock = new ServerSocket(port);
             SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
@@ -196,6 +196,9 @@ public class Server {
                     String[] lines = readstr.split("\n");
                     for (int i = 0; i < lines.length; i++) {
                         if (inBody) {
+                            if (length == 0) {
+                                return new HTTPMessage(head.toString(), body.toString());
+                            }
                             //add body data
                             body.append(lines[i] + '\n');
                             if ((body.length() - 1) == length ) {

@@ -74,7 +74,9 @@ public class HTTPMessage {
         body = bodyBuilder.toString();
     }
     public HTTPMessage(String headers, String body) throws Exception {
-        this(headers);
+        //do it ourselves
+        System.out.println("Recieved headers: " + headers);
+        System.out.println("Recieved body: " + body);
         this.body = body;
     }
     // This method creates a generic response
