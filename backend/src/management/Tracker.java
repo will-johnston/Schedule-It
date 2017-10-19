@@ -13,8 +13,8 @@ public class Tracker {
     public Tracker() {
         users = new HashMap<>(10);
         count = 0;
-        //timeout = 60 * 30;      //30 Minutes
-        timeout = 30;           //testy
+        timeout = 60 * 30;      //30 Minutes
+        //timeout = 30;           //testy
     }
     public Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {

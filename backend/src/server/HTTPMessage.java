@@ -73,6 +73,10 @@ public class HTTPMessage {
         }
         body = bodyBuilder.toString();
     }
+    public HTTPMessage(String headers, String body) throws Exception {
+        this(headers);
+        this.body = body;
+    }
     // This method creates a generic response
     public static String makeBasicResponse(String message) {
         StringBuilder response = new StringBuilder();
@@ -147,6 +151,7 @@ public class HTTPMessage {
         MethodNotAllowed,
         RedirectFound,
         NotFound,
+        GatewayTimeout,
         Unknown
     }
 	public enum MimeType {
@@ -170,6 +175,8 @@ public class HTTPMessage {
                 return 405;
             case RedirectFound:
                 return 302;
+            case GatewayTimeout:
+                return 504;
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -190,6 +197,8 @@ public class HTTPMessage {
                 return "Method Not Allowed";
             case RedirectFound:
                 return "Redirect Found";
+            case GatewayTimeout:
+                return "Gateway Timeout";
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -258,6 +267,7 @@ public class HTTPMessage {
     public String getBody() {
         return body;
     }
+    public String setBody() { return body; }
 
     public HTTPMethod getMethodType() {
         return methodType;
