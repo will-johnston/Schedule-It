@@ -198,7 +198,7 @@ public class Server {
                         if (inBody) {
                             //add body data
                             body.append(lines[i] + '\n');
-                            if (body.length() == length) {
+                            if (body.length() == (length - 1)) {
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             else {
