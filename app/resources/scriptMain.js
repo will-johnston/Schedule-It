@@ -17,9 +17,11 @@ $(document).ready(function(){
 		$(".chevron").click(function() {
 			if(!$(this).hasClass("collapsed")) {
 				$(this).find("img").attr("src","resources/chevronDown.png");
+				$('[id^="chatbox_"]').css('height', '32em');
 			}
 			else {
 				$(this).find("img").attr("src","resources/chevronUp.png");
+				$('[id^="chatbox_"]').css('height', '21em');
 			}
 		});
 
@@ -220,7 +222,17 @@ $(document).ready(function(){
 					</button>
 				</ul>
 				<div class="tab-content">
-					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel">chat...</div>
+					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
+						<div id="` + id + "_wrapper" + `">
+							<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+								 
+							<form name="message" action="">
+								<input name="usermsg" type="text" id="` + id + "_message" + `" style="width: 53em; border:1px solid rgb(220, 220, 220)">
+								<button type="button" class="btn btn-primary" id="` + id + "_sendMessage" + `"  style="width: 5em; margin-right:2.5em; margin-left: 0.5em">Send</button>
+								<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
+							</form>
+						</div>
+					</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
 						<div class="datepicker"></div>
 					</div>
