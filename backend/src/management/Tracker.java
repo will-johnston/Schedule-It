@@ -33,6 +33,7 @@ public class Tracker {
         if (exists != null) {
             //checkin
             user.checkin();
+            updateUser((int)exists.Item2 ,user);
             return (int)exists.Item2;
         }
         //else login to the system
