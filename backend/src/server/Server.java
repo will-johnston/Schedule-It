@@ -195,6 +195,7 @@ public class Server {
                     String readstr = new String(buffer, 0, read);
                     String[] lines = readstr.split("\n");
                     for (int i = 0; i < lines.length; i++) {
+                        System.out.println(lines[i]);
                         if (inBody) {
                             if (length == 0) {
                                 return new HTTPMessage(head.toString(), body.toString());
@@ -228,10 +229,17 @@ public class Server {
                                     return null;
                                 }
                             }
-                            if (lines[i].length() <= 1) {
+                            else if (lines[i].length() <= 1) {
                                 //encountered the body
                                 inBody = true;
+                                if (length == -1) {
+                                    //No Content-Length specified
+                                    return new HTTPMessage(head.toString(), body.toString());
+                                }
                                 continue;
+                            }
+                            else {
+                                head.append(lines[i] + '\n');
                             }
                         }
                     }
