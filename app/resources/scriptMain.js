@@ -69,6 +69,12 @@ $(document).ready(function(){
 			return;
 		}
 
+		//send friend request stub
+		if(url == "send-friend-request") {
+			onFail();
+			return;
+		}
+
 
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
@@ -96,6 +102,8 @@ $(document).ready(function(){
 		accessServer("POST", "get-notifications-stub", data,
 			function(result) { //success
 				console.log("Successfully obtained notifications");
+
+				$("#notificationMenu").empty();
 
 				var json = JSON.parse(result);
 
@@ -164,7 +172,9 @@ $(document).ready(function(){
 			});
 	};
 
-	setInterval(updateNotifications(), 60000);
+	//update notifications every 30 seconds
+	setInterval(updateNotifications, 30000);
+	updateNotifications();
 
 	$(".friendRequestAcceptButton").click(function(event) {
 		var data = {};
@@ -476,22 +486,23 @@ $(document).ready(function(){
 
 	//This needs to be changed to send a friend request instead of automatically add them as a friend
 	$("#sendFriendRequestButton").click(function() {
-		var otherUsername = $("#sendFriendRequestTextbox").val();
+		var username = $("#sendFriendRequestTextbox").val();
 
-		var data = {};
+		var data = {}
+		data["type"] = "friend-request";
 		data["cookie"] = cookie;
-		data["username"] = otherUsername;
+		data["data"] = {};
+		data["data"]["username"] = username;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
-			function(result) { //success
-				console.log("Successfully added friend");
-
-				$("#sendFriendRequestTextbox").val("");
-				updateFriends();
-			},
-			function(result) { //fail
-				alert("Failed to add friend");
-			});
+		accessServer("POST", "send-friend-request", data,
+				function(result) { //success
+					console.log("Successfully sent friend request");
+					alert("Successfully sent friend request");
+					$("#sendFriendRequestTextbox").empty();
+				},
+				function(result) { //fail
+					alert("Failed to send friend request");
+				});
 	});
 });
