@@ -75,6 +75,12 @@ $(document).ready(function(){
 			return;
 		}
 
+		//join group stub
+		if(url == "https://scheduleit.duckdns.org/api/user/groups/join") {
+			onFail();
+			return;
+		}
+
 
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
@@ -94,13 +100,23 @@ $(document).ready(function(){
 	};
 
 	//NOTIFICATIONS
+	var notificationResponseComplete = function(event) {
+		//remove the notification from the menu
+		$(event.target).parent().parent().parent().remove();
+		//decrement the badge
+		$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+	}
+
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
+		$(".friendRequestDeclineButton").off();
+		$(".groupInviteAcceptButton").off();
+		$(".groupInviteDeclineButton").off();
 
 		$(".friendRequestAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
-			data["username"] = $(event.target).parent().attr("username");;
+			data["username"] = $(event.target).parent().attr("username");
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
@@ -109,21 +125,34 @@ $(document).ready(function(){
 
 					updateFriends();
 
-					//remove the notification from the menu
-					$(event.target).parent().parent().parent().remove();
-					//decrement the badge
-					$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+					notificationResponseComplete();
 				},
 				function(result) { //fail
 					alert("Failed to add friend");
 				});
 		});
 
-		$(".friendRequestDeclineButton").click(function() {
-			//remove the notification from the menu
-			$(event.target).parent().parent().parent().remove();
-			//decrement the badge
-			$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+		$(".friendRequestDeclineButton").click(function(event) {
+			notificationResponseComplete(event);
+		});
+
+		$(".groupInviteAcceptButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["id"] = $(event.target).parent().attr("groupID");
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/join", data,
+				function(result) { //success
+					notificationResponseComplete();
+				},
+				function(result) { //fail
+					alert("Failed to join group");
+				});
+		});
+
+		$(".groupInviteDeclineButton").click(function(event) {
+			notificationResponseComplete(event);
 		});
 	};
 
@@ -188,9 +217,9 @@ $(document).ready(function(){
 									<p class="card-text">You have been invited to join ` + name + `</p>
 								</div>
 								<div class="card-footer">
-									<div class="float-right">
-										<button type="button" class="btn btn-primary btn-sm">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm">Decline</button>
+									<div class="float-right" groupID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm groupInviteAcceptButton">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
 									</div>
 								</div>
 							</div>
@@ -408,7 +437,7 @@ $(document).ready(function(){
 							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 							<h3>` + name + `</h3>
 							<p>` + info + `</p>
-							<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
+							<button type="button" class="btn btn-secondary btn-sm invisible" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
 						</div>
 					</div>
 				</div>
