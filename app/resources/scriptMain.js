@@ -2,6 +2,11 @@ $(document).ready(function(){
 	
 	var cookie = document.cookie.split("=")[1];
 
+	//This stops the notification menu from closing when it's clicked on
+	$("#notificationMenu").click(function(event){
+		event.stopPropagation();
+	});
+
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
 			//Fix previous pill stuff
@@ -101,6 +106,7 @@ $(document).ready(function(){
 
 					if(notification["type"] == "friend-request") {
 						var fullName = notification["data"]["fullname"];
+						var username = notification["data"]["username"];
 						var picture = notification["data"]["picture"];
 
 						var html = `
@@ -114,15 +120,16 @@ $(document).ready(function(){
 									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
 								</div>
 								<div class="card-footer">
-									<div class="float-right">
-										<button type="button" class="btn btn-primary btn-sm">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm">Decline</button>
+									<div class="float-right" username="` + username + `">
+										<button type="button" class="btn btn-primary btn-sm friendRequestAcceptButton">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
 									</div>
 								</div>
 							</div>
 							`;
 
 						$("#notificationMenu").append(html);
+						//might need to assign the functionality of the accept/decline buttons
 					}
 					else if(notification["type"] == "group-invite") {
 						var name = notification["data"]["name"];
@@ -158,6 +165,36 @@ $(document).ready(function(){
 	};
 
 	setInterval(updateNotifications(), 60000);
+
+	$(".friendRequestAcceptButton").click(function(event) {
+		var data = {};
+		data["cookie"] = cookie;
+		data["username"] = $(event.target).parent().attr("username");;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
+			function(result) { //success
+				console.log("Successfully added friend");
+
+				updateFriends();
+
+				//remove the notification from the menu
+				$(event.target).parent().parent().parent().remove();
+				//decrement the badge
+				$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+			},
+			function(result) { //fail
+				alert("Failed to add friend");
+			});
+	});
+
+	$(".friendRequestDeclineButton").click(function() {
+		//remove the notification from the menu
+		$(event.target).parent().parent().parent().remove();
+		//decrement the badge
+		$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+	});
+
 
 	//SETTINGS MODAL
 	var fullName;
