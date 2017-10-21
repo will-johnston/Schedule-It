@@ -1,7 +1,11 @@
 $(document).ready(function(){
 	
-	//variables
 	var cookie = document.cookie.split("=")[1];
+
+	//This stops the notification menu from closing when it's clicked on
+	$("#notificationMenu").click(function(event){
+		event.stopPropagation();
+	});
 
 	var assignFunctionality = function() {
 		$("#vPillsTab a").on("shown.bs.tab", function(event) {
@@ -37,6 +41,41 @@ $(document).ready(function(){
 	assignFunctionality();
 
 	var accessServer = function(method, url, data, onSuccess, onFail) {
+
+		//get notifications sub
+		if(url == "get-notifications-stub") {
+			var r = `{
+				"notifications": [
+					{
+						"type": "friend-request",
+						"data": {
+							"fullname": "[fullname]",
+							"username": "[username]",
+							"picture": "[url]"
+						}
+					},
+					{
+						"type": "group-invite",
+						"data": {
+							"name": "[name]",
+							"id": "[id]",
+							"picture": "[url]"
+						}
+					}
+				]
+				}`;
+
+			onSuccess(r);
+			return;
+		}
+
+		//send friend request stub
+		if(url == "send-friend-request") {
+			onFail();
+			return;
+		}
+
+
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
@@ -53,6 +92,119 @@ $(document).ready(function(){
 
 		xhr.send(data);
 	};
+
+	//NOTIFICATIONS
+	var updateNotifications = function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "get-notifications-stub", data,
+			function(result) { //success
+				console.log("Successfully obtained notifications");
+
+				$("#notificationMenu").empty();
+
+				var json = JSON.parse(result);
+
+				$("#notificationsBadge").text(json["notifications"].length);
+
+				for(var i = 0; i < json["notifications"].length; i++) {
+					var notification = json["notifications"][i];
+
+					if(notification["type"] == "friend-request") {
+						var fullName = notification["data"]["fullname"];
+						var username = notification["data"]["username"];
+						var picture = notification["data"]["picture"];
+
+						var html = `
+							<!-- friend request -->
+							<div class="card">
+								<div class="card-header">
+									Friend request
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" username="` + username + `">
+										<button type="button" class="btn btn-primary btn-sm friendRequestAcceptButton">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+						//might need to assign the functionality of the accept/decline buttons
+					}
+					else if(notification["type"] == "group-invite") {
+						var name = notification["data"]["name"];
+						var id = notification["data"]["id"];
+						var picture = notification["data"]["picture"];
+
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Group invite
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">You have been invited to join ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right">
+										<button type="button" class="btn btn-primary btn-sm">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm">Decline</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+					}
+				}
+			},
+			function(result) { //fail
+				alert("Failed to obtain notifications");
+			});
+	};
+
+	//update notifications every 30 seconds
+	setInterval(updateNotifications, 30000);
+	updateNotifications();
+
+	$(".friendRequestAcceptButton").click(function(event) {
+		var data = {};
+		data["cookie"] = cookie;
+		data["username"] = $(event.target).parent().attr("username");;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
+			function(result) { //success
+				console.log("Successfully added friend");
+
+				updateFriends();
+
+				//remove the notification from the menu
+				$(event.target).parent().parent().parent().remove();
+				//decrement the badge
+				$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+			},
+			function(result) { //fail
+				alert("Failed to add friend");
+			});
+	});
+
+	$(".friendRequestDeclineButton").click(function() {
+		//remove the notification from the menu
+		$(event.target).parent().parent().parent().remove();
+		//decrement the badge
+		$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+	});
+
 
 	//SETTINGS MODAL
 	var fullName;
@@ -313,7 +465,6 @@ $(document).ready(function(){
 			});
 
 		$("body").on("click", "#friendsList img", function() {
-			console.log("clicked");
 			var data = {};
 			data["cookie"] = cookie;
 			data["username"] = $(this).parent().text();
@@ -335,22 +486,23 @@ $(document).ready(function(){
 
 	//This needs to be changed to send a friend request instead of automatically add them as a friend
 	$("#sendFriendRequestButton").click(function() {
-		var otherUsername = $("#sendFriendRequestTextbox").val();
+		var username = $("#sendFriendRequestTextbox").val();
 
-		var data = {};
+		var data = {}
+		data["type"] = "friend-request";
 		data["cookie"] = cookie;
-		data["username"] = otherUsername;
+		data["data"] = {};
+		data["data"]["username"] = username;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
-			function(result) { //success
-				console.log("Successfully added friend");
-
-				$("#sendFriendRequestTextbox").val("");
-				updateFriends();
-			},
-			function(result) { //fail
-				alert("Failed to add friend");
-			});
+		accessServer("POST", "send-friend-request", data,
+				function(result) { //success
+					console.log("Successfully sent friend request");
+					alert("Successfully sent friend request");
+					$("#sendFriendRequestTextbox").empty();
+				},
+				function(result) { //fail
+					alert("Failed to send friend request");
+				});
 	});
 });
