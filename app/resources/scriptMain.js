@@ -94,6 +94,39 @@ $(document).ready(function(){
 	};
 
 	//NOTIFICATIONS
+	var assignNotificationFunctionality = function() {
+		$(".friendRequestAcceptButton").off();
+
+		$(".friendRequestAcceptButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["username"] = $(event.target).parent().attr("username");;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
+				function(result) { //success
+					console.log("Successfully added friend");
+
+					updateFriends();
+
+					//remove the notification from the menu
+					$(event.target).parent().parent().parent().remove();
+					//decrement the badge
+					$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+				},
+				function(result) { //fail
+					alert("Failed to add friend");
+				});
+		});
+
+		$(".friendRequestDeclineButton").click(function() {
+			//remove the notification from the menu
+			$(event.target).parent().parent().parent().remove();
+			//decrement the badge
+			$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
+		});
+	};
+
 	var updateNotifications = function() {
 		var data = {};
 		data["cookie"] = cookie;
@@ -165,6 +198,8 @@ $(document).ready(function(){
 
 						$("#notificationMenu").append(html);
 					}
+
+					assignNotificationFunctionality();
 				}
 			},
 			function(result) { //fail
@@ -175,35 +210,6 @@ $(document).ready(function(){
 	//update notifications every 30 seconds
 	setInterval(updateNotifications, 30000);
 	updateNotifications();
-
-	$(".friendRequestAcceptButton").click(function(event) {
-		var data = {};
-		data["cookie"] = cookie;
-		data["username"] = $(event.target).parent().attr("username");;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
-			function(result) { //success
-				console.log("Successfully added friend");
-
-				updateFriends();
-
-				//remove the notification from the menu
-				$(event.target).parent().parent().parent().remove();
-				//decrement the badge
-				$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
-			},
-			function(result) { //fail
-				alert("Failed to add friend");
-			});
-	});
-
-	$(".friendRequestDeclineButton").click(function() {
-		//remove the notification from the menu
-		$(event.target).parent().parent().parent().remove();
-		//decrement the badge
-		$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
-	});
 
 
 	//SETTINGS MODAL
