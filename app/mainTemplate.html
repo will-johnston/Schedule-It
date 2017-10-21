@@ -11,7 +11,7 @@
 	<script src="dependencies/popper.min.js"></script>
 	<script src="dependencies/jquery-3.2.1.min.js"></script>
 	<script src="dependencies/bootstrap.min.js"></script>
-	<script src="resources/scriptMain.js"></script>
+	<!-- <script src="resources/scriptMain.js"></script> -->
 	<script src="dependencies/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 	<!-- Heading -->
@@ -21,8 +21,42 @@
 		
 		<!-- Notification dropdown -->
 		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">0</span></button>
-			<div class="dropdown-menu dropdown-menu-right" id="notification-menu">
+			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span class="badge">2</span></button>
+			<div class="dropdown-menu dropdown-menu-right" id="notificationMenu">
+				<!-- friend request -->
+				<div class="card">
+					<div class="card-header">
+						Friend request
+					</div>
+					<div class="card-body">
+						<img class="float-left" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" width="80" class="img-thumbnail">
+						<p class="card-text">[user full name] would like to add you as a friend</p>
+					</div>
+					<div class="card-footer">
+						<div class="float-right">
+							<button type="button" class="btn btn-primary btn-sm">Accept</button>
+							<button type="button" class="btn btn-danger btn-sm">Decline</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- group invite -->
+				<div class="card">
+					<div class="card-header">
+						Group invite
+					</div>
+					<div class="card-body">
+						<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+						<p class="card-text">You have been invited to join [group name]</p>
+					</div>
+					<div class="card-footer">
+						<div class="float-right">
+							<button type="button" class="btn btn-primary btn-sm">Accept</button>
+							<button type="button" class="btn btn-danger btn-sm">Decline</button>
+						</div>
+					</div>
+				</div>
+
 
 			</div>
 		</div>

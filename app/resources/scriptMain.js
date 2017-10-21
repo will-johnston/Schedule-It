@@ -1,6 +1,5 @@
 $(document).ready(function(){
 	
-	//variables
 	var cookie = document.cookie.split("=")[1];
 
 	var assignFunctionality = function() {
@@ -37,6 +36,35 @@ $(document).ready(function(){
 	assignFunctionality();
 
 	var accessServer = function(method, url, data, onSuccess, onFail) {
+
+		//get notifications sub
+		if(url == "get-notifications-stub") {
+			var r = `{
+				"notifications": [
+					{
+						"type": "friend-request",
+						"data": {
+							"fullname": "[fullname]",
+							"username": "[username]",
+							"picture": "[url]"
+						}
+					},
+					{
+						"type": "group-invite",
+						"data": {
+							"name": "[name]",
+							"id": "[id]",
+							"picture": "[url]"
+						}
+					}
+				]
+				}`;
+
+			onSuccess(r);
+			return;
+		}
+
+
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
@@ -53,6 +81,83 @@ $(document).ready(function(){
 
 		xhr.send(data);
 	};
+
+	//NOTIFICATIONS
+	var updateNotifications = function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "get-notifications-stub", data,
+			function(result) { //success
+				console.log("Successfully obtained notifications");
+
+				var json = JSON.parse(result);
+
+				$("#notificationsBadge").text(json["notifications"].length);
+
+				for(var i = 0; i < json["notifications"].length; i++) {
+					var notification = json["notifications"][i];
+
+					if(notification["type"] == "friend-request") {
+						var fullName = notification["data"]["fullname"];
+						var picture = notification["data"]["picture"];
+
+						var html = `
+							<!-- friend request -->
+							<div class="card">
+								<div class="card-header">
+									Friend request
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right">
+										<button type="button" class="btn btn-primary btn-sm">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm">Decline</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "group-invite") {
+						var name = notification["data"]["name"];
+						var id = notification["data"]["id"];
+						var picture = notification["data"]["picture"];
+
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Group invite
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">You have been invited to join ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right">
+										<button type="button" class="btn btn-primary btn-sm">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm">Decline</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+					}
+				}
+			},
+			function(result) { //fail
+				alert("Failed to obtain notifications");
+			});
+	};
+
+	setInterval(updateNotifications(), 60000);
 
 	//SETTINGS MODAL
 	var fullName;
@@ -313,7 +418,6 @@ $(document).ready(function(){
 			});
 
 		$("body").on("click", "#friendsList img", function() {
-			console.log("clicked");
 			var data = {};
 			data["cookie"] = cookie;
 			data["username"] = $(this).parent().text();

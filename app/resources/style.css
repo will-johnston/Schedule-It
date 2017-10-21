@@ -4,20 +4,23 @@ body {
 	width: 1400px;
 }
 
-#notification-menu {
+#notificationMenu {
 	padding: 10px;
 	width: 400px;
-	height: 358px;
+	height: 450px;
 	overflow-y: scroll;
 }
 
-.notification-card {
-	margin: 10px 0px 10px 0px;
-	padding: 10px;
+#notificationMenu .card-body {
+	padding: 10px
 }
 
-.notification-card img {
+#notificationMenu img {
 	margin-right: 10px;
+}
+
+#notificationMenu .card {
+	margin-bottom: 10px;
 }
 
 .col-mod-l {
