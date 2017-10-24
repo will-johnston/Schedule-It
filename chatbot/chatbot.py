@@ -8,7 +8,7 @@ chatbot = ChatBot(
     'Clarence',
     trainer='chatterbot.trainers.ListTrainer',
     logic_adapters= [
-         #   'schedule_adapter.my_schedule_adapter',
+         {   'import_path': 'schedule_adapter.my_schedule_adapter' },
             {
             "import_path":'chatterbot.logic.BestMatch',
             'statement_comparison_function': 'chatterbot.comparisons.levenshtein_distance'
@@ -104,6 +104,8 @@ what_bot_does =  """My main function is to help schedule events. However, I can 
 chatbot.train([
     "What can you tell me?",
     what_bot_does,
+    ]);
+chatbot.train([
     "Could you explain event time to me?",
     event_time_explanation
     ]);
@@ -157,7 +159,7 @@ chatbot.train([
 chatbot.set_trainer(ChatterBotCorpusTrainer)
 
 chatbot.train(
-    "chatterbot.corpus.english"
+#    "chatterbot.corpus.english"
 )
 
 # Get a response to the input text 'How are you?'
