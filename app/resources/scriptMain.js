@@ -14,6 +14,7 @@ $(document).ready(function(){
 			$(currPill + " .nav a:first").tab("show");
 		});
 
+		//Chevron button to hide group information
 		$(".chevron").click(function() {
 			if(!$(this).hasClass("collapsed")) {
 				$(this).find("img").attr("src","resources/chevronDown.png");
@@ -25,11 +26,53 @@ $(document).ready(function(){
 			}
 		});
 
+		//Calendar
 		$(".datepicker").datepicker({
 			inline: true,
 			firstDay: 1,
 			showOtherMonths: true,
 			dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		});
+
+		//Send message buttons
+		$('[id^="sendMessage_"]').click(function() {
+			var buttonId = this.id.toString();
+			var groupId = buttonId.replace('sendMessage_', '').toString();
+			var textBoxId = 'message_' + groupId;
+			var message = document.getElementById(textBoxId).value; //Message being sent
+			var username; //Username that sent the message
+			document.getElementById(textBoxId).value = '';
+
+			var data = {};
+			data["cookie"] = cookie;
+	
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
+				function(result) { //success
+					var json = JSON.parse(result);
+					username = json.username;
+				},
+				function(result) { //fail
+					console.log(data);
+					console.log(result);
+					alert("Failed to obtain user account settings");
+			});
+			var a = new Date();
+			var timeStamp = "[" + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds() + "]"; //Timestamp for message
+
+			var myJson = {};
+			myJson["username"] = username;
+			myJson["groupID"] = groupId;
+			myJson["time"] = timeStamp;
+			myJson["line"] = message;
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+				function(result) {
+					//Success that message
+				},
+				function(result) {
+					console.log(myJson);
+					console.log(result);
+					alert("Failed to send message");				}
+			);
 		});
 	};
 
@@ -79,7 +122,7 @@ $(document).ready(function(){
 				console.log(data);
 				console.log(result);
 				alert("Failed to obtain user account settings");
-			});
+		});
 	});
 	$("#accountSettingsModalSaveButton").click(function() {
 		var fullNameChanged = $("#settingsModalFullNameField").val();
@@ -220,8 +263,8 @@ $(document).ready(function(){
 							<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 								 
 							<form name="message" action="">
-								<input name="usermsg" type="text" id="` + id + "_message" + `" style="width: 53em; border:1px solid rgb(220, 220, 220)">
-								<button type="button" class="btn btn-primary" id="` + id + "_sendMessage" + `"  style="width: 5em; margin-right:2.5em; margin-left: 0.5em">Send</button>
+								<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+								<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
 								<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
 							</form>
 						</div>
