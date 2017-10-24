@@ -1,0 +1,27 @@
+<!doctype html>
+
+<html>
+<body>
+	<script>
+
+		var data = '{ "cookie" : "-649488896" }';
+		console.log(data);
+
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", "https://scheduleit.duckdns.org/api/user/friends/get");
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				console.log("success");
+				console.log(xhr.response);
+			}
+			else {
+				console.log("fail");
+				console.log(xhr.response);
+			}
+		};
+
+		xhr.send(data);
+	</script>
+
+</body>
+</html>

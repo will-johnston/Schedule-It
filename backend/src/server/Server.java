@@ -129,15 +129,27 @@ public class Server {
                 InputStream in = sock.getInputStream();
                 OutputStream out = sock.getOutputStream();
                 //Max recieve size is 8 KB, allow for overhead
+				/*Thread.sleep(5);			//Sleep 5 whole seconds
                 byte[] buffer = new byte[9216];
                 int readResult = in.read(buffer);
+				System.out.println("In available: " + in.available());
                 String header = new String(buffer, 0, readResult, StandardCharsets.UTF_8);
-                //System.out.println("header: " + header);
-                //System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
+                System.out.println("header: " + header);
+                System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
+                HTTPMessage mess;*/
                 HTTPMessage mess;
                 try {
-                    mess = new HTTPMessage(header);
-			System.out.println("Server recieved " + mess.method);
+                     mess = getRequest(in);
+                     if (mess == null) {
+                         //timed out
+                         System.out.println("Failed to parse HTTP Message, TIMED OUT");
+                         String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
+                         out.write(response.getBytes(Charset.forName("UTF-8")));
+                         out.flush();
+                         sock.close();
+                         return;
+                     }
+			        System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
@@ -168,6 +180,76 @@ public class Server {
                 e.printStackTrace();
                 System.out.println("e.Message: " + e.getLocalizedMessage());
             }
+        }
+        public HTTPMessage getRequest(InputStream in) throws Exception {
+            byte[] buffer = new byte[8192];     //8KB
+            StringBuilder head = new StringBuilder();
+            StringBuilder body = new StringBuilder();
+            Timer timer = new Timer(30);        //30 second timeout
+            boolean inBody = false;
+            int length = -1;
+            while (!timer.hasExpired()) {
+                //read what there is, find content-length and verify that the data has been recieved
+                if (in.available() > 0) {
+                    int read = in.read(buffer);
+                    String readstr = new String(buffer, 0, read);
+                    String[] lines = readstr.split("\n");
+                    for (int i = 0; i < lines.length; i++) {
+                        System.out.println(lines[i]);
+                        if (inBody) {
+                            if (length == 0) {
+                                return new HTTPMessage(head.toString(), body.toString());
+                            }
+                            //add body data
+                            body.append(lines[i] + '\n');
+                            if ((body.length() - 1) == length ) {
+                                return new HTTPMessage(head.toString(), body.toString());
+                            }
+                            else {
+                                System.out.println(String.format("Builder length is %d, content length is %d", body.length(), length));
+                            }
+                        }
+                        else {
+                            //add request headers
+                            if (lines[i].contains("Content-Length")) {
+                                //add to builder then parse line
+                                head.append(lines[i] + '\n');
+                                String[] keyvalue = lines[i].split(":");
+                                if (keyvalue.length < 2) {
+                                    System.out.println("Content-Length is improperly formatted");
+                                    System.out.println("Was: " + lines[i]);
+                                    return null;
+                                }
+                                try {
+                                    length = Integer.parseInt(keyvalue[1].trim());
+                                }
+                                catch (Exception e) {
+                                    System.out.println("Couldn't parse Content-Length value");
+                                    System.out.println("Was: " + lines[i]);
+                                    return null;
+                                }
+                            }
+                            else if (lines[i].length() <= 1) {
+                                //encountered the body
+                                inBody = true;
+                                if (length == -1) {
+                                    //No Content-Length specified
+                                    return new HTTPMessage(head.toString(), body.toString());
+                                }
+                                continue;
+                            }
+                            else {
+                                head.append(lines[i] + '\n');
+                            }
+                        }
+                    }
+                }
+                Thread.sleep(50);
+            }
+            if (timer.hasExpired()) {
+                return  null;
+            }
+            return null;
         }
     }
 

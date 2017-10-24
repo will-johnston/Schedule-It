@@ -13,6 +13,7 @@ public class HTTPMessage {
     String method;
     float HTTPversion;
     public HTTPMessage(String rawHTTP) throws Exception {
+	//System.out.println(rawHTTP);
         String[] lines = rawHTTP.split("[\n]");
         Boolean headerBoundary = false;
         StringBuilder bodyBuilder = new StringBuilder();
@@ -21,6 +22,7 @@ public class HTTPMessage {
             if (line.length() <= 1 && !headerBoundary) {
                 //We've encountered the end of the header, it's all body from here
                 headerBoundary = true;
+				System.out.println("Encountered boundary: " + line);
                 continue;
             }
             if (i == 0) {
@@ -55,6 +57,7 @@ public class HTTPMessage {
                 continue;
             }
             if (headerBoundary) {
+				System.out.println("Adding" + line);
                 bodyBuilder.append(line);
                 bodyBuilder.append('\n');
             }
@@ -70,6 +73,55 @@ public class HTTPMessage {
         }
         body = bodyBuilder.toString();
     }
+    public HTTPMessage(String headers, String body) throws Exception {
+        //do it ourselves
+        System.out.println("Recieved headers: " + headers);
+        System.out.println("Recieved body: " + body);
+        //Parse HTTP type, method, and HTTP version
+        this.body = body;
+        String[] lines = headers.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i == 0) {
+                //Should be GET or POST or other HTTP methods
+                String[] topSplit = line.split(" ");
+                if (topSplit.length < 3) {
+                    throw new Exception("Invalid Request");
+                }
+                switch (topSplit[0].toUpperCase()) {
+                    case "POST":
+                        methodType = HTTPMethod.POST;
+                        break;
+                    case "GET":
+                        methodType = HTTPMethod.GET;
+                        break;
+                    case "DELETE":
+                        methodType = HTTPMethod.DELETE;
+                        break;
+                    default:
+                        methodType = HTTPMethod.UNKNOWN;
+                        break;
+                }
+                method = topSplit[1];
+                String[] versionSplit = topSplit[2].split("/");
+                try {
+                    HTTPversion = Float.parseFloat(versionSplit[1]);
+                } catch (Exception e) {
+                    //I don't care about resolving this Exception
+                    HTTPversion = -1f;
+                }
+                continue;
+            }
+            else {
+                Header header = new Header(line);
+                if (header.Key == null || header.Value == null) {
+                    System.out.println(line + " did not parse as a header");
+                } else {
+                    this.headers.put(header.Key, header);
+                }
+            }
+        }
+    }
     // This method creates a generic response
     public static String makeBasicResponse(String message) {
         StringBuilder response = new StringBuilder();
@@ -83,7 +135,8 @@ public class HTTPMessage {
         response.append("Accept-Ranges: bytes\n");
         response.append("Content-Type: application/json\n");
         response.append(String.format("Content-Length: %d\n", message.length()));
-        response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org\n\n");
+        //response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
+		response.append("Access-Control-Allow-Origin: *\n\n");
         response.append(message);
         response.append('\n');
         return response.toString();
@@ -97,8 +150,8 @@ public class HTTPMessage {
         response.append("Accept-Ranges: bytes\n");
         response.append(String.format("Content-Type: %s\n", getMimeTypeName(type)));
         response.append(String.format("Content-Length: %d\n", message.length()));
-        response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org\n\n");
-        //response.append("Access-Control-Allow-Origin: http://127.0.0.1:8181\n\n");
+        //response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
+        response.append("Access-Control-Allow-Origin: *\n\n");
         response.append(message);
         response.append('\n');
         return response.toString();
@@ -112,7 +165,8 @@ public class HTTPMessage {
 		response.append("Connection: close\n");
 		response.append(String.format("Location: %s\n", location));
 		response.append("Accept-Ranges: bytes\n");
-		response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org\n\n");
+		response.append("Access-Control-Allow-Origin: *\n\n");
+		//response.append("Access-Control-Allow-Origin: https://scheduleit.duckdns.org, http://scheduleit.duckdns.org\n\n");
 		return response.toString();
 	}
 	public static String makeNotImplemented(){
@@ -142,6 +196,7 @@ public class HTTPMessage {
         MethodNotAllowed,
         RedirectFound,
         NotFound,
+        GatewayTimeout,
         Unknown
     }
 	public enum MimeType {
@@ -165,6 +220,8 @@ public class HTTPMessage {
                 return 405;
             case RedirectFound:
                 return 302;
+            case GatewayTimeout:
+                return 504;
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -185,6 +242,8 @@ public class HTTPMessage {
                 return "Method Not Allowed";
             case RedirectFound:
                 return "Redirect Found";
+            case GatewayTimeout:
+                return "Gateway Timeout";
             case Unknown:
             default:
                 //Return Internal server.Server Error
@@ -253,6 +312,7 @@ public class HTTPMessage {
     public String getBody() {
         return body;
     }
+    public String setBody() { return body; }
 
     public HTTPMethod getMethodType() {
         return methodType;
