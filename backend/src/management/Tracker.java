@@ -14,6 +14,7 @@ public class Tracker {
         users = new HashMap<>(10);
         count = 0;
         timeout = 60 * 30;      //30 Minutes
+        //timeout = 30;           //testy
     }
     public Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {
@@ -30,6 +31,9 @@ public class Tracker {
     public int login(User user) {
         Tuple exists = isInUsers(user);
         if (exists != null) {
+            //checkin
+            user.checkin();
+            updateUser((int)exists.Item2 ,user);
             return (int)exists.Item2;
         }
         //else login to the system
