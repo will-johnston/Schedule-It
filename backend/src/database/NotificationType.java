@@ -1,6 +1,7 @@
 package database;
 
-//uses an int as a backend
+//uses an int as a backend (not uint because that's also not a thing in java)
+//Stores Invites for now
 public class NotificationType {
     //invite = 0
     private int type;
@@ -12,8 +13,11 @@ public class NotificationType {
         }
         if (split[0].toLowerCase().equals("invite")) {
             //invite method
-            InviteMethod invite = InviteMethod(split[1]);
-            type = invite.getLevelCode();
+            int method =  InviteFromString(split[1]);
+            if (method == -1) {
+                throw new Exception("Invalid method");
+            }
+            this.type = method;
         }
         else {
             throw new Exception("Unknown class");
@@ -27,7 +31,7 @@ public class NotificationType {
         //returns invite.friends for the given type
         if (type >= 0 && type < 100) {
             //invite methods
-            String method = inviteMethods(type).ToString();
+            String method = InviteToString(type);
             if (method == null) return null;
             return String.format("invite.%s", method);
         }
@@ -35,43 +39,30 @@ public class NotificationType {
             return null;
         }
     }
-    private enum inviteMethods {
-        friend(0),
-        group(1),
-        event(2)
-        ;
-        private final int levelCode;
-        inviteMethods(int levelCode) {
-            this.levelCode = levelCode;
+    public String InviteToString(int value) {
+        if (value == 0) {
+            return "friend";
+        } else if (value == 1) {
+            return "group";
+        } else if (value == 2) {
+            return "event";
         }
-        inviteMethods(String method) {
-            if (method.toLowerCase().equals("friend")) {
-                this.levelCode = 0;
-            }
-            else if (method.toLowerCase().equals("group")) {
-                this.levelCode = 1;
-            }
-            else if (method.toLowerCase().equals("event")) {
-                this.levelCode = 2;
-            }
-            else {
-                throw new Exception("invalid method");
-            }
+        else {
+            return null;
         }
-        public int getLevelCode() {
-            return this.levelCode;
+    }
+    public int InviteFromString(String method) {
+        if (method.toLowerCase().equals("friend")) {
+            return 0;
         }
-        public String ToString() {
-            switch (levelCode) {
-                case 0:
-                    return "friend";
-                case 1:
-                    return "group";
-                case 2:
-                    return "event";
-                default:
-                    return null;
-            }
+        else if (method.toLowerCase().equals("")) {
+            return 1;
+        }
+        else if (method.toLowerCase().equals("")) {
+            return 2;
+        }
+        else {
+            return -1;
         }
     }
 }

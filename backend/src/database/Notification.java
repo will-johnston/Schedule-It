@@ -5,7 +5,7 @@ public class Notification {
     int id;     //notif_id
     int userid; //user_id
     User user;
-    String type;    //temporary
+    NotificationType type;    //temporary
     String params;  //CSV
     Timestamp created;
 }
