@@ -379,7 +379,7 @@ $(document).ready(function(){
 	});
 
 
-	//NEW GROUP MODAL
+	//GROUPS
 	$("#addNewGroupButton").click(function() {
 		$("#groupFriendsList").empty();
 		$("body").off("click", "#groupFriendsList img");
@@ -438,7 +438,6 @@ $(document).ready(function(){
 		$("#newGroupModalName").removeClass("is-invalid");
 	});
 
-	//GROUP SETTINGS MODAL
 	$("#groupSettingsButton").click(function() {
 		//populate the group settings modal with group information
 
@@ -449,6 +448,23 @@ $(document).ready(function(){
 
 
 		$("#groupSettingsModal").modal("hide");
+	});
+
+	$("#groupSettingsLeaveGroupButton").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["id"] = "group id to leave";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "leave group endpoint", data,
+			function(result) { //success
+				console.log("Successfully left group");
+
+				//update the groups
+			},
+			function(result) { //fail
+				alert("Failed to leave group");
+			});
 	});
 
 	var createGroup = function(name, info, pic) {
