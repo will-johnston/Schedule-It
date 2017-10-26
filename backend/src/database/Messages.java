@@ -19,7 +19,8 @@ public class Messages() {
 						
 		Connection connection = null;
 		Statement statement = null; 
-		ResultSet result = null;
+		ResultSet result1 = null;
+		ResultSet result2 = null;
 		boolean ret = true;
         try {
             //Store args in logical/readable variables
@@ -42,17 +43,19 @@ public class Messages() {
 			
             //Form query 
             //--------------------REFINE THIS--------------------
-			String sqlInsert = "INSERT INTO <table_name> (column1, column2, column3, column4)";
+			String sqlInsert = "INSERT INTO chat_line (username, groupID, time, line)";
             String sqlValues = "VALUES (" + username + "," + groupID + "," + time + "," + line + ");"
 			statement = connection.createStatement();
-			result = statement.executeQuery(sqlInsert + sqlValues);
+			result1 = statement.executeQuery(sqlInsert);
+			result2 = statement.executeQuery(sqlValues);
             //--------------------REFINE THIS--------------------
 
         } catch (SQLException e) {
             e.printStackTrace();
 
 			try {
-				if(result != null) result.close();
+				if(result1 != null) result1.close();
+				if(result2 != null) result2.close();
 				if(statement != null) statement.close();
 				if(connection != null) connection.close();
 			} catch (SQLException etwo) {
@@ -62,7 +65,8 @@ public class Messages() {
 			return ret;
         }
         try {
-			if(result != null) result.close();
+			if(result1 != null) result1.close();
+			if(result2 != null) result2.close();
 			if(statement != null) statement.close();
 			if(connection != null) connection.close();
 

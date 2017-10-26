@@ -2,6 +2,7 @@ package endpoints;
 
 import database.ModifyUserInDb;
 import database.User;
+import database.Messages;
 import server.*;
 import management.*;
 import java.util.*;
@@ -26,7 +27,9 @@ public class MessageAdd implements IAPIRoute {
             }
             else {
                 //Have username, groupID, timestamp, and message
-                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
+                Messages message = new Messages();
+                boolean ret = message.setMessage(args);
+
                 return;
             }
         } 
