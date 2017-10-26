@@ -16,7 +16,7 @@ public class UserNotifications implements IAPIRoute {
     }
     @Override
     public void execute(SSocket sock, HTTPMessage request) {
-        if (request.getMethod().equals("/user/notifications/get")) {
+        /*if (request.getMethod().equals("/user/notifications/get")) {
             int cookie = parseGetArgs(request.getBody());
             if (cookie == 0) {
                 String response = "{\"error\":\"Invalid Arguments\"}";

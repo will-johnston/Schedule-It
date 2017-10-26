@@ -120,7 +120,7 @@ public class User {
         }
         return friends;
     }
-    public ArrayList<Notification> getNotifications() {
+    public Notification[] getNotifications() {
         Notification[] notifications = NotificationInDb.get(id);
 		if (notifications == null) { return null; }
         for (Notification notification : notifications) {
@@ -135,7 +135,7 @@ public class User {
 				if (notification == null) {
 					continue;
 				}
-                if (actual == notification) {
+                if (actual.notifid != notification.notifid) {
                     alreadyexists = true;
                 }
             }
@@ -143,7 +143,9 @@ public class User {
                 this.notifications.add(notification);
             }
         }
-        return this.notifications;
+        Notification[] copy = new Notification[this.notifications.size()];
+        this.notifications.toArray(copy);
+        return copy;
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

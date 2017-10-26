@@ -14,7 +14,7 @@ public class NotificationHandler {
     }
     //formats all notifications for delivery
     //returns message to be sent to the client
-    public String format(Notification notification) {
+    public JsonObject format(Notification notification) {
         if (notification == null) {
             System.out.println("Tried to handle null notification");
             return null;
@@ -26,7 +26,7 @@ public class NotificationHandler {
                     System.out.println("Couldn't format invite notification. handler returned null");
                     return null;
                 }
-                return gson.toJson(response);
+                return response;
             }
             catch (Exception e){
                 System.out.println("Couldn't format invite notification");

@@ -9,6 +9,7 @@ public class Main {
             Router router = new Router();
             //Images images = new Images();
             Tracker tracker = new Tracker();
+            NotificationHandler handler = new NotificationHandler(tracker);
             //upload up = new upload(images, tracker);           //For special upload case
             //router.add("/upload", up);
             //router.add("/upload/chunk", up);
@@ -29,8 +30,8 @@ public class Main {
             router.add("/user/friends/add", new FriendsAdd(tracker));
             router.add("/user/getsettings", new UserGetSettings(tracker));
             router.add("/user/friends/get", new FriendsGet(tracker));
-            router.add("/user/notifications/get", new UserNotifications(tracker));
-            router.add("/user/notifications/respond", new UserNotifications(tracker));
+            router.add("/user/notifications/get", new NotificationDealer(tracker, handler));
+            router.add("/user/notifications/respond", new NotificationDealer(tracker, handler));
             return router;
         }
         catch (Exception e) {
