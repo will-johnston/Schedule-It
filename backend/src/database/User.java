@@ -135,7 +135,7 @@ public class User {
 				if (notification == null) {
 					continue;
 				}
-                if (actual.notifid != notification.notifid) {
+                if (actual.notifid == notification.notifid) {
                     alreadyexists = true;
                 }
             }
