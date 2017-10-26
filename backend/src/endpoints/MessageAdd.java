@@ -8,10 +8,10 @@ import java.util.*;
 import com.google.gson.*;
 import java.net.Socket;
 
-public class MessageSet implements IAPIRoute {
+public class MessageAdd implements IAPIRoute {
 
     Tracker tracker;
-    public MessageSet(Traker tracker) {
+    public MessageAdd(Tracker tracker) {
         this.tracker = tracker;
     }
 
@@ -26,6 +26,8 @@ public class MessageSet implements IAPIRoute {
             }
             else {
                 //Have username, groupID, timestamp, and message
+                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
+                return;
             }
         } 
         catch (Exception e) {
@@ -37,7 +39,7 @@ public class MessageSet implements IAPIRoute {
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
-            if(!bodyObj.has("username") || !bodyObj.has("groupID"_)) {
+            if(!bodyObj.has("username") || !bodyObj.has("groupID")) {
                 return null;
             }
             if(!bodyObj.has("time") || !bodyObj.has("line")) {
