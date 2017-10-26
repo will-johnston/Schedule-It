@@ -20,7 +20,7 @@ public class DataSourceFactory {
 	    try { 
 		ds = new MysqlConnectionPoolDataSource();
 		fis = new FileInputStream("/home/will/db.properties");
-		fis2 = new FileInputStream("/home/will/chat.properties")
+		fis2 = new FileInputStream("/home/will/chat.properties");
 		
 		properties.load(fis);  //load properties file contents into properties object
 		properties.load(fis2);

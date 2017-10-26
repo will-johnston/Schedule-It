@@ -10,7 +10,7 @@ import java.io.*;
 /*
     Class to handle storing messages sent and retrieving messages from the polling
  */
-public class Messages() {
+public class Messages {
     /*
         Function to store messages in the DB
      */
@@ -44,7 +44,7 @@ public class Messages() {
             //Form query 
             //--------------------REFINE THIS--------------------
 			String sqlInsert = "INSERT INTO chat_line (username, groupID, time, line)";
-            String sqlValues = "VALUES (" + username + "," + groupID + "," + time + "," + line + ");"
+            String sqlValues = "VALUES (" + username + "," + groupID + "," + time + "," + line + ");";
 			statement = connection.createStatement();
 			result1 = statement.executeQuery(sqlInsert);
 			result2 = statement.executeQuery(sqlValues);
