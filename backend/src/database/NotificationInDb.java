@@ -48,7 +48,9 @@ public class NotificationInDb {
                 String parameters = result.getString("parameters");
                 Timestamp timestamp = result.getTimestamp("created");
                 try {
-                    list.add(new Notification(notifid, userid, type, parameters, timestamp));
+                    Notification not = new Notification(notifid, userid, type, parameters, timestamp);
+					list.add(not);
+					System.out.println("Added: " + not.notifid);
                 }
                 catch (Exception adderror) {
                     adderror.printStackTrace();
@@ -96,7 +98,7 @@ public class NotificationInDb {
             //query  database
             //String query = String.format("SELECT * FROM notifications WHERE username='%s';", username);
             String query = String.format("INSERT INTO notifications VALUES(NULL, %d,'%s','%s',NULL);",
-                    notification.userid, notification.type.ToString(), notification.params);
+                    notification.userid, notification.type.toString(), notification.params);
             System.out.println(query);
             //result = statement.executeQuery(query);
             int response = statement.executeUpdate(query);

@@ -22,6 +22,7 @@ public class User {
         this.id = id;
         this.username = username;
         this.friends = new ArrayList<>();
+		this.notifications = new ArrayList<>();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
@@ -121,9 +122,19 @@ public class User {
     }
     public ArrayList<Notification> getNotifications() {
         Notification[] notifications = NotificationInDb.get(id);
+		if (notifications == null) { return null; }
         for (Notification notification : notifications) {
+			if (notification == null) {
+				continue;
+			}
             boolean alreadyexists = false;
             for (Notification actual : this.notifications) {
+				if (actual == null) {
+					continue;
+				}
+				if (notification == null) {
+					continue;
+				}
                 if (actual == notification) {
                     alreadyexists = true;
                 }

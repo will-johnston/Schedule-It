@@ -35,6 +35,11 @@ public class UserNotifications implements IAPIRoute {
                 return;
             }
             ArrayList<Notification> notifications = user.getNotifications();
+			if (notifications == null) {
+                String response = "{}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
             GetNotifResponse[] responses = new GetNotifResponse[notifications.size()];
             int i = 0;
             for (Notification notification : notifications) {
@@ -48,7 +53,7 @@ public class UserNotifications implements IAPIRoute {
                 }
             }
             String json = genericToJson(responses);
-            if (json == null) {
+            if (json != null) {
                 Socketeer.send(HTTPMessage.makeResponse(json, HTTPMessage.HTTPStatus.OK), sock);
                 return;
             }
@@ -110,7 +115,7 @@ public class UserNotifications implements IAPIRoute {
         }
         class DataObj {
             String fullName;
-            String imageUrl = null;
+            String imageUrl = "";
             Timestamp sent;
             public DataObj(Notification notification) throws Exception {
                 //params should be the user_id that sent the invite

@@ -6,8 +6,10 @@ public class NotificationType {
     //invite = 0
     private int type;
     public NotificationType(String type) throws Exception {
+		System.out.println("Requested convert of " + type);
         //resolve type
-        String[] split = type.split(".");
+        String[] split = type.split("[.]");
+		System.out.println("Split.length=" + split.length);
         if (split.length != 2) {
             throw new Exception("Invalid format");
         }
@@ -27,7 +29,7 @@ public class NotificationType {
         //not sure if this is necessary for now
         return null;
     }
-    public String ToString() {
+    public String toString() {
         //returns invite.friends for the given type
         if (type >= 0 && type < 100) {
             //invite methods
