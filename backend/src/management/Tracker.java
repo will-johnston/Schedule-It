@@ -37,13 +37,17 @@ public class Tracker {
             return (int)exists.Item2;
         }
         //else login to the system
+        int cookie = makeCookie();
+        user.checkin();
+        users.put(cookie, user);
+        return cookie;
+    }
+    private int makeCookie() {
         int cookie = -1;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
         }
         while (users.containsKey(cookie));
-        user.checkin();
-        users.put(cookie, user);
         return cookie;
     }
     private Tuple isInUsers(User user) {
@@ -81,6 +85,33 @@ public class Tracker {
         User user = users.get(cookie);
         user.checkin();
         return user;
+    }
+    public User getUserWithId(int id) {
+        for (User user : users.values()) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
+    public boolean addUser(User newuser) {
+        //adds to tracker, but doesn't login
+        //check if in tracker
+        boolean intracker = false;
+        for (User user : users.values()) {
+            if (user.getId() == newuser.getId()) {
+                intracker = true;
+                break;
+            }
+        }
+        if (intracker) {
+            return false;
+        }
+        else {
+            newuser.setLastCheckedIn(0);
+            users.put(makeCookie(), newuser);
+            return true;
+        }
     }
     public boolean updateUser(int cookie, User newUser) {
         if (!users.containsKey(cookie)) {

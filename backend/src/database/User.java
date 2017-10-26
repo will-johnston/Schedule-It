@@ -11,6 +11,7 @@ public class User {
     String phone;       //can be null
     String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
+    ArrayList<Notification> notifications;
     int id;
     long lastCheckedIn = -1;
     public User(String name, String email, String password, String phone, int id, String username) {
@@ -26,6 +27,13 @@ public class User {
     public static User fromDatabase(String name) {
         //return {id, username, password, name, email, phone}
         String[] fromDb = GetFromDb.getUserFromName(name);
+        if (fromDb == null) {
+            return null;
+        }
+        return new User(fromDb[1], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1]);
+    }
+    public static User fromDatabase(int id) {
+        String[] fromDb = GetFromDb.getUserFromId(id);
         if (fromDb == null) {
             return null;
         }
@@ -111,6 +119,21 @@ public class User {
         }
         return friends;
     }
+    public ArrayList<Notification> getNotifications() {
+        Notification[] notifications = NotificationInDb.get(id);
+        for (Notification notification : notifications) {
+            boolean alreadyexists = false;
+            for (Notification actual : this.notifications) {
+                if (actual == notification) {
+                    alreadyexists = true;
+                }
+            }
+            if (!alreadyexists) {
+                this.notifications.add(notification);
+            }
+        }
+        return this.notifications;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }
@@ -162,4 +185,8 @@ public class User {
     }
 
     public void setImageUrl(String url) {this.imageUrl = url; }
+
+    public void setLastCheckedIn(long lastCheckedIn) {
+        this.lastCheckedIn = lastCheckedIn;
+    }
 }
