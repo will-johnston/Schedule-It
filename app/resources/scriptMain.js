@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
 	var cookie = document.cookie.split("=")[1];
 
 	//This stops the notification menu from closing when it's clicked on
@@ -377,7 +377,6 @@ $(document).ready(function(){
 		document.cookie = "cookie=";
 		window.location.href = "https://scheduleit.duckdns.org/";
 	});
-
 
 	//GROUPS
 	$("#addNewGroupButton").click(function() {
