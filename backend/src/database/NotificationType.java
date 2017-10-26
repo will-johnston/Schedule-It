@@ -67,4 +67,10 @@ public class NotificationType {
             return -1;
         }
     }
+    public boolean isInvite() {
+        if (type >= 0 && type < 100) {
+            return true;
+        }
+        return false;
+    }
 }
