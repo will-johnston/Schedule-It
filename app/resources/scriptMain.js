@@ -62,7 +62,13 @@ $(document).ready(function(){
 					alert("Failed to obtain user account settings");
 			});
 			var a = new Date();
-			var timeStamp = "[" + a.getHours() + ":" + a.getMinutes() + ":" + a.getSeconds() + "]"; //Timestamp for message
+			var year = a.getFullYear();
+			var month = a.getMonth();
+			var day = a.getDay();
+			var hours = a.getHours();
+			var minutes = a.getMinutes();
+			var seconds = a.getSeconds();
+			var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
 
 			var myJson = {};
 			myJson["username"] = username;
