@@ -78,5 +78,39 @@ public class InvitationHandler implements IHandler {
         jobj.add("data", data);
         return jobj;
     }
+    //Sends a friend invite from requester to toadd
+    //Notification param is {requester id}
+    public boolean sendFriendInvite(User requester, User toadd) {
+        if (requester == null || toadd == null) {
+            System.out.println("sendFriendInite(), requester or toadd is null");
+            return false;
+        }
+        //Create the Notification
+        Notification notification;
+        try {
+            //make the params
+            String params = Integer.toString(requester.getId());
+            //set user_id, params, and type
+            notification = new Notification(-1, toadd.getId(), NotificationType.InviteFriend(), params, null);
+            notification = NotificationInDb.add(notification);
+            if (notification == null) {
+                return false;
+            }
+            else {
+                if (toadd.addNotificatin(notification)) {
+                    return true;
+                }
+                else {
+                    System.out.println("Couldn't add notification to user");
+                    return false;
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("sendFriendInvite() Couldn't create Notification");
+            return false;
+        }
+    }
 
 }

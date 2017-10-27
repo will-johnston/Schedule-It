@@ -28,6 +28,7 @@ public class Main {
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
+            router.add("/user/friends/invite", new FriendInvite(tracker, handler));
             router.add("/user/getsettings", new UserGetSettings(tracker));
             router.add("/user/friends/get", new FriendsGet(tracker));
             router.add("/user/notifications/get", new NotificationDealer(tracker, handler));

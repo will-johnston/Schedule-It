@@ -135,7 +135,7 @@ public class User {
 				if (notification == null) {
 					continue;
 				}
-                if (actual.notifid == notification.notifid) {
+                if (actual.notifid != notification.notifid) {
                     alreadyexists = true;
                 }
             }
@@ -146,6 +146,38 @@ public class User {
         Notification[] copy = new Notification[this.notifications.size()];
         this.notifications.toArray(copy);
         return copy;
+    }
+    public boolean clearNotification(Notification notification) {
+        if (notification == null) {
+            System.out.println("Tried to clear null notification");
+            return false;
+        }
+        if (NotificationInDb.remove(notification.getNotifid(), this.id)) {
+            try {
+                this.notifications.remove(notification);
+                return true;
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't remove from User, but removed in database");
+                return false;
+            }
+        }
+        else {
+            //Fail silently
+            return false;
+        }
+    }
+    public boolean addNotificatin(Notification notification) {
+        if (notification == null) {
+            System.out.println("Tried to clear null notification");
+            return false;
+        }
+        if (this.notifications.contains(notification)) {
+            System.out.println("Already contains notification");
+            return false;
+        }
+        this.notifications.add(notification);
+        return true;
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

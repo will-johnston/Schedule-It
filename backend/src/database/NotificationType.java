@@ -25,9 +25,14 @@ public class NotificationType {
             throw new Exception("Unknown class");
         }
     }
-    public static String getType(String Class, String Method) {
-        //not sure if this is necessary for now
-        return null;
+    public static String InviteFriend() {
+        return "invite.friend";
+    }
+    public static String InviteGroup() {
+        return "invite.group";
+    }
+    public static String InviteEvent() {
+        return "invite.event";
     }
     public String toString() {
         //returns invite.friends for the given type

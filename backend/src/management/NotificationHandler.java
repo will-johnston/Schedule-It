@@ -42,4 +42,7 @@ public class NotificationHandler {
     public String handle(Notification notification, User user) {
         return null;
     }
+    public boolean sendFriendInvite(User requester, User toadd) {
+        return invitationHandler.sendFriendInvite(requester, toadd);
+    }
 }

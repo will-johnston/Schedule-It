@@ -77,13 +77,15 @@ public class NotificationInDb {
             return null;
         }
     }
-    public static boolean add(Notification notification) {
+    //notification only contains type, params, and user_id
+    //Returns fully formed Notification with notif_id and created
+    public static Notification add(Notification notification) {
         //check if notification already exists
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
         if (ds == null) {
             System.out.println("null data source getUserFromName");
-            return false;
+            return null;
         }
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
@@ -104,12 +106,63 @@ public class NotificationInDb {
             int response = statement.executeUpdate(query);
             if (response == 0) {
                 System.out.println("Didn't update any rows");
-                return false;
+                return null;
             }
             else {
                 System.out.println("Updated " + response + " rows");
-                return true;
             }
+            query = String.format("SELECT * FROM notifications WHERE user_id='%s' AND type='%s' AND parameters='%s';", notification.userid, notification.type.toString(), notification.params);
+            ResultSet results = statement.executeQuery(query);
+            if (results.next()) {
+                notification.notifid = results.getInt("notif_id");
+                notification.created = results.getTimestamp("created");
+                return notification;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            /*try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException r) {
+                r.printStackTrace();
+            }*/
+            return null;
+        }
+    }
+    public static boolean remove(int notifid, int userid) {
+        //check if notification already exists
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        //ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            //String query = String.format("SELECT * FROM notifications WHERE username='%s';", username);
+            String query = String.format("DELETE FROM notifications WHERE notif_id=%d AND user_id=%d\n", notifid, userid);
+            System.out.println(query);
+            //result = statement.executeQuery(query);
+            int response = statement.executeUpdate(query);
+            if (response == 0) {
+                System.out.println("Didn't update any rows");
+            }
+            return true;
         }
         catch (SQLException e) {
             e.printStackTrace();

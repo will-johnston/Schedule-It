@@ -1,0 +1,3 @@
+Parameters are CSV formatted
+Friend.invite
+parameters: user_id of the requester

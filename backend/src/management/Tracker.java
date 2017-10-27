@@ -86,7 +86,21 @@ public class Tracker {
         user.checkin();
         return user;
     }
+    public User getUserByName(String username) {
+        if (username == null) {
+            return null;
+        }
+        for (User user : users.values()) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
     public User getUserWithId(int id) {
+        if (id < 0) {
+            return null;
+        }
         for (User user : users.values()) {
             if (user.getId() == id) {
                 return user;
