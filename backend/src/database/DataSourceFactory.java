@@ -20,10 +20,10 @@ public class DataSourceFactory {
 	    try { 
 		ds = new MysqlConnectionPoolDataSource();
 		fis = new FileInputStream("/home/will/db.properties");
-		fis2 = new FileInputStream("/home/will/chat.properties");
+		//fis2 = new FileInputStream("/home/will/chat.properties");
 		
 		properties.load(fis);  //load properties file contents into properties object
-		properties.load(fis2);
+		//properties.load(fis2);
 		//set properties in datasource
 		ds.setServerName(properties.getProperty("DB_URL")); 
 		ds.setUser(properties.getProperty("DB_USERNAME"));
