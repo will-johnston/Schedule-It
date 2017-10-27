@@ -232,3 +232,15 @@ body {
 }
  
 .ui-datepicker-other-month .ui-state-default { color: #9E9E9E; }
+
+.cal-month-heading {
+	margin-top: 20px;
+}
+
+.cal-head th {
+	width: 14.29%;
+}
+
+.cal-body tr {
+	height: 60px;
+}

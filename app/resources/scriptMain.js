@@ -17,6 +17,9 @@ $(document).ready(function(){
 			//Fix current pill stuff
 			var currPill = event.target.getAttribute("href");
 			$(currPill + " .nav a:first").tab("show");
+
+			//update the calendar
+			updateCalendar(currentYear, currentMonth, currPill.substring(1));
 		});
 
 		//Chevron button to hide group information
@@ -429,6 +432,7 @@ $(document).ready(function(){
 		else {
 			createGroup(name, info, "pic");
 			assignFunctionality();
+			assignCalendarFunctionality();
 			$("#newGroupModal").modal("hide");
 
 			nameField.val("");
@@ -530,13 +534,54 @@ $(document).ready(function(){
 						</div>
 					</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div class="datepicker"></div>
+						<div class="row-fluid text-center cal-month-heading">
+							<button class="btn float-left cal-chevron-left" type="button">
+								<img src="resources/chevronLeft.png">
+							</button>
+							<button class="btn float-right cal-chevron-right" type="button">
+								<img src="resources/chevronRight.png">
+							</button>
+							<h3>Default</h3>
+						</div>
+						<table class="table table-bordered cal">
+							<thead class="cal-head">
+								<tr>
+									<th>Sunday</th>
+									<th>Monday</th>
+									<th>Tuesday</th>
+									<th>Wednesday</th>
+									<th>Thursday</th>
+									<th>Friday</th>
+									<th>Saturday</th>
+								</tr>
+							</thead>
+							<tbody class="cal-body">
+								<tr>
+									<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
+								</tr>
+								<tr>
+									<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
+								</tr>
+								<tr>
+									<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
+								</tr>
+								<tr>
+									<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
+								</tr>
+								<tr>
+									<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>`;
 
 		$("#vPillsContent").append(contentHTML);
 		$("#vPillsTab").append(tabHTML);
+
+
+		updateCalendar(currentYear, currentMonth, id);
 	};
 
 	//FRIENDS --------------------------------
