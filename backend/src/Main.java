@@ -32,6 +32,7 @@ public class Main {
             router.add("/user/friends/get", new FriendsGet(tracker));
             router.add("/user/notifications/get", new NotificationDealer(tracker, handler));
             router.add("/user/notifications/respond", new NotificationDealer(tracker, handler));
+            router.add("/user/notifications/dismiss", new NotificationDealer(tracker, handler));
             return router;
         }
         catch (Exception e) {

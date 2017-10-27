@@ -71,6 +71,10 @@ public class NotificationDealer implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
             return;
         }
+        else if (request.getMethod().equals("/user/notifications/dismiss")) {
+            Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
+            return;
+        }
         else {
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
