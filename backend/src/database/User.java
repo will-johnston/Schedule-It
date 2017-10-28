@@ -122,10 +122,10 @@ public class User {
         return friends;
     }
     public Notification[] getNotifications() {
-        System.out.println(String.format("Current notifications length:", this.notifications.size()));
-        Notification[] notifications = NotificationInDb.get(id);
+        System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
+        Notification[] dbnotifs = NotificationInDb.get(id);
 		if (notifications == null) { return null; }
-        for (Notification notification : notifications) {
+        for (Notification notification : dbnotifs) {
 			if (notification == null) {
 				continue;
 			}
