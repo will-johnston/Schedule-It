@@ -76,7 +76,7 @@ public class GroupInvite implements IAPIRoute {
             if (!jobj.has("invitedto")) {
                 return null;
             }
-            return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("invitedby").getAsString(), jobj.get("invitee").getAsString()};
+            return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("invitee").getAsString(), jobj.get("invitedto").getAsString()};
         }
         catch (Exception e) {
             System.out.println("Couldn't parse arguments");
