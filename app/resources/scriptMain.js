@@ -55,7 +55,7 @@ $(document).ready(function(){
 				accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
 					function(result) { //success
 						var json = JSON.parse(result);
-						username = json.username;
+						username = (json.username).toString();
 						var a = new Date();
 						var year = a.getFullYear();
 						var month = a.getMonth();
