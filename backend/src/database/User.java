@@ -122,6 +122,7 @@ public class User {
         return friends;
     }
     public Notification[] getNotifications() {
+        System.out.println(String.format("Current notifications length:", this.notifications.size()));
         Notification[] notifications = NotificationInDb.get(id);
 		if (notifications == null) { return null; }
         for (Notification notification : notifications) {
@@ -131,9 +132,7 @@ public class User {
             boolean alreadyexists = false;
             for (Notification actual : this.notifications) {
 				if (actual == null) {
-					continue;
-				}
-				if (notification == null) {
+				    System.out.println("Actual is null");
 					continue;
 				}
                 if (actual.notifid != notification.notifid) {
@@ -142,6 +141,7 @@ public class User {
                 System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
             }
             if (!alreadyexists) {
+                System.out.println(String.format("Adding %d to notification list", notification.notifid));
                 this.notifications.add(notification);
             }
         }
