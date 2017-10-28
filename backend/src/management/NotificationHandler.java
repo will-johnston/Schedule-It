@@ -1,6 +1,7 @@
 package management;
 
 import com.google.gson.*;
+import database.Group;
 import database.Notification;
 import database.User;
 //
@@ -64,5 +65,8 @@ public class NotificationHandler {
     }
     public boolean sendFriendInvite(User requester, User toadd) {
         return invitationHandler.sendFriendInvite(requester, toadd);
+    }
+    public boolean sendGroupInvite(User requester, User invitee, Group group) {
+        return invitationHandler.sendGroupInvite(requester, invitee, group);
     }
 }

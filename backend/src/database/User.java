@@ -277,6 +277,9 @@ public class User {
     }
     //TODO get all groups of user in db
     public boolean inGroup(int groupid, Tracker tracker) {
+        if (groupid == 0) {
+            return false;
+        }
         //check if in group in database
         for (Group group : groups) {
             if (groupid == group.id) {
@@ -296,6 +299,9 @@ public class User {
         return false;
     }
 	private boolean groupContainsId(int groupid) {
+        if (id == 0) {
+            return false;
+        }
 		for (Group group : groups) {
 			if (group.getId() == groupid) {
 				return true;
@@ -303,6 +309,28 @@ public class User {
 		}
 		return false;
 	}
+	public Group getGroupByName(String groupname) {
+        if (groupname == null) {
+            return null;
+        }
+        for (Group group : groups) {
+            if (group.getName().equals(groupname)) {
+                return group;
+            }
+        }
+        return null;
+    }
+    public Group getGroupById(int id) {
+        if (id == 0) {
+            return null;
+        }
+        for (Group group : groups) {
+            if (group.getId() == id) {
+                return group;
+            }
+        }
+        return null;
+    }
     public void refreshGroups(Tracker tracker) {
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
 		groups.get(0).printDebug();

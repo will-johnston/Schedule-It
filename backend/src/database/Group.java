@@ -59,6 +59,11 @@ public class Group {
             return false;
         }
     }
+    public void addUser(User user) {
+        if (!users.contains(user.getUsername())) {
+            users.add(user.username);
+        }
+    }
 
     public int getId() {
         return id;

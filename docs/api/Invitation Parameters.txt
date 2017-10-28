@@ -1,3 +1,5 @@
 Parameters are CSV formatted
-Friend.invite
+invite.friend
 parameters: user_id of the requester
+invite.group
+parameters: inviter, groupid

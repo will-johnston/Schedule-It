@@ -44,6 +44,7 @@ public class Tracker {
         int cookie = makeCookie();
         user.checkin();
         users.put(cookie, user);
+        userCount++;
         return cookie;
     }
     private int makeCookie() {
@@ -112,6 +113,24 @@ public class Tracker {
         }
         return null;
     }
+    public Group getGroupById(int id) {
+        if (id == 0) {
+            return null;
+        }
+        if (groups.containsKey(id)) {
+            return groups.get(id);
+        }
+        else {
+            //check if in database
+            Group group = Group.fromDatabase(this, id);
+            if (group == null) {
+                return null;
+            }
+            groups.put(id, group);
+            groupCount++;
+            return group;
+        }
+    }
     public boolean addUser(User newuser) {
         //adds to tracker, but doesn't login
         //check if in tracker
@@ -128,6 +147,7 @@ public class Tracker {
         else {
             newuser.setLastCheckedIn(0);
             users.put(makeCookie(), newuser);
+            userCount++;
             return true;
         }
     }

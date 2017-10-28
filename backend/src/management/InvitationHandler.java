@@ -1,6 +1,7 @@
 package management;
 
 import com.google.gson.*;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import database.*;
 
 import java.sql.Timestamp;
@@ -44,7 +45,32 @@ public class InvitationHandler implements IHandler {
             }
         }
         else if (type.equals("invite.group")) {
-            return null;
+            try {
+                if (!response.has("accept")) {
+                    return null;
+                }
+                if (response.get("accept").getAsBoolean()) {
+                    //add to group and then get rid of notification
+                    user.clearNotification(notification);
+                    Group group = tracker.getGroupById(Integer.parseInt(notification.getParams()));
+                    if (ModifyGroup.addUserToGroup(group.getId(), user.getId())) {
+                        group.addUser(user);
+                        return "";
+                    }
+                    else {
+                        return null;
+                    }
+                }
+                else {
+                    //get rid of notification
+                    user.clearNotification(notification);
+                    return "";
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         else {
             return null;
@@ -62,7 +88,14 @@ public class InvitationHandler implements IHandler {
             return makeFriendInvite(notification, user);
         }
         else if (type.equals("invite.group")) {
-            return null;
+            //Get User that invited
+            //Get Group that being invited to
+            User user = getRequestingUser(notification);
+            if (user == null) {
+                return null;
+            }
+            Group group = user.getGroupById(Integer.parseInt(notification.getParams()));
+            return makeGroupInvite(notification, group);
         }
         else {
             return null;
@@ -109,11 +142,22 @@ public class InvitationHandler implements IHandler {
         jobj.add("data", data);
         return jobj;
     }
+    public JsonObject makeGroupInvite(Notification notification, Group group) {
+        JsonObject jobj = new JsonObject();
+        jobj.addProperty("type", "invite.friend");
+        jobj.addProperty("id", notification.getNotifid());
+        JsonObject data = new JsonObject();
+        data.addProperty("groupname", group.getName());
+        data.addProperty("imageUrl", group.getImagePath());
+        data.addProperty("sent", notification.getCreated().toString());
+        jobj.add("data", data);
+        return jobj;
+    }
     //Sends a friend invite from requester to toadd
     //Notification param is {requester id}
     public boolean sendFriendInvite(User requester, User toadd) {
         if (requester == null || toadd == null) {
-            System.out.println("sendFriendInite(), requester or toadd is null");
+            System.out.println("sendFriendInvite(), requester or toadd is null");
             return false;
         }
         //Create the Notification
@@ -143,5 +187,34 @@ public class InvitationHandler implements IHandler {
             return false;
         }
     }
-
+    public boolean sendGroupInvite(User requester, User invitee, Group group) {
+        if (requester == null || invitee == null || group == null) {
+            System.out.println("sendGroupInvite(), requester or invitee or group is null");
+            return false;
+        }
+        //Create the notification
+        Notification notification;
+        try {
+            String params = Integer.toString(group.getId());
+            notification = new Notification(-1, invitee.getId(), NotificationType.InviteGroup(), params, null);
+            notification = NotificationInDb.add(notification);
+            if (notification == null) {
+                return false;
+            }
+            else {
+                if (invitee.addNotificatin(notification)) {
+                    return true;
+                }
+                else {
+                    System.out.println("Couldn't add notification to user");
+                    return false;
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("sendgroupInvite() couldn't create Notification");
+            return false;
+        }
+    }
 }
