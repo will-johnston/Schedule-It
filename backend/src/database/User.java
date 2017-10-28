@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.*;
 
 //represents a user in the Database
@@ -138,6 +139,7 @@ public class User {
                 if (actual.notifid != notification.notifid) {
                     alreadyexists = true;
                 }
+                System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
             }
             if (!alreadyexists) {
                 this.notifications.add(notification);
@@ -175,6 +177,13 @@ public class User {
         if (this.notifications.contains(notification)) {
             System.out.println("Already contains notification");
             return false;
+        }
+        //check for matching id
+        for (Notification original : notifications) {
+            if (original.getNotifid() == notification.getNotifid()) {
+                System.out.println("Already contains notification");
+                return false;
+            }
         }
         this.notifications.add(notification);
         return true;
