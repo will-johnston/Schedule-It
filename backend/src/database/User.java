@@ -135,7 +135,7 @@ public class User {
 				    System.out.println("Actual is null");
 					continue;
 				}
-                if (actual.notifid != notification.notifid) {
+                if (actual.notifid == notification.notifid) {
                     alreadyexists = true;
                 }
                 System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
