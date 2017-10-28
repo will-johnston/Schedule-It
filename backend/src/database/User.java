@@ -124,7 +124,7 @@ public class User {
     public Notification[] getNotifications() {
         System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
         Notification[] dbnotifs = NotificationInDb.get(id);
-		if (notifications == null) { return null; }
+		if (notifications == null || dbnotifs == null) { return null; }
         for (Notification notification : dbnotifs) {
 			if (notification == null) {
 				continue;
