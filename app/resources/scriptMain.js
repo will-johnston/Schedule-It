@@ -42,7 +42,8 @@ $(document).ready(function(){
 			//Send message buttons
 			$('[id^="sendMessage_"]').click(function() {
 				var buttonId = this.id.toString();
-				var groupId = buttonId.replace('sendMessage_', '').toString();
+				//var groupId = buttonId.replace('sendMessage_', '').toString(); USE KYLES METHOD
+				var groupId = 1;
 				var textBoxId = 'message_' + groupId;
 				var message = document.getElementById(textBoxId).value; //Message being sent
 				var username; //Username that sent the message
@@ -55,35 +56,36 @@ $(document).ready(function(){
 					function(result) { //success
 						var json = JSON.parse(result);
 						username = json.username;
+						var a = new Date();
+						var year = a.getFullYear();
+						var month = a.getMonth();
+						var day = a.getDay();
+						var hours = a.getHours();
+						var minutes = a.getMinutes();
+						var seconds = a.getSeconds();
+						var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
+		
+						var myJson = {};
+						myJson["username"] = username;
+						myJson["groupID"] = groupId;
+						myJson["time"] = timeStamp;
+						myJson["line"] = message;
+						accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+							function(result) {
+								//Success that message
+							},
+							function(result) {
+								console.log(myJson);
+								console.log(result);
+								alert("Failed to send message");				}
+						);
 					},
 					function(result) { //fail
 						console.log(data);
 						console.log(result);
 						alert("Failed to obtain user account settings");
 				});
-				var a = new Date();
-				var year = a.getFullYear();
-				var month = a.getMonth();
-				var day = a.getDay();
-				var hours = a.getHours();
-				var minutes = a.getMinutes();
-				var seconds = a.getSeconds();
-				var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
-
-				var myJson = {};
-				myJson["username"] = username;
-				myJson["groupID"] = groupId;
-				myJson["time"] = timeStamp;
-				myJson["line"] = message;
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
-					function(result) {
-						//Success that message
-					},
-					function(result) {
-						console.log(myJson);
-						console.log(result);
-						alert("Failed to send message");				}
-				);
+				
 			});
 		};
 	
