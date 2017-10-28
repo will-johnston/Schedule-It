@@ -122,33 +122,38 @@ public class User {
         return friends;
     }
     public Notification[] getNotifications() {
-        System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
-        Notification[] dbnotifs = NotificationInDb.get(id);
-		if (notifications == null || dbnotifs == null) { return null; }
-        for (Notification notification : dbnotifs) {
-			if (notification == null) {
-				continue;
-			}
-            boolean alreadyexists = false;
-            for (Notification actual : this.notifications) {
-				if (actual == null) {
-				    System.out.println("Actual is null");
-					continue;
-				}
-                if (actual.notifid == notification.notifid) {
-                    alreadyexists = true;
-                    break;
+        try {
+            System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
+            Notification[] dbnotifs = NotificationInDb.get(id);
+            if (notifications == null || dbnotifs == null) { return null; }
+            for (Notification notification : dbnotifs) {
+                if (notification == null) {
+                    continue;
                 }
-                System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
+                boolean alreadyexists = false;
+                for (Notification actual : this.notifications) {
+                    if (actual == null) {
+                        System.out.println("Actual is null");
+                        continue;
+                    }
+                    if (actual.notifid == notification.notifid) {
+                        alreadyexists = true;
+                        break;
+                    }
+                    System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
+                }
+                if (!alreadyexists) {
+                    System.out.println(String.format("Adding %d to notification list", notification.notifid));
+                    this.notifications.add(notification);
+                }
             }
-            if (!alreadyexists) {
-                System.out.println(String.format("Adding %d to notification list", notification.notifid));
-                this.notifications.add(notification);
-            }
+            Notification[] copy = new Notification[this.notifications.size()];
+            this.notifications.toArray(copy);
+            return copy;
         }
-        Notification[] copy = new Notification[this.notifications.size()];
-        this.notifications.toArray(copy);
-        return copy;
+        catch (Exception e) {
+            return null;
+        }
     }
     public Notification getNotificationById(int id) {
         for (int i = 0; i < 2; i++) {
