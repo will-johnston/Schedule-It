@@ -95,23 +95,15 @@ public class NotificationDealer implements IAPIRoute {
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-            JsonObject handledResponse = handler.handle(notification, (JsonObject)args[2], user);
+            String  handledResponse = handler.handle(notification, (JsonObject)args[2], user);
             if (handledResponse == null) {
                 String response = "{\"error\":\"Failed to handle notification\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
             else {
-                Gson gson = new Gson();
-                String json = gson.toJson(handledResponse);
-                if (json == null) {
-                    Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"couldn't serialize notifications\"}", HTTPMessage.HTTPStatus.BadRequest), sock);
-                    return;
-                }
-                else {
-                    Socketeer.send(HTTPMessage.makeResponse(json, HTTPMessage.HTTPStatus.OK), sock);
-                    return;
-                }
+                Socketeer.send(HTTPMessage.makeResponse(handledResponse, HTTPMessage.HTTPStatus.OK), sock);
+                return;
             }
         }
         else if (request.getMethod().equals("/user/notifications/dismiss")) {

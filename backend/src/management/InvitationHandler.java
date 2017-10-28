@@ -16,8 +16,39 @@ public class InvitationHandler implements IHandler {
     }
 
     @Override
-    public JsonObject handle(User user, Notification notification, JsonObject response) {
-        return null;
+    public String handle(User user, Notification notification, JsonObject response) {
+        String type = notification.getType().toString();
+        if (type.equals("invite.friend")) {
+            //if user accepts invite, make friends
+            try {
+                if (!response.has("accept")) {
+                    return null;
+                }
+                if (response.get("accept").getAsBoolean()) {
+                    //make friends and then get rid of notification
+                    user.clearNotification(notification);
+                    User newfriend = tracker.getUserWithId(Integer.parseInt(notification.getParams()));
+                    user.addFriend(newfriend.getUsername());
+                    newfriend.addFriend(user.getUsername());
+                    return "";
+                }
+                else {
+                    //get rid of notification
+                    user.clearNotification(notification);
+                    return "";
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else if (type.equals("invite.group")) {
+            return null;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
