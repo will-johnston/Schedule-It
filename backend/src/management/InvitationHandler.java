@@ -27,7 +27,7 @@ public class InvitationHandler implements IHandler {
                 if (response.get("accept").getAsBoolean()) {
                     //make friends and then get rid of notification
                     user.clearNotification(notification);
-                    User newfriend = tracker.getUserWithId(Integer.parseInt(notification.getParams()));
+                    User newfriend = tracker.getUserById(Integer.parseInt(notification.getParams()));
                     user.addFriend(newfriend.getUsername());
                     newfriend.addFriend(user.getUsername());
                     return "";
@@ -83,7 +83,7 @@ public class InvitationHandler implements IHandler {
             System.out.println("Invalid user_id format in params");
             throw new Exception("Invalid user_id format in params");
         }
-        User user = tracker.getUserWithId(requester);
+        User user = tracker.getUserById(requester);
         if (user == null) {
             //try getting from database
             user = User.fromDatabase(requester);

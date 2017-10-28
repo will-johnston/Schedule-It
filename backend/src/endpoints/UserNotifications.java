@@ -124,7 +124,7 @@ public class UserNotifications implements IAPIRoute {
                     System.out.println("Invalid user_id format in params");
                     throw new Exception("Invalid user_id format in params");
                 }
-                User user = tracker.getUserWithId(requester);
+                User user = tracker.getUserById(requester);
                 if (user == null) {
                     //try getting from database
                     user = User.fromDatabase(requester);

@@ -3,7 +3,7 @@ package endpoints;
 import management.Tracker;
 import server.HTTPMessage;
 import com.google.gson.*;
-import server.Socketeer;
+import server.*;
 import database.*;
 
 import java.net.Socket;
@@ -16,7 +16,7 @@ public class GroupGet implements IAPIRoute {
     }
 
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         int cookie = parseArgs(request.getBody());
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";

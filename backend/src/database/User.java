@@ -1,11 +1,8 @@
 package database;
 
-<<<<<<< HEAD
 import java.sql.SQLSyntaxErrorException;
-=======
 import java.lang.reflect.Array;
 import management.Tracker;
->>>>>>> backend-groups
 import java.util.*;
 
 //represents a user in the Database
@@ -245,6 +242,7 @@ public class User {
         }
         this.notifications.add(notification);
         return true;
+    }
     public boolean addToGroup(Group group) {
         //check if the user is actually in the group
         if (groups.contains(group)) {

@@ -1,11 +1,7 @@
 package endpoints;
 
 import com.google.gson.*;
-<<<<<<< HEAD
 import server.*;
-=======
-import server.HTTPMessage;
->>>>>>> backend-groups
 import management.Tracker;
 import database.User;
 import server.Socketeer;

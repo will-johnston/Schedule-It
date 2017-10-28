@@ -48,7 +48,6 @@ public class Tracker {
     }
     private int makeCookie() {
         int cookie = 0;
-        int cookie;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
         }
