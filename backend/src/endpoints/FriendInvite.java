@@ -30,9 +30,21 @@ public class FriendInvite implements IAPIRoute {
         User requester = tracker.getUser(cookie);
         User toadd = tracker.getUserByName(username);
         if (toadd == null) {
-            String response = "{ \"error\" : \"Friend doesn't exist\"}";
-            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+            //check and see if user exists in db
+            toadd = User.fromDatabase(username);
+            if (toadd != null) {
+                //User to add is not in tracker, but in db, add to tracker
+                if (!tracker.addUser(toadd)) {
+                    String response = "{ \"error\" : \"Failed to add friend\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
+            }
+            else {
+                String response = "{ \"error\" : \"Friend doesn't exist\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
         if (handler.sendFriendInvite(requester, toadd)) {
             //success

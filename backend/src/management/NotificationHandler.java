@@ -39,8 +39,28 @@ public class NotificationHandler {
         }
     }
     //Handles responses from notifications
-    public String handle(Notification notification, User user) {
-        return null;
+    public JsonObject handle(Notification notification, JsonObject response, User user) {
+        if (notification == null || response == null || user == null) {
+            return null;
+        }
+        if (notification.getType().isInvite()) {
+            try {
+                JsonObject handledResponse = invitationHandler.handle(user, notification, response);
+                if (handledResponse == null) {
+                    System.out.println("Couldn't handle invite notification, handler returned null");
+                    return null;
+                }
+                return handledResponse;
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't handle invite notification");
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
     }
     public boolean sendFriendInvite(User requester, User toadd) {
         return invitationHandler.sendFriendInvite(requester, toadd);

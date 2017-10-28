@@ -137,6 +137,7 @@ public class User {
 				}
                 if (actual.notifid == notification.notifid) {
                     alreadyexists = true;
+                    break;
                 }
                 System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
             }
@@ -148,6 +149,35 @@ public class User {
         Notification[] copy = new Notification[this.notifications.size()];
         this.notifications.toArray(copy);
         return copy;
+    }
+    public Notification getNotificationById(int id) {
+        for (int i = 0; i < 2; i++) {
+            for (Notification notification : notifications) {
+                if (notification.getNotifid() == id) {
+                    return notification;
+                }
+            }
+            if (i == 0) {
+                //update notifications and check if in there
+                updateNotifications();
+            }
+        }
+        return null;
+    }
+    private void updateNotifications() {
+        Notification[] dbnotifs = NotificationInDb.get(id);
+        for (Notification dbnotif : dbnotifs) {
+            boolean exists = false;
+            for (Notification notification : notifications) {
+                if (notification.getNotifid() == dbnotif.getNotifid()) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                this.notifications.add(dbnotif);
+            }
+        }
     }
     public boolean clearNotification(Notification notification) {
         if (notification == null) {

@@ -17,26 +17,34 @@ public class NotificationDealer implements IAPIRoute {
         this.tracker = tracker;
         this.handler = handler;
     }
-    @Override
-    public void execute(SSocket sock, HTTPMessage request) {
-        int cookie = parseGetArgs(request.getBody());
+    private User getUser(int cookie, SSocket sock) {
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+            return null;
         }
         if (!tracker.isLoggedIn(cookie)) {
             String response = "{\"error\":\"User not logged in\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+            return null;
         }
         User user = tracker.getUser(cookie);
         if (user == null) {
             String response = "{\"error\":\"Couldn't get user\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+            return null;
         }
+        return user;
+    }
+    @Override
+    public void execute(SSocket sock, HTTPMessage request) {
         if (request.getMethod().equals("/user/notifications/get")) {
+            int cookie = parseGetArgs(request.getBody());
+            User user = getUser(cookie, sock);
+            if (user == null) {
+                //already handled sending errors
+                return;
+            }
             //Get notifications, format them for return, send return
             try {
                 Notification[] notifications = user.getNotifications();
@@ -68,8 +76,43 @@ public class NotificationDealer implements IAPIRoute {
             }
         }
         else if (request.getMethod().equals("/user/notifications/respond")) {
-            Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
-            return;
+            /*Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
+            return;*/
+            Object[] args = parseHandleArgs(request.getBody()); //cookie, notif_id, response (JsonObject)
+            if (args == null) {
+                String response = "{\"error\":\"Invalid Arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            User user = getUser((int)args[0], sock);
+            if (user == null) {
+                //already handled sending errors
+                return;
+            }
+            Notification notification = user.getNotificationById((int)args[1]);
+            if (notification == null) {
+                String response = "{\"error\":\"Failed to get notification\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            JsonObject handledResponse = handler.handle(notification, (JsonObject)args[2], user);
+            if (handledResponse == null) {
+                String response = "{\"error\":\"Failed to handle notification\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            else {
+                Gson gson = new Gson();
+                String json = gson.toJson(handledResponse);
+                if (json == null) {
+                    Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"couldn't serialize notifications\"}", HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
+                else {
+                    Socketeer.send(HTTPMessage.makeResponse(json, HTTPMessage.HTTPStatus.OK), sock);
+                    return;
+                }
+            }
         }
         else if (request.getMethod().equals("/user/notifications/dismiss")) {
             Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
@@ -93,5 +136,28 @@ public class NotificationDealer implements IAPIRoute {
             System.out.println("Failed to parse Args");
             return 0;
         }
+    }
+    //cookie, notif_id, response (JsonObject)
+    private Object[] parseHandleArgs(String body) {
+        Gson gson = new Gson();
+        JsonObject jobj = gson.fromJson(body, JsonObject.class);
+        if (!jobj.has("cookie")) {
+            return null;
+        }
+        if (!jobj.has("notification")) {
+            return null;
+        }
+        if (!jobj.has("response")) {
+            return null;
+        }
+        int cookie = jobj.get("cookie").getAsInt();
+        JsonObject notification = jobj.getAsJsonObject("notification");
+        if (!notification.has("id")) {
+            return null;
+        }
+        JsonObject response = jobj.getAsJsonObject("response");
+        return new Object[] {
+                cookie, notification.get("id").getAsInt(), response
+        };
     }
 }

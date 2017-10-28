@@ -16,7 +16,7 @@ public class InvitationHandler implements IHandler {
     }
 
     @Override
-    public String handle(User user, Notification notification) {
+    public JsonObject handle(User user, Notification notification, JsonObject response) {
         return null;
     }
 

@@ -14,6 +14,48 @@ parameters: string(500)
 created: TIMESTAMP
  */
 public class NotificationInDb {
+    //returns true if the notification exists in the database
+    public static boolean exists(int userid, String type, String parameters) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return true;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            String query = String.format("SELECT * FROM notifications WHERE user_id=%d AND type='%s' AND parameters='%s';", userid, type, parameters);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            if (result.next()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            /*try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException r) {
+                r.printStackTrace();
+            }*/
+            return true;
+        }
+    }
     //Gets all notifications for a given user
     public static Notification[] get(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
@@ -81,6 +123,10 @@ public class NotificationInDb {
     //Returns fully formed Notification with notif_id and created
     public static Notification add(Notification notification) {
         //check if notification already exists
+        if (exists(notification.userid, notification.getType().toString(), notification.params)) {
+            return null;
+        }
+
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
         if (ds == null) {
