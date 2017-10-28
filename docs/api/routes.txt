@@ -63,6 +63,15 @@ Successful Response:
 }
 /api/user/search - Search all user's in the system
 /api/user/groups/create - Create a new group
+Request: 
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"groupname" : "{NEW NAME}"
+}
+Successful Response:
+{
+	"groupid" : "{NEW GROUP ID}"
+}
 /api/user/groups/add - Add a friend to group
 /api/user/groups/join - Join a group from an invitation
 /api/user/groups/leave - Leave the group

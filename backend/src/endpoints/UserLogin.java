@@ -56,11 +56,15 @@ public class UserLogin implements IAPIRoute {
         System.out.println(message);
 	try {
             Gson gson = new Gson();
+            if (gson == null) { System.out.println("Gson is null"); }
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
+            if (bodyObj == null) { System.out.println("bodyObj is null"); }
             if (!bodyObj.has("name")) {
+                System.out.println("Name is null");
                 return null;
             }
             if (!bodyObj.has("pass")) {
+                System.out.println("pass is null");
                 return null;
             }
             String[] arr = new String[2];
@@ -69,7 +73,7 @@ public class UserLogin implements IAPIRoute {
             return arr;
         }
         catch (Exception e) {
-	    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("Caught an exception");
             return null;
         }

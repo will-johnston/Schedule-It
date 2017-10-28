@@ -1,6 +1,11 @@
 package database;
 
+<<<<<<< HEAD
 import java.sql.SQLSyntaxErrorException;
+=======
+import java.lang.reflect.Array;
+import management.Tracker;
+>>>>>>> backend-groups
 import java.util.*;
 
 //represents a user in the Database
@@ -13,6 +18,7 @@ public class User {
     String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
     ArrayList<Notification> notifications;
+    ArrayList<Group> groups;
     int id;
     long lastCheckedIn = -1;
     public User(String name, String email, String password, String phone, int id, String username) {
@@ -24,6 +30,7 @@ public class User {
         this.username = username;
         this.friends = new ArrayList<>();
 		this.notifications = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
@@ -76,8 +83,24 @@ public class User {
                 System.out.println("Not in friends list after update");
             }
         }
+		System.out.println("checking if the user in the database");
+        try {
+	    boolean exists = GetFromDb.usernameExists(username);
+            if (exists) {
+		System.out.println("User exists in database"); 
+            }
+	    else {
+		System.out.println("Not a valid user");
+                return false;
+	    }
+        }
+        catch (Exception e) {
+            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
+	    System.out.println("AddfriendsInDb returned true");
             return true;
         }
         else {
@@ -222,6 +245,89 @@ public class User {
         }
         this.notifications.add(notification);
         return true;
+    public boolean addToGroup(Group group) {
+        //check if the user is actually in the group
+        if (groups.contains(group)) {
+            return false;
+        }
+        else {
+            groups.add(group);
+            return true;
+        }
+    }
+    private boolean removeWithGroupId(int groupid, Tracker tracker) {
+        for (Group group : groups) {
+            if (group.id == groupid) {
+                if (group.removeUser(this, tracker)) {
+                    groups.remove(group);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean removeFromGroup(int groupid, Tracker tracker) {
+        if (!inGroup(groupid, tracker)) {
+            return false;
+        }
+        else {
+            return removeWithGroupId(groupid, tracker);
+        }
+    }
+    //TODO get all groups of user in db
+    public boolean inGroup(int groupid, Tracker tracker) {
+        //check if in group in database
+        for (Group group : groups) {
+            if (groupid == group.id) {
+                return true;
+            }
+        }
+        ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
+        for (String member : members) {
+            if (member.equals(this.username)) {
+                Group group = Group.fromDatabase(tracker, groupid);
+                if (group != null) {
+                    groups.add(group);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+	private boolean groupContainsId(int groupid) {
+		for (Group group : groups) {
+			if (group.getId() == groupid) {
+				return true;
+			}
+		}
+		return false;
+	}
+    public void refreshGroups(Tracker tracker) {
+        ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
+		groups.get(0).printDebug();
+		//HERE IS THE ISSUE
+        for (Group group : groups) {
+            if (!groupContainsId(group.getId())) {
+				System.out.println("adding group: " + group.getId());
+                this.groups.add(group);
+				System.out.println("Added group");
+            }
+			else {
+				System.out.println("Already contains group");
+			}
+        }
+    }
+    public String[] getGroups(Tracker tracker) {
+        refreshGroups(tracker);
+        String[] strings = new String[groups.size()];
+        for (int i = 0; i < groups.size(); i++) {
+            System.out.println("adding " + groups.get(i).name);
+            strings[i] = groups.get(i).name;
+        }
+        return strings;
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

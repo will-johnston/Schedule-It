@@ -19,12 +19,12 @@ public class Main {
             router.add("/user/edit", new UserEdit(tracker));
             router.add("/user/groups/calendar/get", new GroupGetCalendar());
             router.add("/user/calendar/get", new UserGetCalendar());
-            router.add("/user/groups/leave", new GroupLeave());
+            router.add("/user/groups/leave", new GroupLeave(tracker));
             router.add("/user/groups/join", new GroupJoin());
             router.add("/user/search", new UserSearch());
             router.add("/user/groups/add", new GroupAdd());
             router.add("/user/groups/edit", new GroupEdit());
-            router.add("/user/groups/create", new GroupCreate());
+            router.add("/user/groups/create", new GroupCreate(tracker));
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
@@ -34,6 +34,7 @@ public class Main {
             router.add("/user/notifications/get", new NotificationDealer(tracker, handler));
             router.add("/user/notifications/respond", new NotificationDealer(tracker, handler));
             router.add("/user/notifications/dismiss", new NotificationDealer(tracker, handler));
+            router.add("/user/groups/get", new GroupGet(tracker));
             return router;
         }
         catch (Exception e) {

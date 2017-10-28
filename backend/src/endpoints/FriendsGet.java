@@ -16,7 +16,6 @@ public class FriendsGet implements IAPIRoute {
     @Override
     public void execute(SSocket sock, HTTPMessage request) {
         int cookie = parseArgs(request.getBody());
-	System.out.println(cookie);
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -45,7 +44,7 @@ public class FriendsGet implements IAPIRoute {
     }
     //return 0 if fail, cookie if success
     private int parseArgs(String body) {
-	System.out.println(body);
+		System.out.println(body);
         try {
             Gson gson = new Gson();
             JsonObject jobj = gson.fromJson(body, JsonObject.class);
@@ -55,7 +54,7 @@ public class FriendsGet implements IAPIRoute {
             return jobj.get("cookie").getAsInt();
         }
         catch (Exception e) {
-	    e.printStackTrace();
+			e.printStackTrace();
             System.out.println("Failed to parse Args");
             return 0;
         }
