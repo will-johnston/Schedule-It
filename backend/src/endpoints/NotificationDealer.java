@@ -48,6 +48,10 @@ public class NotificationDealer implements IAPIRoute {
             //Get notifications, format them for return, send return
             try {
                 Notification[] notifications = user.getNotifications();
+                if (notifications == null) {
+                    Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                    return;
+                }
                 JsonObject[] objects = new JsonObject[notifications.length];
                 int j = 0;
                 for (Notification notification : notifications) {
@@ -73,6 +77,8 @@ public class NotificationDealer implements IAPIRoute {
             catch (Exception e) {
                 System.out.println("Encountered an error returning notifications");
                 e.printStackTrace();
+                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"some exception occurred\"}", HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                return;
             }
         }
         else if (request.getMethod().equals("/user/notifications/respond")) {
