@@ -85,7 +85,12 @@ public class GroupGet implements IAPIRoute {
                     JsonObject jobj = new JsonObject();
                     jobj.addProperty("name", group.getName());
                     jobj.addProperty("id", group.getId());
-                    jobj.addProperty("imageUrl", group.getImagePath());
+                    if (group.getImagePath() == null) {
+                        jobj.addProperty("imageUrl", "");
+                    }
+                    else {
+                        jobj.addProperty("imageUrl", group.getImagePath());
+                    }
                     arr[i] = jobj;
                     i++;
                 }
