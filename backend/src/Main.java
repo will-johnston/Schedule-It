@@ -25,7 +25,7 @@ public class Main {
             //router.add("/user/search", new UserSearch());
             //router.add("/user/groups/add", new GroupAdd());
             router.add("/user/groups/edit", new GroupEdit());
-            router.add("/user/groups/create", new GroupCreate());
+            router.add("/user/groups/create", new GroupCreate(tracker));
             router.add("/user/groups/chat", new MessageAdd(tracker));
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
