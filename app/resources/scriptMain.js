@@ -19,6 +19,9 @@ $(document).ready(function(){
 			$(currPill + " .nav a:first").tab("show");
 
 			//update the calendar
+			var date = new Date();
+			currentYear = date.getFullYear();
+			currentMonth = date.getMonth();
 			updateCalendar(currentYear, currentMonth, currPill.substring(1));
 		});
 
@@ -505,7 +508,7 @@ $(document).ready(function(){
 							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 							<h3>` + name + `</h3>
 							<p>` + info + `</p>
-							<button type="button" class="btn btn-secondary btn-sm invisible" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
 						</div>
 					</div>
 				</div>
@@ -534,6 +537,10 @@ $(document).ready(function(){
 						</div>
 					</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
+						<div style="margin-top: 10px">
+							<button type="button" class="btn btn-primary">Create new event</button>
+							<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
+						</div>
 						<div class="row-fluid text-center cal-month-heading">
 							<button class="btn float-left cal-chevron-left" type="button">
 								<img src="resources/chevronLeft.png">
