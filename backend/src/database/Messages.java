@@ -43,8 +43,8 @@ public class Messages {
 			connection = ds.getConnection();
 			
             //Form query 
-			//String sqlInsert = "INSERT INTO chat_line (username, groupID, time, line) VALUES ('"+username+"','"+groupID+"','"+time+"','"+line+"')";
-			String sqlInsert = String.format("INSERT INTO chat_line VALUES('%s',%d,NULL,%s)", username, groupID, line);
+			String sqlInsert = "INSERT INTO chat_line (username, groupID, line) VALUES ('"+username+"','"+groupID+"','"+line+"')";
+			//String sqlInsert = String.format("INSERT INTO chat_line (username, groupID, time, line) VALUES('%s',%d,NULL,%s)", username, groupID, line);
 			statement = connection.createStatement();
 			statement.executeUpdate(sqlInsert);
         } catch (SQLException e) {

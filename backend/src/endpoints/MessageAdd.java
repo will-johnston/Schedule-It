@@ -62,9 +62,9 @@ public class MessageAdd implements IAPIRoute {
             }
             //Have username, groupID, line
             Messages message = new Messages();
-            arr[0] = username;
+            args[0] = username;
             boolean ret = message.setMessage(args);
-            Socketeer.send(HTTPMessage.makeResponse("{\"no error\":\"Message set\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
+            Socketeer.send(HTTPMessage.makeResponse("{\"Success\":\"Message sent to database\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
 
             return;
         } 
