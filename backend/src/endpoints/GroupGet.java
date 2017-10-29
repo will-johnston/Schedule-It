@@ -1,7 +1,6 @@
 package endpoints;
 
 import management.Tracker;
-import netscape.javascript.JSObject;
 import server.HTTPMessage;
 import com.google.gson.*;
 import server.*;
