@@ -111,7 +111,13 @@ public class Tracker {
                 return user;
             }
         }
-        return null;
+        //not in tracker, check if in db
+        User user = User.fromDatabase(id);
+		if (user != null) {
+		    //add it to tracker
+            addUser(user);
+        }
+        return user;    //null if couldn't find in db
     }
     public Group getGroupById(int id) {
         if (id == 0) {
