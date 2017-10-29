@@ -88,14 +88,20 @@ public class InvitationHandler implements IHandler {
             return makeFriendInvite(notification, user);
         }
         else if (type.equals("invite.group")) {
-            //Get User that invited
-            //Get Group that being invited to
-            User user = getRequestingUser(notification);
-            if (user == null) {
+            try {
+                //Get User that invited
+                //Get Group that being invited to
+                User user = getRequestingUser(notification);
+                if (user == null) {
+                    return null;
+                }
+                Group group = user.getGroupById(Integer.parseInt(notification.getParams()));
+                return makeGroupInvite(notification, group);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
-            Group group = user.getGroupById(Integer.parseInt(notification.getParams()));
-            return makeGroupInvite(notification, group);
         }
         else {
             return null;
