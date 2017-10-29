@@ -100,7 +100,7 @@ public class Tracker {
                 return user;
             }
         }
-        return null;
+        return User.fromDatabase(username);
     }
     public User getUserById(int id) {
 		if (id == 0) {
