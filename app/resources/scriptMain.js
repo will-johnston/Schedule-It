@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
 	var cookie = document.cookie.split("=")[1];
 
 	//This stops the notification menu from closing when it's clicked on
@@ -17,8 +17,12 @@ $(document).ready(function(){
 			//Fix current pill stuff
 			var currPill = event.target.getAttribute("href");
 			$(currPill + " .nav a:first").tab("show");
+
+			//update the calendar
+			updateCalendar(currentYear, currentMonth, currPill.substring(1));
 		});
 
+		//Chevron button to hide group information
 		$(".chevron").click(function() {
 			if(!$(this).hasClass("collapsed")) {
 				$(this).find("img").attr("src","resources/chevronDown.png");
@@ -30,11 +34,59 @@ $(document).ready(function(){
 			}
 		});
 
+		//Calendar
 		$(".datepicker").datepicker({
 			inline: true,
 			firstDay: 1,
 			showOtherMonths: true,
 			dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		});
+
+		//Send message buttons
+		$('[id^="sendMessage_"]').click(function() {
+			var buttonId = this.id.toString();
+			var groupId = buttonId.replace('sendMessage_', '').toString();
+			var textBoxId = 'message_' + groupId;
+			var message = document.getElementById(textBoxId).value; //Message being sent
+			var username; //Username that sent the message
+			document.getElementById(textBoxId).value = '';
+
+			var data = {};
+			data["cookie"] = cookie;
+	
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
+				function(result) { //success
+					var json = JSON.parse(result);
+					username = json.username;
+				},
+				function(result) { //fail
+					console.log(data);
+					console.log(result);
+					alert("Failed to obtain user account settings");
+			});
+			var a = new Date();
+			var year = a.getFullYear();
+			var month = a.getMonth();
+			var day = a.getDay();
+			var hours = a.getHours();
+			var minutes = a.getMinutes();
+			var seconds = a.getSeconds();
+			var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
+
+			var myJson = {};
+			myJson["username"] = username;
+			myJson["groupID"] = groupId;
+			myJson["time"] = timeStamp;
+			myJson["line"] = message;
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+				function(result) {
+					//Success that message
+				},
+				function(result) {
+					console.log(myJson);
+					console.log(result);
+					alert("Failed to send message");				}
+			);
 		});
 	};
 
@@ -335,8 +387,7 @@ $(document).ready(function(){
 		window.location.href = "https://scheduleit.duckdns.org/";
 	});
 
-
-	//NEW GROUP MODAL
+	//GROUPS
 	$("#addNewGroupButton").click(function() {
 		$("#groupFriendsList").empty();
 		$("body").off("click", "#groupFriendsList img");
@@ -381,6 +432,7 @@ $(document).ready(function(){
 		else {
 			createGroup(name, info, "pic");
 			assignFunctionality();
+			assignCalendarFunctionality();
 			$("#newGroupModal").modal("hide");
 
 			nameField.val("");
@@ -395,7 +447,6 @@ $(document).ready(function(){
 		$("#newGroupModalName").removeClass("is-invalid");
 	});
 
-	//GROUP SETTINGS MODAL
 	$("#groupSettingsButton").click(function() {
 		//populate the group settings modal with group information
 
@@ -406,6 +457,23 @@ $(document).ready(function(){
 
 
 		$("#groupSettingsModal").modal("hide");
+	});
+
+	$("#groupSettingsLeaveGroupButton").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["id"] = "group id to leave";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "leave group endpoint", data,
+			function(result) { //success
+				console.log("Successfully left group");
+
+				//update the groups
+			},
+			function(result) { //fail
+				alert("Failed to leave group");
+			});
 	});
 
 	var createGroup = function(name, info, pic) {
@@ -459,20 +527,61 @@ $(document).ready(function(){
 							<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 								 
 							<form name="message" action="">
-								<input name="usermsg" type="text" id="` + id + "_message" + `" style="width: 53em; border:1px solid rgb(220, 220, 220)">
-								<button type="button" class="btn btn-primary" id="` + id + "_sendMessage" + `"  style="width: 5em; margin-right:2.5em; margin-left: 0.5em">Send</button>
+								<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+								<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
 								<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
 							</form>
 						</div>
 					</div>
 					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div class="datepicker"></div>
+						<div class="row-fluid text-center cal-month-heading">
+							<button class="btn float-left cal-chevron-left" type="button">
+								<img src="resources/chevronLeft.png">
+							</button>
+							<button class="btn float-right cal-chevron-right" type="button">
+								<img src="resources/chevronRight.png">
+							</button>
+							<h3>Default</h3>
+						</div>
+						<table class="table table-bordered cal">
+							<thead class="cal-head">
+								<tr>
+									<th>Sunday</th>
+									<th>Monday</th>
+									<th>Tuesday</th>
+									<th>Wednesday</th>
+									<th>Thursday</th>
+									<th>Friday</th>
+									<th>Saturday</th>
+								</tr>
+							</thead>
+							<tbody class="cal-body">
+								<tr>
+									<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
+								</tr>
+								<tr>
+									<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
+								</tr>
+								<tr>
+									<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
+								</tr>
+								<tr>
+									<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
+								</tr>
+								<tr>
+									<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>`;
 
 		$("#vPillsContent").append(contentHTML);
 		$("#vPillsTab").append(tabHTML);
+
+
+		updateCalendar(currentYear, currentMonth, id);
 	};
 
 	//FRIENDS --------------------------------
