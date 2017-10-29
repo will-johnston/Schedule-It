@@ -95,7 +95,7 @@ public class InvitationHandler implements IHandler {
                 if (user == null) {
                     return null;
                 }
-                Group group = user.getGroupById(Integer.parseInt(notification.getParams()));
+                Group group = tracker.getGroupById(Integer.parseInt(notification.getParams()));
                 if (group == null) {
                     System.out.println("Couldn't get group with id " + notification.getParams());
                     return null;
