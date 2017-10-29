@@ -153,12 +153,17 @@ public class InvitationHandler implements IHandler {
         return jobj;
     }
     public JsonObject makeGroupInvite(Notification notification, Group group) {
+        if (notification == null) { System.out.println("notification null"); }
+        if (group == null) { System.out.println("group is null"); }
         JsonObject jobj = new JsonObject();
-        jobj.addProperty("type", "invite.friend");
+        jobj.addProperty("type", "invite.group");
         jobj.addProperty("id", notification.getNotifid());
         JsonObject data = new JsonObject();
+        if (group.getName() == null) { System.out.println("name est nullum");}
         data.addProperty("groupname", group.getName());
+        if (group.getImagePath() == null) { System.out.println("image path is null");}
         data.addProperty("imageUrl", group.getImagePath());
+        if (notification.getCreated() == null) { System.out.println("sent is null");}
         data.addProperty("sent", notification.getCreated().toString());
         jobj.add("data", data);
         return jobj;
