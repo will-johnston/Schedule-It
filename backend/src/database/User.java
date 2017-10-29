@@ -320,6 +320,13 @@ public class User {
         }
         return null;
     }
+    public Group getGroupById(int id, Tracker tracker) {
+        Group group = getGroupById(id);
+        if (group == null) {
+            group = Group.fromDatabase(tracker, id);
+        }
+        return group;
+    }
     public Group getGroupById(int id) {
         if (id == 0) {
             return null;

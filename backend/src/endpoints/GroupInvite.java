@@ -41,7 +41,7 @@ public class GroupInvite implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        Group group = user.getGroupByName((String)args[2]);
+        Group group = user.getGroupById((int)args[2], tracker);
         if (group == null) {
             String response = "{\"error\":\"Couldn't get group\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -76,7 +76,7 @@ public class GroupInvite implements IAPIRoute {
             if (!jobj.has("invitedto")) {
                 return null;
             }
-            return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("invitee").getAsString(), jobj.get("invitedto").getAsString()};
+            return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("invitee").getAsString(), jobj.get("invitedto").getAsInt()};
         }
         catch (Exception e) {
             System.out.println("Couldn't parse arguments");
