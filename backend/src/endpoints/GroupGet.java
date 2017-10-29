@@ -1,6 +1,7 @@
 package endpoints;
 
 import management.Tracker;
+import netscape.javascript.JSObject;
 import server.HTTPMessage;
 import com.google.gson.*;
 import server.*;
@@ -34,7 +35,7 @@ public class GroupGet implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        String[] groups = user.getGroups(tracker);
+        Group[] groups = user.getGroups(tracker);
         if (groups == null) {
             String response = "{\"error\":\"Couldn't get groups\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -72,15 +73,24 @@ public class GroupGet implements IAPIRoute {
         }
     }
     class Response {
-        String[] groups;
-        public Response(String[] groups) {
+        Group[] groups;
+        public Response(Group[] groups) {
             this.groups = groups;
             System.out.println("Groups length: " + groups.length);
         }
         public String toJson() {
             try {
-                Gson gson = new Gson();
-                return gson.toJson(this, Response.class);
+                JsonObject[] arr = new JsonObject[groups.length];
+                int i = 0;
+                for (Group group : groups) {
+                    JsonObject jobj = new JsonObject();
+                    jobj.addProperty("name", group.getName());
+                    jobj.addProperty("id", group.getId());
+                    jobj.addProperty("imageUrl", group.getImagePath());
+                    arr[i] = jobj;
+                    i++;
+                }
+                return new Gson().toJson(arr);
             }
             catch (Exception e) {
                 System.out.println("Couldn't convert to json");

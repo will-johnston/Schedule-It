@@ -353,14 +353,11 @@ public class User {
 			}
         }
     }
-    public String[] getGroups(Tracker tracker) {
+    public Group[] getGroups(Tracker tracker) {
         refreshGroups(tracker);
-        String[] strings = new String[groups.size()];
-        for (int i = 0; i < groups.size(); i++) {
-            System.out.println("adding " + groups.get(i).name);
-            strings[i] = groups.get(i).name;
-        }
-        return strings;
+        Group[] arr = new Group[this.groups.size()];
+        this.groups.toArray(arr);
+        return arr;
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;
