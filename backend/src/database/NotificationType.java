@@ -62,7 +62,7 @@ public class NotificationType {
         if (method.toLowerCase().equals("friend")) {
             return 0;
         }
-        else if (method.toLowerCase().equals("")) {
+        else if (method.toLowerCase().equals("group")) {
             return 1;
         }
         else if (method.toLowerCase().equals("")) {
