@@ -27,9 +27,8 @@ public class Messages {
         try {
             //Store args in logical/readable variables
             String username = (String)args[0];
-            //String groupID = args[1]; USE THIS WHEN WE CAN AQUIRE CORRECT GROUPID
-            int groupID = 1;
-            //String time = args[2];
+            //String groupID = args[1];
+			int groupID = 1;
             String line = (String) args[2];
 
             //Call DataSourceFactor
@@ -44,13 +43,10 @@ public class Messages {
 			connection = ds.getConnection();
 			
             //Form query 
-            //--------------------REFINE THIS--------------------
 			//String sqlInsert = "INSERT INTO chat_line (username, groupID, time, line) VALUES ('"+username+"','"+groupID+"','"+time+"','"+line+"')";
 			String sqlInsert = String.format("INSERT INTO chat_line VALUES('%s',%d,NULL,%s)", username, groupID, line);
 			statement = connection.createStatement();
 			statement.executeUpdate(sqlInsert);
-            //--------------------REFINE THIS--------------------
-
         } catch (SQLException e) {
             e.printStackTrace();
 

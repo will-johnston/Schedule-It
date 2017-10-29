@@ -60,8 +60,9 @@ public class MessageAdd implements IAPIRoute {
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-            //Have username, groupID, timestamp, and message
+            //Have username, groupID, line
             Messages message = new Messages();
+            arr[0] = username;
             boolean ret = message.setMessage(args);
             Socketeer.send(HTTPMessage.makeResponse("{\"no error\":\"Message set\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
 
@@ -72,25 +73,18 @@ public class MessageAdd implements IAPIRoute {
         }
     }
 
-    //returns cookie, chat
+    //returns cookie, groupID, line
     private String[] parseArgs(String message) {
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
-            if (!bodyObj.has("cookie") || !bodyObj.has("line")) {
+            if (!bodyObj.has("cookie") || !bodyObj.has("line") || !bodyObj.has("groupID")) {
                 return null;
             }
-            /*if(!bodyObj.has("username") || !bodyObj.has("groupID")) {
-                return null;
-            }
-            if(!bodyObj.has("time") || !bodyObj.has("line")) {
-                return null;
-            }*/
-            String[] arr = new String[2];
-            //arr[0] = bodyObj.get("username").getAsString();
-            arr[0] = bodyObj.get("groupID").getAsString();
-            //arr[2] = bodyObj.get("time").getAsString();
-            arr[1] = bodyObj.get("line").getAsString();
+            String[] arr = new String[3];
+            arr[0] = bodyObj.get("cookie").getAsString();
+            arr[1] = bodyObj.get("groupID").getAsString();
+            arr[2] = bodyObj.get("line").getAsString();
             return arr;
         } 
         catch (Exception e) {

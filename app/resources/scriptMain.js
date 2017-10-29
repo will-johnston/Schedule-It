@@ -1,24 +1,10 @@
 $(document).ready(function(){
-	var cookie = document.cookie.split("=")[1];
-
-	//This stops the notification menu from closing when it's clicked on
-	$("#notificationMenu").click(function(event){
-		event.stopPropagation();
-	});
-
-	var assignFunctionality = function() {
-		$("#vPillsTab a").on("shown.bs.tab", function(event) {
-			//Fix previous pill stuff
-			prevPill = event.relatedTarget.getAttribute("href");
-			$(prevPill + " .nav a").removeClass("active");
-			$(prevPill + " .tab-content .tab-pane").removeClass("active show");
-
-			//Fix current pill stuff
-			var currPill = event.target.getAttribute("href");
-			$(currPill + " .nav a:first").tab("show");
-
-			//update the calendar
-			updateCalendar(currentYear, currentMonth, currPill.substring(1));
+	
+		var cookie = document.cookie.split("=")[1];
+	
+		//This stops the notification menu from closing when it's clicked on
+		$("#notificationMenu").click(function(event){
+			event.stopPropagation();
 		});
 	
 		var assignFunctionality = function() {
@@ -31,6 +17,9 @@ $(document).ready(function(){
 				//Fix current pill stuff
 				var currPill = event.target.getAttribute("href");
 				$(currPill + " .nav a:first").tab("show");
+	
+				//update the calendar
+				updateCalendar(currentYear, currentMonth, currPill.substring(1));
 			});
 	
 			//Chevron button to hide group information
@@ -56,50 +45,26 @@ $(document).ready(function(){
 			//Send message buttons
 			$('[id^="sendMessage_"]').click(function() {
 				var buttonId = this.id.toString();
-				//var groupId = buttonId.replace('sendMessage_', '').toString(); USE KYLES METHOD
-				var groupId = 1;
+				var groupId = buttonId.replace('sendMessage_', '').toString();
 				var textBoxId = 'message_' + groupId;
-				var message = document.getElementById(textBoxId).value; //Message being sent
-				var username; //Username that sent the message
+				var message = document.getElementById(textBoxId).value;
 				document.getElementById(textBoxId).value = '';
 	
-				var data = {};
-				data["cookie"] = cookie;
-		
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
-					function(result) { //success
-						var json = JSON.parse(result);
-						username = (json.username).toString();
-						var a = new Date();
-						var year = a.getFullYear();
-						var month = a.getMonth();
-						var day = a.getDay();
-						var hours = a.getHours();
-						var minutes = a.getMinutes();
-						var seconds = a.getSeconds();
-						var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
-		
-						var myJson = {};
-						myJson["username"] = username;
-						myJson["groupID"] = groupId;
-						myJson["time"] = timeStamp;
-						myJson["line"] = message;
-						accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
-							function(result) {
-								//Success that message
-							},
-							function(result) {
-								console.log(myJson);
-								console.log(result);
-								alert("Failed to send message");				}
-						);
+				var myJson = {};
+				myJson["cookie"] = cookie;
+				myJson["groupID"] = groupId;
+				myJson["line"] = message;
+
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+					function(result) {
+						//Success that message
+						console.log("Message sent");
 					},
-					function(result) { //fail
-						console.log(data);
+					function(result) {
+						console.log(myJson);
 						console.log(result);
-						alert("Failed to obtain user account settings");
-				});
-				
+						alert("Failed to send message");				}
+				);
 			});
 		};
 	
@@ -445,259 +410,34 @@ $(document).ready(function(){
 			else {
 				createGroup(name, info, "pic");
 				assignFunctionality();
+				assignCalendarFunctionality();
 				$("#newGroupModal").modal("hide");
 	
 				nameField.val("");
 				infoField.val("");
 				nameField.removeClass("is-invalid");
 			}
-		}
-
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
-			function(result) { //success
-				console.log("Successfully saved user account settings");
-
-				$("#accountSettingsModal").modal("hide");
-			},
-			function(result) { //fail
-				alert("Failed to save user account settings");
-			});
-
-	});
-	$("#accountSettingsModalDeleteAccountButton").click(function() {
-		
-	});
-
-	//LOGOUT BUTTON
-	$("#logoutButton").click(function() {
-		document.cookie = "cookie=";
-		window.location.href = "https://scheduleit.duckdns.org/";
-	});
-
-	//GROUPS
-	$("#addNewGroupButton").click(function() {
-		$("#groupFriendsList").empty();
-		$("body").off("click", "#groupFriendsList img");
-
-		var data = {};
-		data["cookie"] = cookie;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
-			function(result) { //success
-				console.log("Successfully retrieved friends");
-
-				var json = JSON.parse(result);
-
-				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/plus.png" width="18px" />' + json.friends[i] + '</li>';
-					$("#groupFriendsList").append(friendHTML);
-				}
-			},
-			function(result) { //fail
-				alert("Failed to retrieved friends");
-			});
-
-		$("body").on("click", "#groupFriendsList img", function() {
-			//call endpoint to invite user to group
-
-			console.log("clicked");
-
 		});
-	});
-
-	$("#newGroupModalCreateButton").click(function() {
-		var nameField = $("#newGroupModalName");
-		var infoField = $("#newGroupModalInfo");
-
-		var name = nameField.val();
-		var info = infoField.val();
-
-		if(name == "") {
-			nameField.addClass("is-invalid");
-		}
-		else {
-			createGroup(name, info, "pic");
-			assignFunctionality();
-			assignCalendarFunctionality();
-			$("#newGroupModal").modal("hide");
-
-			nameField.val("");
-			infoField.val("");
-			nameField.removeClass("is-invalid");
-		}
-	});
-
-	$("#newGroupModalCancelButton").click(function() {
-		$("#newGroupModalName").val("");
-		$("#newGroupModalInfo").val("");
-		$("#newGroupModalName").removeClass("is-invalid");
-	});
-
-	$("#groupSettingsButton").click(function() {
-		//populate the group settings modal with group information
-
-	});
-
-	$("#groupSettingsSaveButton").click(function() {
-		//Write the changed values to the database
-
-
-		$("#groupSettingsModal").modal("hide");
-	});
-
-	$("#groupSettingsLeaveGroupButton").click(function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data["id"] = "group id to leave";
-		data = JSON.stringify(data);
-
-		accessServer("POST", "leave group endpoint", data,
-			function(result) { //success
-				console.log("Successfully left group");
-
-				//update the groups
-			},
-			function(result) { //fail
-				alert("Failed to leave group");
-			});
-	});
-
-	var createGroup = function(name, info, pic) {
-		var data = {};
-		data["cookie"] = cookie;
-		data["name"] = name;
-		data["info"] = info;
-		data = JSON.stringify(data);
-
-		/*accessServer("POST", "...", data,
-			function(result) { //success
-				console.log("Successfully created group");
-			},
-			function(result) { //fail
-				alert("Failed to create group");
-			});*/
-
-
-		var id = "group" + ++$("#vPillsContent").children().length + "Content";
-
-		var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
-		
-		var contentHTML = `
-			<!-- Group -->
-			<div class="tab-pane fade" id="` + id + `" role="tabpanel">
-				<div class="collapse show" id="` + id + "Collapse" + `">
-					<div class="card card-group">
-						<div class="card-body">
-							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
-							<h3>` + name + `</h3>
-							<p>` + info + `</p>
-							<button type="button" class="btn btn-secondary btn-sm invisible" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
-						</div>
-					</div>
-				</div>
-				
-				<ul class="nav nav-tabs nav-fill" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#` + id + "Chat" + `" role="tab">Chat</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#` + id + "Cal" + `" role="tab">Calendar</a>
-					</li>
-					<button class="btn chevron" type="button" data-toggle="collapse" data-target="#` + id + "Collapse" + `" aria-expanded="false">
-						<img src="resources/chevronUp.png">
-					</button>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
-						<div id="` + id + "_wrapper" + `">
-							<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
-								 
-							<form name="message" action="">
-								<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
-								<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-								<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
-							</form>
-						</div>
-					</div>
-					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div class="row-fluid text-center cal-month-heading">
-							<button class="btn float-left cal-chevron-left" type="button">
-								<img src="resources/chevronLeft.png">
-							</button>
-							<button class="btn float-right cal-chevron-right" type="button">
-								<img src="resources/chevronRight.png">
-							</button>
-							<h3>Default</h3>
-						</div>
-						<table class="table table-bordered cal">
-							<thead class="cal-head">
-								<tr>
-									<th>Sunday</th>
-									<th>Monday</th>
-									<th>Tuesday</th>
-									<th>Wednesday</th>
-									<th>Thursday</th>
-									<th>Friday</th>
-									<th>Saturday</th>
-								</tr>
-							</thead>
-							<tbody class="cal-body">
-								<tr>
-									<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
-								</tr>
-								<tr>
-									<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
-								</tr>
-								<tr>
-									<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
-								</tr>
-								<tr>
-									<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
-								</tr>
-								<tr>
-									<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>`;
-
-		$("#vPillsContent").append(contentHTML);
-		$("#vPillsTab").append(tabHTML);
-
-
-		updateCalendar(currentYear, currentMonth, id);
-	};
-
-	//FRIENDS --------------------------------
-	var updateFriends = function() {
-		$("#friendsList").empty();
-		$("body").off("click", "#friendsList img");
-
-		var data = {};
-		data["cookie"] = cookie;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
-			function(result) { //success
-				console.log("Successfully retrieved friends");
-
-				var json = JSON.parse(result);
-
-				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
-					$("#friendsList").append(friendHTML);
-				}
-			},
-			function(result) { //fail
-				alert("Failed to retrieved friends");
-			});
-
-		$("body").on("click", "#friendsList img", function() {
+	
+		$("#newGroupModalCancelButton").click(function() {
+			$("#newGroupModalName").val("");
+			$("#newGroupModalInfo").val("");
+			$("#newGroupModalName").removeClass("is-invalid");
+		});
+	
+		$("#groupSettingsButton").click(function() {
+			//populate the group settings modal with group information
+	
+		});
+	
+		$("#groupSettingsSaveButton").click(function() {
+			//Write the changed values to the database
+	
+	
+			$("#groupSettingsModal").modal("hide");
+		});
+	
+		$("#groupSettingsLeaveGroupButton").click(function() {
 			var data = {};
 			data["cookie"] = cookie;
 			data["id"] = "group id to leave";
@@ -772,13 +512,54 @@ $(document).ready(function(){
 							</div>
 						</div>
 						<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-							<div class="datepicker"></div>
+							<div class="row-fluid text-center cal-month-heading">
+								<button class="btn float-left cal-chevron-left" type="button">
+									<img src="resources/chevronLeft.png">
+								</button>
+								<button class="btn float-right cal-chevron-right" type="button">
+									<img src="resources/chevronRight.png">
+								</button>
+								<h3>Default</h3>
+							</div>
+							<table class="table table-bordered cal">
+								<thead class="cal-head">
+									<tr>
+										<th>Sunday</th>
+										<th>Monday</th>
+										<th>Tuesday</th>
+										<th>Wednesday</th>
+										<th>Thursday</th>
+										<th>Friday</th>
+										<th>Saturday</th>
+									</tr>
+								</thead>
+								<tbody class="cal-body">
+									<tr>
+										<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
+									</tr>
+									<tr>
+										<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
+									</tr>
+									<tr>
+										<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
+									</tr>
+									<tr>
+										<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
+									</tr>
+									<tr>
+										<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>`;
 	
 			$("#vPillsContent").append(contentHTML);
 			$("#vPillsTab").append(tabHTML);
+	
+	
+			updateCalendar(currentYear, currentMonth, id);
 		};
 	
 		//FRIENDS --------------------------------
@@ -847,4 +628,3 @@ $(document).ready(function(){
 					});
 		});
 	});
-	
