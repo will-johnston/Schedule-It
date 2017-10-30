@@ -143,8 +143,6 @@ $(document).ready(function(){
 			data["response"]["accept"] = "true";
 			data = JSON.stringify(data);
 
-			console.log(data);
-
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
 				function(result) { //success
 					console.log("Successfully accepted friend request");
@@ -183,20 +181,42 @@ $(document).ready(function(){
 		$(".groupInviteAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
-			data["id"] = $(event.target).parent().attr("groupID");
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "invite.group";
+			data["response"] = {};
+			data["response"]["accept"] = "true";
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/join", data,
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
 				function(result) { //success
-					notificationResponseComplete();
+					console.log("Successfully accepted group invite");
+					updateGroups();
+					updateNotifications();
 				},
 				function(result) { //fail
-					alert("Failed to join group");
+					alert("Failed to accept group invite");
 				});
 		});
 
 		$(".groupInviteDeclineButton").click(function(event) {
-			notificationResponseComplete(event);
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "invite.group";
+			data["response"] = {};
+			data["response"]["accept"] = "false";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully declined group invite");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to decline group invite");
+				});
 		});
 	};
 
@@ -207,7 +227,7 @@ $(document).ready(function(){
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
 			function(result) { //success
-				console.log("Successfully retrived notifications");
+				console.log("Successfully retrieved notifications");
 
 				$("#notificationMenu").empty();
 
@@ -250,10 +270,10 @@ $(document).ready(function(){
 						$("#notificationMenu").append(html);
 						//might need to assign the functionality of the accept/decline buttons
 					}
-					else if(notification["type"] == "group-invite") {
-						var name = notification["data"]["name"];
-						var id = notification["data"]["id"];
-						var picture = notification["data"]["picture"];
+					else if(notification["type"] == "invite.group") {
+						var id = notification["id"];
+						var name = notification["data"]["groupname"];
+						//var picture = notification["data"]["picture"];
 
 						var html = `
 							<!-- group invite -->
@@ -266,7 +286,7 @@ $(document).ready(function(){
 									<p class="card-text">You have been invited to join ` + name + `</p>
 								</div>
 								<div class="card-footer">
-									<div class="float-right" groupID="` + id + `">
+									<div class="float-right" notifID="` + id + `">
 										<button type="button" class="btn btn-primary btn-sm groupInviteAcceptButton">Accept</button>
 										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
 									</div>
@@ -403,21 +423,22 @@ $(document).ready(function(){
 				}
 
 				for(var i = 0; i < json.length; i++) {
-					var id = "group" + json[i]["id"] + "Content";
+					var realID = json[i]["id"];
+					var id = "group" + realID + "Content";
 					var name = json[i]["name"];
 					var info = "...";
 
 					var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 					var contentHTML = `
 						<!-- Group -->
-						<div class="tab-pane fade" id="` + id + `" role="tabpanel">
+						<div class="tab-pane fade" id="` + id + `" role="tabpanel" groupID="` + realID + `" groupName="` + name + `">
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
 										<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 										<h3>` + name + `</h3>
 										<p>` + info + `</p>
-										<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
+										<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
 									</div>
 								</div>
 							</div>
@@ -499,6 +520,18 @@ $(document).ready(function(){
 
 				assignFunctionality();
 				assignCalendarFunctionality();
+
+				$(".groupSettingsButton").off();
+				$(".groupSettingsButton").click(function(event) {
+					console.log("clicked");
+					//populate the group settings modal with group information
+					var parent = $(event.target).parent().parent().parent().parent();
+
+					$(".groupFriendsList").attr("groupID", parent.attr("groupID"));
+
+					$("#groupSettingsModalName").val(parent.attr("groupName"));
+					//info & pic...
+				});
 			},
 			function(result) { //fail
 				alert("Failed to retrieved groups");
@@ -507,36 +540,37 @@ $(document).ready(function(){
 
 	updateGroups();
 
-	$("#addNewGroupButton").click(function() {
-		/*$("#groupFriendsList").empty();
-		$("body").off("click", "#groupFriendsList img");
+	var assignGroupModalInviteFriendsFunctionality = function(modal) {
+		$("body").on("click", ".groupFriendsList img", function(event) {
+			var nameField = $("#groupSettingsModalName");
+			var name = nameField.val();
 
-		var data = {};
-		data["cookie"] = cookie;
-		data = JSON.stringify(data);
+			if(name == "") {
+				nameField.addClass("is-invalid");
+			}
+			else {
+				var data = {};
+				data["cookie"] = cookie;
+				data["invitee"] = $(event.target).parent().text();
+				data["invitedto"] = $(event.target).parent().parent().attr("groupID");
+				data = JSON.stringify(data);
 
-		/*accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
-			function(result) { //success
-				console.log("Successfully retrieved friends");
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/invite", data,
+					function(result) { //success
+						console.log("Successfully invited user to group");
+						alert("Successfully invited user to group");
+					},
+					function(result) { //fail
+						alert("Failed to invite user to group");
+					});
 
-				var json = JSON.parse(result);
-
-				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/plus.png" width="18px" />' + json.friends[i] + '</li>';
-					$("#groupFriendsList").append(friendHTML);
-				}
-			},
-			function(result) { //fail
-				alert("Failed to retrieved friends");
-			});*/
-
-		$("body").on("click", "#groupFriendsList img", function() {
-			//call endpoint to invite user to group
-
-			console.log("clicked");
-
+				nameField.removeClass("is-invalid");
+			}
 		});
-	});
+
+	};
+
+	assignGroupModalInviteFriendsFunctionality();
 
 	$("#newGroupModalCreateButton").click(function() {
 		var nameField = $("#newGroupModalName");
@@ -578,11 +612,6 @@ $(document).ready(function(){
 		$("#newGroupModalName").val("");
 		$("#newGroupModalInfo").val("");
 		$("#newGroupModalName").removeClass("is-invalid");
-	});
-
-	$("#groupSettingsButton").click(function() {
-		//populate the group settings modal with group information
-
 	});
 
 	$("#groupSettingsSaveButton").click(function() {
@@ -627,9 +656,11 @@ $(document).ready(function(){
 				var json = JSON.parse(result);
 
 				for(var i = 0; i < json.friends.length; i++) {
-					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
-					$("#friendsList").append(friendHTML);
-					$(".groupFriendsList").append(friendHTML);
+					var friendListHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
+					$("#friendsList").append(friendListHTML);
+
+					var groupFriendListHTML = '<li class="list-group-item"><img class="float-right" src="resources/plus.png" width="18px" />' + json.friends[i] + '</li>';
+					$(".groupFriendsList").append(groupFriendListHTML);
 				}
 			},
 			function(result) { //fail
@@ -668,7 +699,8 @@ $(document).ready(function(){
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/invite", data,
 			function(result) { //success
 				console.log("Successfully sent friend request");
-				$("#sendFriendRequestTextbox").empty();
+				alert("Successfully sent friend request");
+				$("#sendFriendRequestTextbox").val("");
 			},
 			function(result) { //fail
 				alert("Failed to send friend request");
