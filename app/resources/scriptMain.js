@@ -218,7 +218,7 @@ $(document).ready(function(){
 
 		accessServer("POST", "get-notifications-stub", data,
 			function(result) { //success
-				console.log("Successfully obtained notifications");
+				console.log("Successfully retrived notifications");
 
 				$("#notificationMenu").empty();
 
@@ -287,12 +287,12 @@ $(document).ready(function(){
 				}
 			},
 			function(result) { //fail
-				alert("Failed to obtain notifications");
+				alert("Failed to retrived notifications");
 			});
 	};
 
 	//update notifications every 30 seconds
-	setInterval(updateNotifications, 30000);
+	//setInterval(updateNotifications, 30000);
 	updateNotifications();
 
 
@@ -391,6 +391,128 @@ $(document).ready(function(){
 	});
 
 	//GROUPS
+	var updateGroups = function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/get", data,
+			function(result) { //success
+				console.log("Successfully retrieved groups");
+
+				var json = JSON.parse(result);
+
+				var l = $("#vPillsTab").children().length;
+				for(var i = 1; i < l; i++) {
+					$("#vPillsTab").children().eq(1).remove();
+					$("#vPillsContent").children().eq(1).remove();
+				}
+
+				for(var i = 0; i < json.length; i++) {
+					var id = "group" + json[i]["id"] + "Content";
+					var name = json[i]["name"];
+					var info = "...";
+
+					var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
+					var contentHTML = `
+						<!-- Group -->
+						<div class="tab-pane fade" id="` + id + `" role="tabpanel">
+							<div class="collapse show" id="` + id + "Collapse" + `">
+								<div class="card card-group">
+									<div class="card-body">
+										<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
+										<h3>` + name + `</h3>
+										<p>` + info + `</p>
+										<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
+									</div>
+								</div>
+							</div>
+							
+							<ul class="nav nav-tabs nav-fill" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#` + id + "Chat" + `" role="tab">Chat</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#` + id + "Cal" + `" role="tab">Calendar</a>
+								</li>
+								<button class="btn chevron" type="button" data-toggle="collapse" data-target="#` + id + "Collapse" + `" aria-expanded="false">
+									<img src="resources/chevronUp.png">
+								</button>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
+									<div id="` + id + "_wrapper" + `">
+										<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+											 
+										<form name="message" action="">
+											<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
+											<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
+										</form>
+									</div>
+								</div>
+								<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
+									<div style="margin-top: 10px">
+										<button type="button" class="btn btn-primary">Create new event</button>
+										<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
+									</div>
+									<div class="row-fluid text-center cal-month-heading">
+										<button class="btn float-left cal-chevron-left" type="button">
+											<img src="resources/chevronLeft.png">
+										</button>
+										<button class="btn float-right cal-chevron-right" type="button">
+											<img src="resources/chevronRight.png">
+										</button>
+										<h3>Default</h3>
+									</div>
+									<table class="table table-bordered cal">
+										<thead class="cal-head">
+											<tr>
+												<th>Sunday</th>
+												<th>Monday</th>
+												<th>Tuesday</th>
+												<th>Wednesday</th>
+												<th>Thursday</th>
+												<th>Friday</th>
+												<th>Saturday</th>
+											</tr>
+										</thead>
+										<tbody class="cal-body">
+											<tr>
+												<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
+											</tr>
+											<tr>
+												<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
+											</tr>
+											<tr>
+												<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
+											</tr>
+											<tr>
+												<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
+											</tr>
+											<tr>
+												<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>`;
+
+					$("#vPillsContent").append(contentHTML);
+					$("#vPillsTab").append(tabHTML);
+				}
+
+				assignFunctionality();
+				assignCalendarFunctionality();
+			},
+			function(result) { //fail
+				alert("Failed to retrieved groups");
+			});
+	};
+
+	updateGroups();
+
 	$("#addNewGroupButton").click(function() {
 		$("#groupFriendsList").empty();
 		$("body").off("click", "#groupFriendsList img");
@@ -433,9 +555,23 @@ $(document).ready(function(){
 			nameField.addClass("is-invalid");
 		}
 		else {
-			createGroup(name, info, "pic");
-			assignFunctionality();
-			assignCalendarFunctionality();
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupname"] = name;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+				function(result) { //success
+					console.log("Successfully created group");
+
+					updateGroups();
+				},
+				function(result) { //fail
+					alert("Failed to create group");
+				});
+
+			updateGroups();
+
 			$("#newGroupModal").modal("hide");
 
 			nameField.val("");
@@ -478,118 +614,6 @@ $(document).ready(function(){
 				alert("Failed to leave group");
 			});
 	});
-
-	var createGroup = function(name, info, pic) {
-		var data = {};
-		data["cookie"] = cookie;
-		data["name"] = name;
-		data["info"] = info;
-		data = JSON.stringify(data);
-
-		/*accessServer("POST", "...", data,
-			function(result) { //success
-				console.log("Successfully created group");
-			},
-			function(result) { //fail
-				alert("Failed to create group");
-			});*/
-
-
-		var id = "group" + ++$("#vPillsContent").children().length + "Content";
-
-		var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
-		
-		var contentHTML = `
-			<!-- Group -->
-			<div class="tab-pane fade" id="` + id + `" role="tabpanel">
-				<div class="collapse show" id="` + id + "Collapse" + `">
-					<div class="card card-group">
-						<div class="card-body">
-							<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
-							<h3>` + name + `</h3>
-							<p>` + info + `</p>
-							<button type="button" class="btn btn-secondary btn-sm" id="groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
-						</div>
-					</div>
-				</div>
-				
-				<ul class="nav nav-tabs nav-fill" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#` + id + "Chat" + `" role="tab">Chat</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#` + id + "Cal" + `" role="tab">Calendar</a>
-					</li>
-					<button class="btn chevron" type="button" data-toggle="collapse" data-target="#` + id + "Collapse" + `" aria-expanded="false">
-						<img src="resources/chevronUp.png">
-					</button>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
-						<div id="` + id + "_wrapper" + `">
-							<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
-								 
-							<form name="message" action="">
-								<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
-								<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-								<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
-							</form>
-						</div>
-					</div>
-					<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
-						<div style="margin-top: 10px">
-							<button type="button" class="btn btn-primary">Create new event</button>
-							<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
-						</div>
-						<div class="row-fluid text-center cal-month-heading">
-							<button class="btn float-left cal-chevron-left" type="button">
-								<img src="resources/chevronLeft.png">
-							</button>
-							<button class="btn float-right cal-chevron-right" type="button">
-								<img src="resources/chevronRight.png">
-							</button>
-							<h3>Default</h3>
-						</div>
-						<table class="table table-bordered cal">
-							<thead class="cal-head">
-								<tr>
-									<th>Sunday</th>
-									<th>Monday</th>
-									<th>Tuesday</th>
-									<th>Wednesday</th>
-									<th>Thursday</th>
-									<th>Friday</th>
-									<th>Saturday</th>
-								</tr>
-							</thead>
-							<tbody class="cal-body">
-								<tr>
-									<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
-								</tr>
-								<tr>
-									<td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td>
-								</tr>
-								<tr>
-									<td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td>
-								</tr>
-								<tr>
-									<td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td>
-								</tr>
-								<tr>
-									<td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>`;
-
-		$("#vPillsContent").append(contentHTML);
-		$("#vPillsTab").append(tabHTML);
-
-
-		updateCalendar(currentYear, currentMonth, id);
-	};
 
 	//FRIENDS --------------------------------
 	var updateFriends = function() {
