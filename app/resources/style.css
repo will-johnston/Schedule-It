@@ -88,6 +88,10 @@ body {
 	cursor: pointer;
 }
 
+.groupFriendsList img {
+	cursor: pointer;
+}
+
 .btn {
 	cursor: pointer;
 }
