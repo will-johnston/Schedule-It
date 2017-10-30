@@ -96,34 +96,6 @@ $(document).ready(function(){
 	assignFunctionality();
 
 	var accessServer = function(method, url, data, onSuccess, onFail) {
-
-		//get notifications sub
-		if(url == "get-notifications-stub") {
-			var r = `{
-				"notifications": [
-					{
-						"type": "friend-request",
-						"data": {
-							"fullname": "[fullname]",
-							"username": "[username]",
-							"picture": "[url]"
-						}
-					},
-					{
-						"type": "group-invite",
-						"data": {
-							"name": "[name]",
-							"id": "[id]",
-							"picture": "[url]"
-						}
-					}
-				]
-				}`;
-
-			onSuccess(r);
-			return;
-		}
-
 		//send friend request stub
 		if(url == "send-friend-request") {
 			onFail();
@@ -155,13 +127,6 @@ $(document).ready(function(){
 	};
 
 	//NOTIFICATIONS
-	var notificationResponseComplete = function(event) {
-		//remove the notification from the menu
-		$(event.target).parent().parent().parent().remove();
-		//decrement the badge
-		$("#notificationsBadge").text(parseInt($("#notificationsBadge").text()) - 1);
-	}
-
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
 		$(".friendRequestDeclineButton").off();
@@ -171,24 +136,48 @@ $(document).ready(function(){
 		$(".friendRequestAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
-			data["username"] = $(event.target).parent().attr("username");
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "invite.friend";
+			data["response"] = {};
+			data["response"]["accept"] = "true";
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/add", data,
+			console.log(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
 				function(result) { //success
-					console.log("Successfully added friend");
+					console.log("Successfully accepted friend request");
 
 					updateFriends();
-
-					notificationResponseComplete();
+					updateNotifications();
 				},
 				function(result) { //fail
-					alert("Failed to add friend");
+					alert("Failed to accept friend request");
 				});
 		});
 
 		$(".friendRequestDeclineButton").click(function(event) {
-			notificationResponseComplete(event);
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "invite.friend";
+			data["response"] = {};
+			data["response"]["accept"] = "false";
+			data = JSON.stringify(data);
+
+			console.log(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully declined friend request");
+
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to decline friend request");
+				});
 		});
 
 		$(".groupInviteAcceptButton").click(function(event) {
@@ -216,23 +205,28 @@ $(document).ready(function(){
 		data["cookie"] = cookie;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "get-notifications-stub", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
 			function(result) { //success
 				console.log("Successfully retrived notifications");
 
 				$("#notificationMenu").empty();
 
+				if(result == "") {
+					$("#notificationsBadge").text("0");
+					return;
+				}
+
 				var json = JSON.parse(result);
 
-				$("#notificationsBadge").text(json["notifications"].length);
+				$("#notificationsBadge").text(json.length);
 
-				for(var i = 0; i < json["notifications"].length; i++) {
-					var notification = json["notifications"][i];
+				for(var i = 0; i < json.length; i++) {
+					var notification = json[i];
 
-					if(notification["type"] == "friend-request") {
-						var fullName = notification["data"]["fullname"];
-						var username = notification["data"]["username"];
-						var picture = notification["data"]["picture"];
+					if(notification["type"] == "invite.friend") {
+						var notifID = notification["id"];
+						var fullName = notification["data"]["fullName"];
+						//var picture = notification["data"]["picture"];
 
 						var html = `
 							<!-- friend request -->
@@ -245,7 +239,7 @@ $(document).ready(function(){
 									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
 								</div>
 								<div class="card-footer">
-									<div class="float-right" username="` + username + `">
+									<div class="float-right" notifID="` + notifID + `">
 										<button type="button" class="btn btn-primary btn-sm friendRequestAcceptButton">Accept</button>
 										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
 									</div>
@@ -292,7 +286,7 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	//setInterval(updateNotifications, 30000);
+	setInterval(updateNotifications, 30000);
 	updateNotifications();
 
 
@@ -514,14 +508,14 @@ $(document).ready(function(){
 	updateGroups();
 
 	$("#addNewGroupButton").click(function() {
-		$("#groupFriendsList").empty();
+		/*$("#groupFriendsList").empty();
 		$("body").off("click", "#groupFriendsList img");
 
 		var data = {};
 		data["cookie"] = cookie;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
+		/*accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/get", data,
 			function(result) { //success
 				console.log("Successfully retrieved friends");
 
@@ -534,7 +528,7 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				alert("Failed to retrieved friends");
-			});
+			});*/
 
 		$("body").on("click", "#groupFriendsList img", function() {
 			//call endpoint to invite user to group
@@ -620,6 +614,8 @@ $(document).ready(function(){
 		$("#friendsList").empty();
 		$("body").off("click", "#friendsList img");
 
+		$(".groupFriendsList").empty();
+
 		var data = {};
 		data["cookie"] = cookie;
 		data = JSON.stringify(data);
@@ -633,6 +629,7 @@ $(document).ready(function(){
 				for(var i = 0; i < json.friends.length; i++) {
 					var friendHTML = '<li class="list-group-item"><img class="float-right" src="resources/remove.png" width="18px" />' + json.friends[i] + '</li>';
 					$("#friendsList").append(friendHTML);
+					$(".groupFriendsList").append(friendHTML);
 				}
 			},
 			function(result) { //fail
@@ -664,20 +661,17 @@ $(document).ready(function(){
 		var username = $("#sendFriendRequestTextbox").val();
 
 		var data = {}
-		data["type"] = "friend-request";
 		data["cookie"] = cookie;
-		data["data"] = {};
-		data["data"]["username"] = username;
+		data["username"] = username;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "send-friend-request", data,
-				function(result) { //success
-					console.log("Successfully sent friend request");
-					alert("Successfully sent friend request");
-					$("#sendFriendRequestTextbox").empty();
-				},
-				function(result) { //fail
-					alert("Failed to send friend request");
-				});
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/friends/invite", data,
+			function(result) { //success
+				console.log("Successfully sent friend request");
+				$("#sendFriendRequestTextbox").empty();
+			},
+			function(result) { //fail
+				alert("Failed to send friend request");
+			});
 	});
 });
