@@ -38,7 +38,8 @@ public class Main {
             //router.add("/user/notifications/dismiss", dealer);
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
-            return router;
+            router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
+	    return router;
         }
         catch (Exception e) {
             System.out.println("Init server.Router encountered an error!");
