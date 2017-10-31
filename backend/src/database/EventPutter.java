@@ -31,7 +31,7 @@ public class EventPutter {
                 System.out.println("Failed to format values");
                 return null;
             }
-            String query = String.format("INSERT INTO notifications VALUES(%s);", values);
+            String query = String.format("INSERT INTO events VALUES(%s);", values);
             System.out.println(query);
             int result = statement.executeUpdate(query);
             if (result == 0) {

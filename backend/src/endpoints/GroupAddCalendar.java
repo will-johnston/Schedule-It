@@ -71,6 +71,7 @@ public class GroupAddCalendar implements IAPIRoute {
         //int eventID, String name, String type, String description, String image
         Event event = new Event(0,name, null, description, null);
         event.setTime(date);
+        event.setGroupID(group.getId());
         if (group.addEvent(event)) {
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
             return;
