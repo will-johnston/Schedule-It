@@ -214,6 +214,7 @@ public class SCalendar {
                 return false;
             }
             int month = resolveMonth(event.getTime());
+            System.out.println(String.format("Adding event with id:%d year:%d month:%d",event.getEventID(), resolveYear(event.getTime()), month));
             HashMap<Integer, Event> returned;
             switch (month) {
                 case 1:
@@ -344,6 +345,20 @@ public class SCalendar {
                     return -1;
                 }
                 return date.getMonthValue();
+            }
+            catch (Exception e) {
+                System.out.println("YearCalendar - Couldn't resolve month");
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        private int resolveYear(Timestamp timestamp) {
+            try {
+                LocalDateTime date = timestamp.toLocalDateTime();
+                if (date == null) {
+                    return -1;
+                }
+                return date.getYear();
             }
             catch (Exception e) {
                 System.out.println("YearCalendar - Couldn't resolve month");
