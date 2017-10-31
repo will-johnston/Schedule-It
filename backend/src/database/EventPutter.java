@@ -70,19 +70,28 @@ public class EventPutter {
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
         // description, accept, decline, maybe, userid, created
         //                             ID    AD  ID  NM   EX  IS  IM   TP   TI   DE   AC   DC   MA  CREAT
-        String values = String.format("NULL,'%s',%d,'%s','%s',%d,'%s','%s','%s','%s','%s','%s','%s',NULL",
-                event.getAddress(),
+        String values = String.format("NULL,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,NULL",
+                resolveNull(event.getAddress()),
                 event.getGroupID(),
-                event.getEvent_name(),
+                resolveNull(event.getEvent_name()),
                 "NULL",
                 -1,
-                event.getImage_path(),
-                event.getType(),
-                event.getTime().toString(),
-                event.getDescription(),
-                event.getAcceptString(),
-                event.getDeclineString(),
-                event.getMaybeString());
+                resolveNull(event.getImage_path()),
+                resolveNull(event.getType()),
+                resolveNull(event.getTime().toString()),
+                resolveNull(event.getDescription()),
+                resolveNull(event.getAcceptString()),
+                resolveNull(event.getDeclineString()),
+                resolveNull(event.getMaybeString()));
         return values;
+    }
+    public static String resolveNull(String value) {
+        if (value == null) {
+            return "NULL";
+        }
+        if (value.equals("null") || value.equals("NULL")) {
+            return "NULL";
+        }
+        return String.format("'%s'", value);
     }
 }
