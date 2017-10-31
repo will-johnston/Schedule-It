@@ -2,6 +2,7 @@ package database;
 
 import java.sql.SQLSyntaxErrorException;
 import java.lang.reflect.Array;
+import management.SCalendar;
 import management.Tracker;
 import java.util.*;
 
@@ -18,6 +19,7 @@ public class User {
     ArrayList<Group> groups;
     int id;
     long lastCheckedIn = -1;
+    boolean updatedGroups = false;
     public User(String name, String email, String password, String phone, int id, String username) {
         this.name = name;
         this.email = email;
@@ -145,7 +147,9 @@ public class User {
         try {
             System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
             Notification[] dbnotifs = NotificationInDb.get(id);
-            if (notifications == null || dbnotifs == null) { return null; }
+            if (notifications == null || dbnotifs == null) {
+                return new Notification[0];
+            }
             for (Notification notification : dbnotifs) {
                 if (notification == null) {
                     continue;
@@ -224,7 +228,7 @@ public class User {
             return false;
         }
     }
-    public boolean addNotificatin(Notification notification) {
+    public boolean addNotification(Notification notification) {
         if (notification == null) {
             System.out.println("Tried to clear null notification");
             return false;
@@ -321,6 +325,7 @@ public class User {
         return null;
     }
     public Group getGroupById(int id, Tracker tracker) {
+        refreshGroups(tracker);
         Group group = getGroupById(id);
         if (group == null) {
             group = Group.fromDatabase(tracker, id);
@@ -339,6 +344,9 @@ public class User {
         return null;
     }
     public void refreshGroups(Tracker tracker) {
+        if (updatedGroups) {
+            return;
+        }
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
 		groups.get(0).printDebug();
 		//HERE IS THE ISSUE
@@ -352,6 +360,7 @@ public class User {
 				System.out.println("Already contains group");
 			}
         }
+        this.updatedGroups = true;
     }
     public Group[] getGroups(Tracker tracker) {
         refreshGroups(tracker);
