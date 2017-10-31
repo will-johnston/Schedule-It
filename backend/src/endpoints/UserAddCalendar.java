@@ -8,8 +8,9 @@ import server.SSocket;
 import server.Socketeer;
 import management.*;
 import com.google.gson.*;
+import java.util.Date;
 import java.util.TimeZone;
-import java.text.SimpleDateFormat;
+import java.text.*;
 
 import javax.print.attribute.standard.NumberUp;
 import java.sql.*;
@@ -49,10 +50,10 @@ public class UserAddCalendar implements IAPIRoute {
         Timestamp date;
         try {
             //Tue, 31 Oct 2017 17:11:25 EST
-            DateFormat utcFormat = new SimpleDateFormat("EEE, dd MMM kk:mm:ss zzz");
+            DateFormat utcFormat = new SimpleDateFormat("EEE, d MMM yyyy kk:mm:ss zzz");
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            date = (Timestamp)utcFormat.parse(rawDate);
+            date = new Timestamp(utcFormat.parse(rawDate).getDate());
         }
         catch (Exception e) {
             e.printStackTrace();
