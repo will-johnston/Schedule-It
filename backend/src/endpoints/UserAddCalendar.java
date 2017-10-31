@@ -8,9 +8,12 @@ import server.SSocket;
 import server.Socketeer;
 import management.*;
 import com.google.gson.*;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 import javax.print.attribute.standard.NumberUp;
 import java.sql.*;
+import java.text.DateFormat;
 
 public class UserAddCalendar implements IAPIRoute {
     Tracker tracker;
@@ -45,7 +48,10 @@ public class UserAddCalendar implements IAPIRoute {
         String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3];
         Timestamp date;
         try {
-            date = Timestamp.valueOf(rawDate);
+            DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            date = (Timestamp)utcFormat.parse(rawDate);
         }
         catch (Exception e) {
             System.out.println("Couldn't convert to date object");
