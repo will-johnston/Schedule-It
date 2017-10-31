@@ -48,7 +48,8 @@ public class UserAddCalendar implements IAPIRoute {
         String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3];
         Timestamp date;
         try {
-            DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            //Tue, 31 Oct 2017 17:11:25 EST
+            DateFormat utcFormat = new SimpleDateFormat("EEE, dd MMM kk:mm:ss zzz");
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             date = (Timestamp)utcFormat.parse(rawDate);
