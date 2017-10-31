@@ -214,31 +214,104 @@ public class SCalendar {
                 return false;
             }
             int month = resolveMonth(event.getTime());
+            HashMap<Integer, Event> returned;
             switch (month) {
                 case 1:
-                    return update(this.january, event);
+                    returned =  update(this.january, event);
+                    if (returned != null) {
+                        this.january = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 2:
-                    return update(this.february, event);
+                    returned = update(this.february, event);
+                    if (returned != null) {
+                        this.february = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 3:
-                    return update(this.march, event);
+                    returned = update(this.march, event);
+                    if (returned != null) {
+                        this.march = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 4:
-                    return update(this.april, event);
+                    returned = update(this.april, event);
+                    if (returned != null) {
+                        this.april = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 5:
-                    return update(this.may, event);
+                    returned = update(this.may, event);
+                    if (returned != null) {
+                        this.may = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 6:
-                    return update(this.june, event);
+                    returned = update(this.june, event);
+                    if (returned != null) {
+                        this.june = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 7:
-                    return update(this.july, event);
+                    returned = update(this.july, event);
+                    if (returned != null) {
+                        this.july = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 8:
-                    return update(this.august, event);
+                    returned =  update(this.august, event);
+                    if (returned != null) {
+                        this.august = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 9:
-                    return update(this.september, event);
+                    returned =  update(this.september, event);
+                    if (returned != null) {
+                        this.september = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 10:
-                    return update(this.october, event);
+                    returned =  update(this.october, event);
+                    if (returned != null) {
+                        this.october = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 11:
-                    return update(this.november, event);
+                    returned =  update(this.november, event);
+                    if (returned != null) {
+                        this.november = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case 12:
-                    return update(this.december, event);
+                    returned =  update(this.december, event);
+                    if (returned != null) {
+                        this.december = returned;
+                    }
+                    else {
+                        return false;
+                    }
                 case -1:
                 default:
                     return false;
@@ -246,22 +319,23 @@ public class SCalendar {
         }
         //put event in list, pray that list actually points to the global list
         //Please jesus only let java not be handicapped in this one facility
-        private boolean update(HashMap<Integer, Event> list, Event event) {
+        private HashMap<Integer, Event> update(HashMap<Integer, Event> list, Event event) {
             if (list == null) {
                 list = new HashMap<>(2);
             }
             if (event == null) {
                 System.out.println("event is null");
-                return false;
+                return null;
             }
             if (list.containsKey(event.getEventID())) {
                 System.out.println("Event already exists");
-                return false;
+                return null;
             }
             //put in list
             list.put(event.getEventID(), event);
             eventCount++;
-            return true;
+            System.out.println("Update list with event: " + event.getEventID());
+            return list;
         }
         private int resolveMonth(Timestamp timestamp) {
             try {
