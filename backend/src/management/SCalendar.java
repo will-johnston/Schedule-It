@@ -238,6 +238,7 @@ public class SCalendar {
                     returned =  update(this.january, event);
                     if (returned != null) {
                         this.january = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -246,6 +247,7 @@ public class SCalendar {
                     returned = update(this.february, event);
                     if (returned != null) {
                         this.february = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -254,6 +256,7 @@ public class SCalendar {
                     returned = update(this.march, event);
                     if (returned != null) {
                         this.march = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -262,6 +265,7 @@ public class SCalendar {
                     returned = update(this.april, event);
                     if (returned != null) {
                         this.april = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -270,6 +274,7 @@ public class SCalendar {
                     returned = update(this.may, event);
                     if (returned != null) {
                         this.may = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -278,6 +283,7 @@ public class SCalendar {
                     returned = update(this.june, event);
                     if (returned != null) {
                         this.june = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -294,6 +300,7 @@ public class SCalendar {
                     returned =  update(this.august, event);
                     if (returned != null) {
                         this.august = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -302,6 +309,7 @@ public class SCalendar {
                     returned =  update(this.september, event);
                     if (returned != null) {
                         this.september = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -310,6 +318,7 @@ public class SCalendar {
                     returned =  update(this.october, event);
                     if (returned != null) {
                         this.october = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -318,6 +327,7 @@ public class SCalendar {
                     returned =  update(this.november, event);
                     if (returned != null) {
                         this.november = returned;
+                        return true;
                     }
                     else {
                         return false;
@@ -326,6 +336,7 @@ public class SCalendar {
                     returned =  update(this.december, event);
                     if (returned != null) {
                         this.december = returned;
+                        return true;
                     }
                     else {
                         return false;
