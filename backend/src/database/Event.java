@@ -12,7 +12,6 @@ public class Event {
     Timestamp time;     //Actually a datetime in the database, but java.sql represents both with the same object
     Timestamp created;
     String description;
-    int userid = 0;
     //CSVs of users that have responded
     int[] accept;   //String in database
     int[] decline;  //String in database
@@ -134,9 +133,6 @@ public class Event {
         this.created = created;
     }
 
-    public void setUserid(int id) {
-        this.userid = id;
-    }
 
     public Timestamp getTime() {
         return time;
@@ -173,8 +169,8 @@ public class Event {
         return type;
     }
 
-    public int getUserid() {
-        return userid;
+    public void setEventID(int eventID) {
+        this.eventID = eventID;
     }
 
     public int[] getAccept() {

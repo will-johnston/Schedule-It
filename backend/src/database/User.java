@@ -18,7 +18,6 @@ public class User {
     ArrayList<String> friends;          //List of usernames that this user is friends with
     ArrayList<Notification> notifications;
     ArrayList<Group> groups;
-    SCalendar calendar;
     int id;
     long lastCheckedIn = -1;
     public User(String name, String email, String password, String phone, int id, String username) {
@@ -31,7 +30,6 @@ public class User {
         this.friends = new ArrayList<>();
 		this.notifications = new ArrayList<>();
         this.groups = new ArrayList<>();
-        this.calendar = new SCalendar(false);
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
@@ -362,12 +360,6 @@ public class User {
         Group[] arr = new Group[this.groups.size()];
         this.groups.toArray(arr);
         return arr;
-    }
-    public Event[] getEvents(int year, int month) {
-        return calendar.getEvents(id, year, month);
-    }
-    public boolean addEvent(Event event) {
-        return calendar.add(event);
     }
     public long getLastCheckedIn() {
         return lastCheckedIn;

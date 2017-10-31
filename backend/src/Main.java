@@ -16,9 +16,10 @@ public class Main {
             router.add("/example/example", new ExampleEndpoint());
             router.add("/user/login", new UserLogin(tracker));
             router.add("/user/edit", new UserEdit(tracker));
-            router.add("/user/groups/calendar/get", new GroupGetCalendar());
-            router.add("/user/calendar/get", new UserGetCalendar(tracker));
-            router.add("/user/calendar/add", new UserAddCalendar(tracker));
+            router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
+            router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
+            //router.add("/user/calendar/get", new UserGetCalendar(tracker));
+            //router.add("/user/calendar/add", new UserAddCalendar(tracker));
             router.add("/user/groups/leave", new GroupLeave(tracker));
             router.add("/user/groups/join", new GroupJoin());
             router.add("/user/search", new UserSearch());

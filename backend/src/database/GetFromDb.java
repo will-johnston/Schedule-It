@@ -447,7 +447,7 @@ public class GetFromDb {
         return false;
         }
     }
-    public static Integer[] getEventIds(int id, boolean isgroup) {
+    public static Integer[] getEventIds(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
 
         ds = DataSourceFactory.getDataSource();
@@ -467,13 +467,7 @@ public class GetFromDb {
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
             System.out.println("Formatting query usernameExists");
-            String query;
-            if (isgroup) {
-                query = String.format("SELECT * FROM events WHERE groupID='%d';", id);
-            }
-            else {
-                query = String.format("SELECT * FROM events WHERE userID='%d';", id);
-            }
+            String query = String.format("SELECT * FROM events WHERE groupID='%d';", id);
             System.out.println(query);
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
@@ -533,7 +527,6 @@ public class GetFromDb {
                 event.setAccept(result.getString("accept"));
                 event.setDecline(result.getString("decline"));
                 event.setMaybe(result.getString("maybe"));
-                event.setUserid(result.getInt("userID"));
                 event.setCreated(result.getTimestamp("created"));
                 return event;
             }

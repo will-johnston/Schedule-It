@@ -1,6 +1,8 @@
 package database;
 
 import java.util.*;
+
+import management.SCalendar;
 import management.Tracker;
 public class Group {
     int id;
@@ -9,6 +11,7 @@ public class Group {
     String imagePath;
     ArrayList<String> users;
     ArrayList<String> admins;             //not implemented
+    SCalendar calendar;
     public Group(int id, User owner, String name, String imagePath) {
         this.id = id;
         this.name = name;
@@ -17,6 +20,7 @@ public class Group {
         this.users = new ArrayList<>(1);
 		this.admins = new ArrayList<>(1);
         users.add(owner.username);
+        calendar = new SCalendar();
     }
     public static Group fromDatabase(Tracker tracker, int groupid) {
         System.out.println("Parsing from database");
@@ -76,6 +80,12 @@ public class Group {
 		lprint("users.length: " + users.size());
 		lprint("admins.length: " + admins.size());
 	}
+	public boolean addEvent(Event event) {
+        return calendar.add(event);
+    }
+    public Event[] getEvents(int year, int month) {
+        return calendar.getEvents(this.id, year, month);
+    }
 	private void lprint(String message) {
 		System.out.println(message);
 	}

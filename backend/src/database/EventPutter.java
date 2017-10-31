@@ -40,11 +40,11 @@ public class EventPutter {
             }
             else {
                 //get the eventID
-                query = String.format("SELECT * FROM events WHERE event_name='%s' AND userid=%d AND description='%s' AND time='%s';", event.getUserid(),
+                query = String.format("SELECT * FROM events WHERE event_name='%s' AND groupid=%d AND description='%s' AND time='%s';", event.getGroupID(),
                         event.getDescription(), event.getTime());
                 ResultSet newevent = statement.executeQuery(query);
                 if (newevent.next()) {
-                    event.setUserid(newevent.getInt("eventID"));
+                    event.setEventID(newevent.getInt("eventID"));
                 }
                 else {
                     System.out.println("Couldn't get event id after adding event in db");
@@ -70,7 +70,7 @@ public class EventPutter {
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
         // description, accept, decline, maybe, userid, created
         //                             ID AD ID NM EX IS IM TP TI DE AC DC MA US CREAT
-        String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,NULL", event.getEventID(),
+        String values = String.format("NULL,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,NULL",
                 event.getAddress(),
                 event.getGroupID(),
                 event.getEvent_name(),
@@ -82,8 +82,7 @@ public class EventPutter {
                 event.getDescription(),
                 event.getAcceptString(),
                 event.getDeclineString(),
-                event.getMaybeString(),
-                event.getUserid());
+                event.getMaybeString());
         return values;
     }
 }

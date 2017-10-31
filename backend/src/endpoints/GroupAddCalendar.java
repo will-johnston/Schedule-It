@@ -11,14 +11,15 @@ import com.google.gson.*;
 import java.util.Date;
 import java.util.TimeZone;
 import java.text.*;
+import database.Group;
 
 import javax.print.attribute.standard.NumberUp;
 import java.sql.*;
 import java.text.DateFormat;
 
-public class UserAddCalendar implements IAPIRoute {
+public class GroupAddCalendar implements IAPIRoute {
     Tracker tracker;
-    public UserAddCalendar(Tracker tracker) {
+    public GroupAddCalendar(Tracker tracker) {
         this.tracker = tracker;
     }
     @Override
@@ -30,6 +31,7 @@ public class UserAddCalendar implements IAPIRoute {
             return;
         }
         int cookie = (int)args[0];
+        int groupid = (int)args[4];  //cookie, name, description, date, groupid
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -65,10 +67,11 @@ public class UserAddCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        Group group = user.getGroupById(groupid);
         //int eventID, String name, String type, String description, String image
         Event event = new Event(0,name, null, description, null);
         event.setTime(date);
-        if (user.addEvent(event)) {
+        if (group.addEvent(event)) {
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
@@ -78,7 +81,7 @@ public class UserAddCalendar implements IAPIRoute {
             return;
         }
     }
-    //cookie, name, description, date
+    //cookie, name, description, date, groupid
     Object[] parseArgs(String body) {
         try {
             Gson gson = new Gson();
@@ -95,8 +98,14 @@ public class UserAddCalendar implements IAPIRoute {
             if (!jobj.has("date")) {
                 return null;
             }
-            return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("name").getAsString(),
-                    jobj.get("description").getAsString(), jobj.get("date").getAsString() };
+            if (!jobj.has("groupid")) {
+                return null;
+            }
+            return new Object[] { jobj.get("cookie").getAsInt(),
+                    jobj.get("name").getAsString(),
+                    jobj.get("description").getAsString(),
+                    jobj.get("date").getAsString(),
+                    jobj.get("groupid").getAsInt()};
         }
         catch (Exception e) {
             System.out.print("Invalid arguments");

@@ -12,20 +12,18 @@ import database.Event;
 * ScheduleIt Calendar, not java.util.calendar
 * */
 public class SCalendar {
-    boolean isGroupCalendar;
     //use a hash table
     HashMap<Integer, YearCalendar> calendar;
-    public SCalendar(boolean isGroupCalendar) {
-        this.isGroupCalendar = isGroupCalendar;
+    public SCalendar() {
         calendar = new HashMap<>(2);
     }
-    public static SCalendar fromUserDatabase(int id) {
+    /*public static SCalendar fromUserDatabase(int id) {
         //get events, resolve events
         if (id <= 0) {
             System.out.println("Tried to get calendar for invalid id");
             return null;
         }
-        SCalendar cal = new SCalendar(false);
+        SCalendar cal = new SCalendar();
         Integer[] ids = GetFromDb.getEventIds(id, false);
         for (Integer integer : ids) {
             Event event = GetFromDb.getEvent(integer.intValue());
@@ -38,9 +36,26 @@ public class SCalendar {
             }
         }
         return cal;
-    }
-    public static SCalendar fromGroupDatabase(int id) {
-        return null;
+    }*/
+    public static SCalendar fromDatabase(int id) {
+        //get events, resolve events
+        if (id <= 0) {
+            System.out.println("Tried to get calendar for invalid id");
+            return null;
+        }
+        SCalendar cal = new SCalendar();
+        Integer[] ids = GetFromDb.getEventIds(id);
+        for (Integer integer : ids) {
+            Event event = GetFromDb.getEvent(integer.intValue());
+            if (event == null) {
+                System.out.println("Couldn't get event with id: " + integer.intValue());
+                continue;
+            }
+            if (!cal.addLocal(event)) {
+                System.out.println("Failed to add to calendar, id: " + event.getEventID());
+            }
+        }
+        return cal;
     }
     //doesn't resolve descrepancies in the db
     //returns false if can't add
@@ -113,7 +128,7 @@ public class SCalendar {
         }
         return year;
     }
-    public Event[] getEvents(int userid, int year, int month) {
+    public Event[] getEvents(int id, int year, int month) {
         if (month < 1 || month > 12) {
             System.out.println("Invalid month");
             return null;
@@ -122,12 +137,12 @@ public class SCalendar {
             System.out.println("Invalid year");
             return null;
         }
-        if (userid <= 0) {
+        if (id <= 0) {
             System.out.println("Invalid userid");
             return null;
         }
         //get year, then get month
-        refreshEvents(userid);
+        refreshEvents(id);
         if (!calendar.containsKey(year)) {
             System.out.println("Doesn't contain year");
             return null;
@@ -146,10 +161,10 @@ public class SCalendar {
         }
         return events;
     }
-    private void refreshEvents(int userid) {
-        Integer[] ids = GetFromDb.getEventIds(userid, this.isGroupCalendar);
-        for (Integer id : ids) {
-            int value = id.intValue();
+    private void refreshEvents(int id) {
+        Integer[] ids = GetFromDb.getEventIds(id);
+        for (Integer newid : ids) {
+            int value = newid.intValue();
             boolean contains = false;
             for (YearCalendar yearCalendar : calendar.values()) {
                 if (yearCalendar.containsEvent(value)) {
@@ -158,7 +173,7 @@ public class SCalendar {
                 }
             }
             if (!contains) {
-                Event event = Event.fromDatabase(id);
+                Event event = Event.fromDatabase(newid);
                 if (event == null) {
                     System.out.println("Failed to add missing local event");
                 }
