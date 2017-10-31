@@ -216,29 +216,29 @@ public class SCalendar {
             int month = resolveMonth(event.getTime());
             switch (month) {
                 case 1:
-                    return update(january, event);
+                    return update(this.january, event);
                 case 2:
-                    return update(february, event);
+                    return update(this.february, event);
                 case 3:
-                    return update(march, event);
+                    return update(this.march, event);
                 case 4:
-                    return update(april, event);
+                    return update(this.april, event);
                 case 5:
-                    return update(may, event);
+                    return update(this.may, event);
                 case 6:
-                    return update(june, event);
+                    return update(this.june, event);
                 case 7:
-                    return update(july, event);
+                    return update(this.july, event);
                 case 8:
-                    return update(august, event);
+                    return update(this.august, event);
                 case 9:
-                    return update(september, event);
+                    return update(this.september, event);
                 case 10:
-                    return update(october, event);
+                    return update(this.october, event);
                 case 11:
-                    return update(november, event);
+                    return update(this.november, event);
                 case 12:
-                    return update(december, event);
+                    return update(this.december, event);
                 case -1:
                 default:
                     return false;
