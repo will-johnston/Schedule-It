@@ -66,6 +66,7 @@ public class SCalendar {
         }
         int year = resolveYear(event.getTime());
         if (year == -1) {
+            System.out.println("Year is -1");
             return false;
         }
         if (calendar.containsKey(year)) {
@@ -86,6 +87,7 @@ public class SCalendar {
                 return true;
             }
             else {
+                System.out.println("Couldn't add event");
                 return false;
             }
         }
@@ -104,6 +106,7 @@ public class SCalendar {
                 return true;
             }
             else {
+                System.out.println("Couldn't add event with non-contained yearCalendar");
                 return false;
             }
         }
