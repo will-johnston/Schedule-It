@@ -247,8 +247,11 @@ public class SCalendar {
         //put event in list, pray that list actually points to the global list
         //Please jesus only let java not be handicapped in this one facility
         private boolean update(HashMap<Integer, Event> list, Event event) {
-            if (list == null || event == null) {
-                System.out.println("list or event is null");
+            if (list == null) {
+                list = new HashMap<>(2);
+            }
+            if (event == null) {
+                System.out.println("event is null");
                 return false;
             }
             if (list.containsKey(event.getEventID())) {
