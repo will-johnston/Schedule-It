@@ -70,6 +70,10 @@ public class SCalendar {
         }
         if (calendar.containsKey(year)) {
             YearCalendar yearCalendar = calendar.get(year);
+            if (yearCalendar == null) {
+                //initialize
+                yearCalendar = new YearCalendar();
+            }
             if (yearCalendar.add(event)) {
                 calendar.put(year, yearCalendar);
                 return true;

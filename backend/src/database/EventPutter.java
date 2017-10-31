@@ -45,13 +45,14 @@ public class EventPutter {
                 ResultSet newevent = statement.executeQuery(query);
                 if (newevent.next()) {
                     event.setEventID(newevent.getInt("eventID"));
+                    System.out.println("New id is: " + event.getEventID());
+                    return event;
                 }
                 else {
                     System.out.println("Couldn't get event id after adding event in db");
                     return null;
                 }
             }
-            return event;
 
         } catch (SQLException e) {
             e.printStackTrace();
