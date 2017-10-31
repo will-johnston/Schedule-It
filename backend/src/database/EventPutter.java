@@ -5,16 +5,16 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import java.sql.*;
 
 public class EventPutter {
-    public static boolean addEvent(Event event) {
+    public static Event addEvent(Event event) {
         if (event == null) {
-            return false;
+            return null;
         }
         //gets all the event ids connected to the user
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
         if (ds == null) {
             System.out.println("null data source getUserFromName");
-            return false;
+            return null;
         }
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
@@ -37,11 +37,21 @@ public class EventPutter {
             int result = statement.executeUpdate(query);
             if (result == 0) {
                 System.out.println("Didn't update anything");
-                return false;
+                return null;
             }
             else {
-                return true;
+                //get the eventID
+                query = String.format("SELECT * FROM events WHERE event_name='%s' AND userid=%d AND description='%s' AND time='%s';", event.getUserid(),
+                        event.getDescription(), event.getTime());
+                ResultSet newevent = statement.executeQuery(query);
+                if (newevent.next()) {
+                    event.setUserid(newevent.getInt("eventID"));
+                }
+                else {
+                    System.out.println("Couldn't get event id after adding event in db");
+                }
             }
+            return event;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,6 +65,6 @@ public class EventPutter {
             e.printStackTrace();
         }
 		*/
-        return false;
+        return null;
     }
 }

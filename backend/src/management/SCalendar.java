@@ -2,6 +2,7 @@ package management;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.*;
 
 import database.EventPutter;
@@ -75,23 +76,23 @@ public class SCalendar {
         }
     }
     //adds an event locally and adds it in the database
-    //returns false if can't add
+    //returns false if failed to add event
     public boolean add(Event event) {
         if (event == null) {
             System.out.println("Can't add event to year, event is null");
             return false;
         }
-        if (addLocal(event)) {
-            //add to database
-            if (EventPutter.addEvent(event)) {
+        Event newevent = EventPutter.addEvent(event);
+        if (newevent == null) {
+            return false;
+        }
+        else {
+            if (addLocal(event)) {
                 return true;
             }
             else {
                 return false;
             }
-        }
-        else {
-            return false;
         }
     }
     private int resolveYear(Timestamp time) {
@@ -112,20 +113,75 @@ public class SCalendar {
         }
         return year;
     }
+    public Event[] getEvents(int userid, int year, int month) {
+        if (month < 1 || month > 12) {
+            System.out.println("Invalid month");
+            return null;
+        }
+        if (year < 1980) {
+            System.out.println("Invalid year");
+            return null;
+        }
+        if (userid <= 0) {
+            System.out.println("Invalid userid");
+            return null;
+        }
+        //get year, then get month
+        refreshEvents(userid);
+        if (!calendar.containsKey(year)) {
+            System.out.println("Doesn't contain year");
+            return null;
+        }
+        YearCalendar yearCalendar = calendar.get(year);
+        HashMap<Integer, Event> monthCalendar = yearCalendar.getMonth(month);
+        if (monthCalendar == null) {
+            System.out.println("Doesn't contain month");
+            return null;
+        }
+        //populate event array
+        Event[] events = new Event[monthCalendar.size()];
+        int i = 0;
+        for (Event event : monthCalendar.values()) {
+            events[i] = event;
+        }
+        return events;
+    }
+    private void refreshEvents(int userid) {
+        Integer[] ids = GetFromDb.getEventIds(userid, this.isGroupCalendar);
+        for (Integer id : ids) {
+            int value = id.intValue();
+            boolean contains = false;
+            for (YearCalendar yearCalendar : calendar.values()) {
+                if (yearCalendar.containsEvent(value)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                Event event = Event.fromDatabase(id);
+                if (event == null) {
+                    System.out.println("Failed to add missing local event");
+                }
+                else {
+                    addLocal(event);
+                }
+            }
+        }
+    }
     class YearCalendar {
         //jan, feb, mar, apri, may, june, july, august, sept, oct, nov, dec
-        ArrayList<Event> january;   //1
-        ArrayList<Event> february;  //2
-        ArrayList<Event> march;     //3
-        ArrayList<Event> april;     //4
-        ArrayList<Event> may;       //5
-        ArrayList<Event> june;      //6
-        ArrayList<Event> july;      //7
-        ArrayList<Event> august;    //8
-        ArrayList<Event> september; //9
-        ArrayList<Event> october;   //10
-        ArrayList<Event> november;  //11
-        ArrayList<Event> december;  //12
+        HashMap<Integer, Event> january;   //1
+        HashMap<Integer, Event> february;  //2
+        HashMap<Integer, Event> march;     //3
+        HashMap<Integer, Event> april;     //4
+        HashMap<Integer, Event> may;       //5
+        HashMap<Integer, Event> june;      //6
+        HashMap<Integer, Event> july;      //7
+        HashMap<Integer, Event> august;    //8
+        HashMap<Integer, Event> september; //9
+        HashMap<Integer, Event> october;   //10
+        HashMap<Integer, Event> november;  //11
+        HashMap<Integer, Event> december;  //12
 
         int eventCount;
         public YearCalendar() {
@@ -170,19 +226,18 @@ public class SCalendar {
         }
         //put event in list, pray that list actually points to the global list
         //Please jesus only let java not be handicapped in this one facility
-        private boolean update(ArrayList<Event> list, Event event) {
+        private boolean update(HashMap<Integer, Event> list, Event event) {
             if (list == null || event == null) {
                 System.out.println("list or event is null");
                 return false;
             }
-            for (Event inlist : list) {
-                if (inlist.getEventID() == event.getEventID()) {
-                    System.out.println("Already in list!");
-                    return false;
-                }
+            if (list.containsKey(event.getEventID())) {
+                System.out.println("Event already exists");
+                return false;
             }
             //put in list
-            list.add(event);
+            list.put(event.getEventID(), event);
+            eventCount++;
             return true;
         }
         private int resolveMonth(Timestamp timestamp) {
@@ -197,6 +252,76 @@ public class SCalendar {
                 System.out.println("YearCalendar - Couldn't resolve month");
                 e.printStackTrace();
                 return -1;
+            }
+        }
+        public boolean containsEvent(int id) {
+            if (january != null && january.containsKey(id)) {
+                return true;
+            }
+            else if (february != null && february.containsKey(id)) {
+                return true;
+            }
+            else if (march != null && march.containsKey(id)) {
+                return true;
+            }
+            else if (april != null && april.containsKey(id)) {
+                return true;
+            }
+            else if (may != null && may.containsKey(id)) {
+                return true;
+            }
+            else if (june != null && june.containsKey(id)) {
+                return true;
+            }
+            else if (july != null && july.containsKey(id)) {
+                return true;
+            }
+            else if (august != null && august.containsKey(id)) {
+                return true;
+            }
+            else if (september != null && september.containsKey(id)) {
+                return true;
+            }
+            else if (october != null && october.containsKey(id)) {
+                return true;
+            }
+            else if (november != null && november.containsKey(id)) {
+                return true;
+            }
+            else if (december != null && december.containsKey(id)) {
+                return true;
+            }
+            return false;
+        }
+        public HashMap<Integer, Event> getMonth(int month) {
+            switch (month) {
+                case 1:
+                    return january;
+                case 2:
+                    return february;
+                case 3:
+                    return march;
+                case 4:
+                    return april;
+                case 5:
+                    return may;
+                case 6:
+                    return june;
+                case 7:
+                    return july;
+                case 8:
+                    return august;
+                case 9:
+                    return september;
+                case 10:
+                    return october;
+                case 11:
+                    return november;
+                case 12:
+                    return december;
+                case -1:
+                default:
+                    return null;
             }
         }
     }

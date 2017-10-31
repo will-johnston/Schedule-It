@@ -533,7 +533,7 @@ public class GetFromDb {
                 event.setAccept(result.getString("accept"));
                 event.setDecline(result.getString("decline"));
                 event.setMaybe(result.getString("maybe"));
-                event.setUserid(result.getString("userID"));
+                event.setUserid(result.getInt("userID"));
                 event.setCreated(result.getTimestamp("created"));
                 return event;
             }

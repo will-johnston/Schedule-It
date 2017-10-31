@@ -3,16 +3,16 @@ package database;
 import java.sql.*;
 
 public class Event {
-    int eventID;
+    int eventID = 0;
     String address;
-    int groupID;
+    int groupID = 0;
     String event_name;
     String image_path;  //image_path
     String type;
     Timestamp time;     //Actually a datetime in the database, but java.sql represents both with the same object
     Timestamp created;
     String description;
-    int userid;
+    int userid = 0;
     //CSVs of users that have responded
     int[] accept;   //String in database
     int[] decline;  //String in database
@@ -134,13 +134,8 @@ public class Event {
         this.created = created;
     }
 
-    public void setUserid(String id) {
-        try {
-            this.userid = Integer.parseInt(id);
-        }
-        catch (Exception e) {
-            this.userid = 0;
-        }
+    public void setUserid(int id) {
+        this.userid = id;
     }
 
     public Timestamp getTime() {
