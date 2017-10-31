@@ -123,6 +123,7 @@ public class SCalendar {
         }
         int year = date.getYear();
         if (year < 1980) {
+            System.out.println(date.toString());
             System.out.println("Can't resolve year, time is before 1980");
             return -1;
         }

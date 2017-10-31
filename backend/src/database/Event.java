@@ -177,7 +177,7 @@ public class Event {
         return accept;
     }
     public String getAcceptString() {
-        if (accept == null) {
+        if (accept == null || accept.length == 0) {
             return "";
         }
         StringBuilder builder = new StringBuilder();
@@ -194,7 +194,7 @@ public class Event {
         return decline;
     }
     public String getDeclineString() {
-        if (decline == null) {
+        if (decline == null || decline.length == 0) {
             return "";
         }
         StringBuilder builder = new StringBuilder();
@@ -211,7 +211,7 @@ public class Event {
         return maybe;
     }
     public String getMaybeString() {
-        if (maybe == null) {
+        if (maybe == null || maybe.length == 0) {
             return "";
         }
         StringBuilder builder = new StringBuilder();

@@ -48,7 +48,7 @@ public class GroupAddCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3];
+        String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3], type = (String)args[5];
         Timestamp date;
         try {
             //Tue, 31 Oct 2017 17:11:25 EST
@@ -56,6 +56,7 @@ public class GroupAddCalendar implements IAPIRoute {
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             date = new Timestamp(utcFormat.parse(rawDate).getDate());
+            System.out.println(date.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +70,7 @@ public class GroupAddCalendar implements IAPIRoute {
         }
         Group group = user.getGroupById(groupid);
         //int eventID, String name, String type, String description, String image
-        Event event = new Event(0,name, null, description, null);
+        Event event = new Event(0,name, type, description, null);
         event.setTime(date);
         event.setGroupID(group.getId());
         if (group.addEvent(event)) {
@@ -96,6 +97,9 @@ public class GroupAddCalendar implements IAPIRoute {
             if (!jobj.has("description")) {
                 return null;
             }
+            if (!jobj.has("type")) {
+                return null;
+            }
             if (!jobj.has("date")) {
                 return null;
             }
@@ -106,7 +110,8 @@ public class GroupAddCalendar implements IAPIRoute {
                     jobj.get("name").getAsString(),
                     jobj.get("description").getAsString(),
                     jobj.get("date").getAsString(),
-                    jobj.get("groupid").getAsInt()};
+                    jobj.get("groupid").getAsInt(),
+                    jobj.get("type").getAsString()};
         }
         catch (Exception e) {
             System.out.print("Invalid arguments");

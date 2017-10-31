@@ -69,8 +69,8 @@ public class EventPutter {
     public static String format(Event event) {
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
         // description, accept, decline, maybe, userid, created
-        //                             ID AD ID NM EX IS IM TP TI DE AC DC MA US CREAT
-        String values = String.format("NULL,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,NULL",
+        //                             ID    AD  ID  NM   EX  IS  IM   TP   TI   DE   AC   DC   MA  CREAT
+        String values = String.format("NULL,'%s',%d,'%s','%s',%d,'%s','%s','%s','%s','%s','%s','%s',NULL",
                 event.getAddress(),
                 event.getGroupID(),
                 event.getEvent_name(),
