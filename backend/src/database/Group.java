@@ -1,7 +1,6 @@
 package database;
 
 import java.util.*;
-
 import management.SCalendar;
 import management.Tracker;
 public class Group {
@@ -12,6 +11,7 @@ public class Group {
     ArrayList<String> users;
     ArrayList<String> admins;             //not implemented
     SCalendar calendar;
+
     public Group(int id, User owner, String name, String imagePath) {
         this.id = id;
         this.name = name;

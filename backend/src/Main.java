@@ -36,9 +36,9 @@ public class Main {
             //router.add("/user/notifications/dismiss", dealer);
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
-            router.add("/timeinput/add", new TimeInputAdd(tracker));
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
+            router.add("/timeinput/add", new TimeInputAdd(tracker));
 	    return router;
         }
         catch (Exception e) {

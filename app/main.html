@@ -1,0 +1,429 @@
+<!doctype html>
+
+<html>
+<head>
+	<title>Schedule It</title>
+	<link href="dependencies/bootstrap.min.css" rel="stylesheet">
+	<link href="resources/style.css" rel="stylesheet">
+</head>
+<body>
+	<script src="dependencies/popper.min.js"></script>
+	<script src="dependencies/jquery-3.2.1.min.js"></script>
+	<script src="dependencies/bootstrap.min.js"></script>
+	<script src="resources/scriptMainCalendar.js"></script>
+	<script src="resources/scriptMain.js"></script>
+	<script src="dependencies/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+
+	<!-- Heading -->
+	<h1>
+		<button type="button" class="btn btn-primary float-right" id="accountSettingsButton" data-toggle="modal" data-target="#accountSettingsModal">Settings</button>
+		<button type="button" class="btn btn-primary float-right" id="logoutButton" style="margin-right: 10px">Logout</button>
+		
+		<!-- Notification dropdown -->
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 10px">Notifications <span id="notificationsBadge" class="badge">0</span></button>
+			<div class="dropdown-menu dropdown-menu-right" id="notificationMenu">
+
+			</div>
+		</div>
+
+		<span>Schedule It</span>
+	</h1>
+
+
+	<!-- Settings modal -->
+	<div class="modal fade" id="accountSettingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Full name</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalFullNameField" type="text" value="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Username</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalUsernameField" type="text" readonly>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Email</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalEmailField" type="email" value="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Phone number</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalPhoneNumberField" type="tel" value="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Password</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalChangePasswordField" type="password" placeholder="Leave password" value="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-5 col-form-label">Confirm password</label>
+						<div class="col-7">
+							<input class="form-control" id="settingsModalConfirmPasswordField" type="password" placeholder="Leave password" value="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-5">
+							<label>Profile picture</label>
+						</div>
+						<div class="col-3">
+							<label class="btn btn-primary">
+								<input type="file" style="display: none">Choose file
+							</label>
+						</div>
+						<div class="col-4">
+							<img src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" class="img-thumbnail float-right">
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-5">
+							<p>Send notifications to</p>
+						</div>
+						<div class="col-3">
+							<label class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description">Email</span>
+							</label>
+						</div>
+						<div class="col-4">
+							<label class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description">Phone</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger mr-auto" id="accountSettingsModalDeleteAccountButton">Delete account</button>
+					<button type="button" class="btn btn-secondary" id="accountSettingsModalCloseButton" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="accountSettingsModalSaveButton">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Group settings modal -->
+	<div class="modal fade" id="groupSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Group settings</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Name</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="groupSettingsModalName">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label" id="groupSettingsModalInfo" maxlength="150">Information</label>
+						<div class="col-8">
+							<textarea class="form-control" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Group picture</label>
+						</div>
+						<div class="col-8">
+							<label class="btn btn-primary">
+								<input type="file" style="display: none">Choose file
+							</label>
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Invite friends</label>
+						</div>
+						<div class="col-8">
+							<div class="card groupOverflowList">
+								<ul class="list-group list-group-flush groupFriendsList" groupID="">
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="mr-auto">
+						<button type="button" class="btn btn-danger">Delete group</button>
+						<button type="button" class="btn btn-danger">Leave group</button>
+					</div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="groupSettingsSaveButton">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- New group modal -->
+	<div class="modal fade" id="newGroupModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">New group</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Name</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="newGroupModalName">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Information</label>
+						<div class="col-8">
+							<textarea class="form-control" rows="3" id="newGroupModalInfo" maxlength="150"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Group picture</label>
+						</div>
+						<div class="col-8">
+							<label class="btn btn-primary">
+								<input type="file" style="display: none">Choose file
+							</label>
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="newGroupModalCancelButton" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="newGroupModalCreateButton">Create</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Create event modal -->
+	<div class="modal fade" id="createEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">New event</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Name</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label" id="" maxlength="150">Information</label>
+						<div class="col-8">
+							<textarea class="form-control" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Event picture</label>
+						</div>
+						<div class="col-8">
+							<label class="btn btn-primary">
+								<input type="file" style="display: none">Choose file
+							</label>
+							<img src="resources/groupDefaultPhoto.jpg" alt="Default Event Photo" class="img-thumbnail float-right" width="100">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Date</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="" placeholder="mm/dd/yyyy">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-4 col-form-label">Time</label>
+						<div class="col-8">
+							<input class="form-control" type="text" id="" placeholder="2:30 pm">
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Invite friends</label>
+						</div>
+						<div class="col-8">
+							<div class="card groupOverflowList">
+								<ul class="list-group list-group-flush groupFriendsList">
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="groupSettingsSaveButton">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr />
+
+	<!-- Main content -->
+	<div class="row">
+		<div class="col-mod-l">
+			<div class="container fill">
+
+
+				<!-- Group side list -->
+				<div class="card side-list">
+					<label class="card-header">Groups</label>
+					<div class="card-block">
+						<button type="button" class="btn btn-primary" id="addNewGroupButton" data-toggle="modal" data-target="#newGroupModal">Create new group</button>
+						<div class="nav flex-column nav-pills" id="vPillsTab" role="tablist">
+							<a class="nav-link active" data-toggle="pill" href="#group1Content" role="tab">Me</a>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Friends side list -->
+				<div class="card side-list">
+					<label class="card-header">Friends</label>
+					<div class="card-block">
+						<div class="form-inline">
+							<input type="text" class="form-control" id="sendFriendRequestTextbox" placeholder="Username">
+							<button type="button" class="btn" id="sendFriendRequestButton">
+								<img src="resources/arrowRight.png" width="18px">
+							</button>
+						</div>
+						<div id="friendsListCard" class="card">
+							<ul id="friendsList" class="list-group list-group-flush">
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="col-mod-r">
+			<div class="tab-content" id="vPillsContent">
+
+				<!-- Me group -->
+				<div class="tab-pane fade show active" id="group1Content" role="tabpanel">
+					<div class="collapse show" id="group1ContentCollapse">
+						<div class="card card-group">
+							<div class="card-body">
+								<img src="resources/profileDefaultPhoto.png" alt="Default Group Photo" class="img-thumbnail" width="100">
+								<h3>Me</h3>
+								<p>This tab is just for you! Chat with the bot and set personal events.</p>
+							</div>
+						</div>
+					</div>
+					
+					<ul class="nav nav-tabs nav-fill" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#group1ContentChat" role="tab">Chat</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#group1ContentCal" role="tab">Calendar</a>
+						</li>
+						<button class="btn chevron" type="button" data-toggle="collapse" data-target="#group1ContentCollapse" aria-expanded="false">
+							<img src="resources/chevronUp.png">
+						</button>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active show" id="group1ContentChat" role="tabpanel" style="padding: 2%">
+
+							<!--Group Chat-->
+							<div id="_wrapper">
+								<div id="chatbox_" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;
+									transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+								 
+								<form name="message" action="">
+									<input name="usermsg" type="text" id="message_me" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+									<button type="button" class="btn btn-primary" id="sendMessage_me"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
+									<button type="button" class="btn btn-secondary" id="_sendBot"  style="width: 6em">Chatbot</button>
+								</form>
+							</div>
+						</div>
+						<div class="tab-pane" id="group1ContentCal" role="tabpanel">
+							<div style="margin-top: 10px">
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createEventModal">Create new event</button>
+								<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
+							</div>
+							<div class="row-fluid text-center cal-month-heading">
+								<button class="btn float-left cal-chevron-left" type="button">
+									<img src="resources/chevronLeft.png">
+								</button>
+								<button class="btn float-right cal-chevron-right" type="button">
+									<img src="resources/chevronRight.png">
+								</button>
+								<h3>Default</h3>
+							</div>
+							<table class="table table-bordered cal">
+								<thead class="cal-head">
+									<tr>
+										<th>Sunday</th>
+										<th>Monday</th>
+										<th>Tuesday</th>
+										<th>Wednesday</th>
+										<th>Thursday</th>
+										<th>Friday</th>
+										<th>Saturday</th>
+									</tr>
+								</thead>
+								<tbody class="cal-body">
+									<tr>
+										<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+									</tr>
+									<tr>
+										<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+									</tr>
+									<tr>
+										<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+									</tr>
+									<tr>
+										<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+									</tr>
+									<tr>
+										<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</body>
+</html>

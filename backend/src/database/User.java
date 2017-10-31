@@ -2,7 +2,6 @@ package database;
 
 import java.sql.SQLSyntaxErrorException;
 import java.lang.reflect.Array;
-
 import management.SCalendar;
 import management.Tracker;
 import java.util.*;

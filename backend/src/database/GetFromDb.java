@@ -259,9 +259,9 @@ public class GetFromDb {
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
             ArrayList<Group> list = new ArrayList<Group>();
-	    int results = 0;
+            int results = 0;
             while (result.next()) {
-		System.out.println("Result: " + results);
+                System.out.println("Result: " + results);
                 int groupid = result.getInt("groupID");
                 //get username from id
                 try {
@@ -279,9 +279,9 @@ public class GetFromDb {
                     System.out.println("Caught exception");
                     continue;
                 }
-		results++;
+                results++;
             }
-	    System.out.println("Results: " + list.size());
+            System.out.println("Results: " + list.size());
             return list;
 
         } catch (SQLException e) {
@@ -398,43 +398,43 @@ public class GetFromDb {
         return null;
     }
     public static boolean usernameExists(String username) {
-            MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
 
-            ds = DataSourceFactory.getDataSource();
-            if (ds == null) {
-                System.out.println("null data source getFriends");
-                return false;
-            }
-            Connection connection = null;  //used to connect to database
-            Statement statement = null;  //statement to enter command
-            ResultSet result = null;  //output after query
-            try {
-                //set up connection
-                connection = ds.getConnection();
-                //create statement
-                //statement = connection.createStatement();
-                statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-                        ResultSet.CONCUR_UPDATABLE);
-                //query  database
-                System.out.println("Formatting query usernameExists");
-                //select * from group_user_junction where groupID=3;
-                String query = String.format("SELECT * FROM users WHERE username='%s';", username);
-                System.out.println(query);
-                result = statement.executeQuery(query);
-                System.out.println("Checking for null");
-                ArrayList<Group> list = new ArrayList<Group>();
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query usernameExists");
+            //select * from group_user_junction where groupID=3;
+            String query = String.format("SELECT * FROM users WHERE username='%s';", username);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            System.out.println("Checking for null");
+            ArrayList<Group> list = new ArrayList<Group>();
             boolean exists = false;
-                while (result.next()) {
-                    String gotname = result.getString("username");
-            if (username.equals(gotname)) {
-               exists = true;
-            }
+            while (result.next()) {
+                String gotname = result.getString("username");
+                if (username.equals(gotname)) {
+                    exists = true;
                 }
+            }
 
-                return exists;
+            return exists;
 
-            } catch (SQLException e) {
-                e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
             try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
@@ -443,8 +443,8 @@ public class GetFromDb {
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
             }
-        System.out.println("Returning false");
-        return false;
+            System.out.println("Returning false");
+            return false;
         }
     }
     public static Integer[] getEventIds(int id) {

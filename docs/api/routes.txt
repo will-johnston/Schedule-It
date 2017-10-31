@@ -6,7 +6,7 @@ Password should be securely hashed before sending, preferably
 }
 Returns a login cookie upon success with status OK
 {
-  "cookie" : {COOKIE}
+  "cookie" : "{COOKIE}"
 }
 If failure, returns a status appropriate to the error (BadRequest, MethodNotAvailable) and returns an error string
 {
@@ -17,7 +17,7 @@ If failure, returns a status appropriate to the error (BadRequest, MethodNotAvai
 Fields that need to be changed are supplied in the request, if you only want to change the password do;
 {
    "username" : "{USERNAME}",
-   "cookie" : {LOGIN COOKIE},
+   "cookie" : "{LOGIN COOKIE}",
    "pass" : "{NEW PASSWORD}"
 
 }
@@ -29,14 +29,49 @@ Like user login, the password should be hashed
    "username" : "{NEW USERNAME}",
    "pass" : "{NEW PASSWORD}",
    "phone" : "{NEW PHONE NUMBER}",
-   "fullname" : "{NEW FULL NAME}",
+   "name" : "{NEW FULL NAME}",
    "email" : "{NEW EMAIL}"
 }
 Returns an error (like above) or a login cookie if successful.
 /api/user/friends/add - Add a friend
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"username" : "{FRIEND USER NAME}"
+}
+Successful Response:
 /api/user/friends/remove - Remove friend
+Returns an empty string on success, an error code on failure
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"username" : "{FRIEND USER NAME}"
+}
+Successful Response:
+/api/user/friends/get - Get List of friends
+Returns an empty string on success, an error code on failure
+Request:
+{
+	"cookie" : "{LOGIN COOKIE}"
+}
+Successful Response:
+{
+	"friends" : [
+		"{FRIEND USERNAME}",
+		"{ANOTHER FRIEND USERNAME}"
+	]
+}
 /api/user/search - Search all user's in the system
 /api/user/groups/create - Create a new group
+Request: 
+{
+	"cookie" : "{LOGIN COOKIE}",
+	"groupname" : "{NEW NAME}"
+}
+Successful Response:
+{
+	"groupid" : "{NEW GROUP ID}"
+}
 /api/user/groups/add - Add a friend to group
 /api/user/groups/join - Join a group from an invitation
 /api/user/groups/leave - Leave the group
@@ -48,5 +83,16 @@ Returns an error (like above) or a login cookie if successful.
 /api/user/groups/calendar/events/create - Create a new event, if the user is an admin
 /api/user/groups/edit - Edit group info, set permissions
 /api/user/groups/calendar/events/respond - User sets their 'going' status - accept, decline, on the fence
-
+/api/user/getsettings - Gets user's current settings
+Request:
+{
+	"cookie" : {LOGIN COOKIE}
+}
+Successful Response:
+{
+	"username": "{USERNAME}",
+    "fullname": "{NAME}",
+    "email": "{EMAIL ADDRESS}",
+    "phone": "{PHONE NUMBER}"
+}
 /* Need chat methods */
