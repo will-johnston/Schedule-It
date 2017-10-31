@@ -9,6 +9,7 @@ import server.Socketeer;
 import management.*;
 import com.google.gson.*;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.text.*;
 import database.Group;
@@ -54,9 +55,10 @@ public class GroupAddCalendar implements IAPIRoute {
             //Tue, 31 Oct 2017 17:11:25 EST
             DateFormat utcFormat = new SimpleDateFormat("EEE, d MMM yyyy kk:mm:ss zzz");
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date newdate = utcFormat.parse(rawDate);
 
-            date = new Timestamp(utcFormat.parse(rawDate).getDate());
-            System.out.println(date.toString());
+            date = new Timestamp(newdate.getTime());
+            System.out.println("Timestamp: " + date.toString() + " || parsed time: " + newdate.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
