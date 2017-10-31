@@ -40,20 +40,22 @@ public class EventPutter {
             }
             else {
                 //get the eventID
-                query = String.format("SELECT * FROM events WHERE event_name='%s' AND groupid=%d AND description='%s' AND time='%s';", event.getGroupID(),
-                        event.getDescription(), event.getTime());
+                query = String.format("SELECT * FROM events WHERE event_name='%s' AND groupid=%d AND description='%s' AND time='%s';", resolveNull(event.getEvent_name()),
+                        event.getGroupID(), resolveNull(event.getDescription()), resolveNull(event.getTime().toString()));
                 ResultSet newevent = statement.executeQuery(query);
                 if (newevent.next()) {
                     event.setEventID(newevent.getInt("eventID"));
                 }
                 else {
                     System.out.println("Couldn't get event id after adding event in db");
+                    return null;
                 }
             }
             return event;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
         /*try {
             //if(result != null) result.close();
@@ -64,7 +66,6 @@ public class EventPutter {
             e.printStackTrace();
         }
 		*/
-        return null;
     }
     public static String format(Event event) {
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
