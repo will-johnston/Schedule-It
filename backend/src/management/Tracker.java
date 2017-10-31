@@ -7,13 +7,18 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Tracker {
-    HashMap<Integer, User> users;
-    int count;
+    volatile HashMap<Integer, User> users;           //logged in <cookie, User>
+    volatile HashMap<Integer, Group> groups;
+    volatile int userCount;
+    volatile int groupCount;
     int timeout;
     public Tracker() {
         users = new HashMap<>(10);
-        count = 0;
+		groups = new HashMap<>(10);
+        userCount = 0;
+        groupCount = 0;
         timeout = 60 * 30;      //30 Minutes
+        //timeout = 30;           //testy
     }
     public Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {
@@ -30,21 +35,30 @@ public class Tracker {
     public int login(User user) {
         Tuple exists = isInUsers(user);
         if (exists != null) {
+            //checkin
+            user.checkin();
+            updateUser((int)exists.Item2 ,user);
             return (int)exists.Item2;
         }
-        int cookie = -1;
+        //else login to the system
+        int cookie = makeCookie();
+        user.checkin();
+        users.put(cookie, user);
+        userCount++;
+        return cookie;
+    }
+    private int makeCookie() {
+        int cookie = 0;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
         }
         while (users.containsKey(cookie));
-        user.checkin();
-        users.put(cookie, user);
         return cookie;
     }
     private Tuple isInUsers(User user) {
         for (Map.Entry value : users.entrySet()) {
             User userValue = (User)value.getValue();
-            if (userValue.getUsername() == user.getUsername()) {
+            if (userValue.getUsername().equals(user.getUsername())) {
                 return new Tuple(true, value.getKey());
             }
         }
@@ -77,6 +91,72 @@ public class Tracker {
         user.checkin();
         return user;
     }
+    public User getUserByName(String username) {
+        if (username == null) {
+            return null;
+        }
+        for (User user : users.values()) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return User.fromDatabase(username);
+    }
+    public User getUserById(int id) {
+		if (id == 0) {
+			return null;
+		} 
+        for (User user : users.values()) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        //not in tracker, check if in db
+        User user = User.fromDatabase(id);
+		if (user != null) {
+		    //add it to tracker
+            addUser(user);
+        }
+        return user;    //null if couldn't find in db
+    }
+    public Group getGroupById(int id) {
+        if (id == 0) {
+            return null;
+        }
+        if (groups.containsKey(id)) {
+            return groups.get(id);
+        }
+        else {
+            //check if in database
+            Group group = Group.fromDatabase(this, id);
+            if (group == null) {
+                return null;
+            }
+            groups.put(id, group);
+            groupCount++;
+            return group;
+        }
+    }
+    public boolean addUser(User newuser) {
+        //adds to tracker, but doesn't login
+        //check if in tracker
+        boolean intracker = false;
+        for (User user : users.values()) {
+            if (user.getId() == newuser.getId()) {
+                intracker = true;
+                break;
+            }
+        }
+        if (intracker) {
+            return false;
+        }
+        else {
+            newuser.setLastCheckedIn(0);
+            users.put(makeCookie(), newuser);
+            userCount++;
+            return true;
+        }
+    }
     public boolean updateUser(int cookie, User newUser) {
         if (!users.containsKey(cookie)) {
             return false;
@@ -90,6 +170,52 @@ public class Tracker {
             return false;
         }
     }
+    public boolean groupExists(int groupid) {
+        if (!groups.containsKey(groupid)) {
+            //check if it's in the database
+            if (RetrieveGroupInfo.getGroupName(groupid) != null) {
+                Group group = Group.fromDatabase(this, groupid);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    //TODO check if group exists in db (by name)
+    public boolean groupExists(String groupname) {
+        if (groupname == null) {
+            System.out.println("Groupname is null");
+            return false;
+        }
+        if (groups == null || groups.values() == null) {
+            System.out.println("Groups or groups.values is null");
+            return false;
+        }
+        for (Group group : groups.values()) {
+            if (group != null && group.getName().equals(groupname)) {
+                return true;
+            }
+        }
+        //check the database
+        return false;
+    }
+    //TODO make sure users get updated as part of a group
+    public boolean addGroup(Group group) {
+        if (groups.containsKey(group.getId())) {
+            return false;
+        }
+        else {
+            //Another fine addition to my collection
+            groups.put(group.getId(), group);
+            groupCount++;
+            return true;
+        }
+    }
+
     public int getTimeout() {
         return timeout;
     }

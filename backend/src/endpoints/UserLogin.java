@@ -16,7 +16,7 @@ public class UserLogin implements IAPIRoute {
         this.tracker = tracker;
     }
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         Gson gson = new Gson();
         try {
             String[] args = parseArgs(request.getBody());
@@ -53,13 +53,18 @@ public class UserLogin implements IAPIRoute {
     }
     //Returns an array of [email, password]
     private String[] parseArgs(String message) {
-        try {
+        System.out.println(message);
+	try {
             Gson gson = new Gson();
+            if (gson == null) { System.out.println("Gson is null"); }
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
+            if (bodyObj == null) { System.out.println("bodyObj is null"); }
             if (!bodyObj.has("name")) {
+                System.out.println("Name is null");
                 return null;
             }
             if (!bodyObj.has("pass")) {
+                System.out.println("pass is null");
                 return null;
             }
             String[] arr = new String[2];
@@ -68,6 +73,7 @@ public class UserLogin implements IAPIRoute {
             return arr;
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Caught an exception");
             return null;
         }

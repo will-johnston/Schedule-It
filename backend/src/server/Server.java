@@ -19,29 +19,41 @@ public class Server {
     private Boolean isSSL;
     Boolean isListening;
     private ServerSocket sock;
-    protected SSLServerSocket sslSock;
+    private SSLServerSocket sslSock;
     private Thread listenThread;
+    private Thread securelistenThread;
 
-    public Server(int port) {
+    public Server(int port, int secureport) {
         try {
+            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
+            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+
             sock = new ServerSocket(port);
+            SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+            sslSock = (SSLServerSocket)factory.createServerSocket(secureport);
             isSSL = false;
             isListening = false;
             listenThread = null;
         } catch (IOException e) {
-            System.out.println(String.format("server.Server cannot bind to port %d, already in use!", port));
+            e.printStackTrace();
+            //System.out.println(String.format("server.Server cannot bind to port %d or port , already in use!", port));
         }
     }
 
-    public Server(int port, String sslCertificate) {
-        throw new NotImplementedException();
-    }
-
     public void startListening(Router router) {
-        isListening = true;
-        listenThread = new Listener(sock, router);
-        listenThread.start();
-        System.out.println("Started listening");
+        try {
+            isListening = true;
+            listenThread = new Listener(sock, router);
+            securelistenThread = new Listener(sslSock, router);
+
+            listenThread.start();
+            securelistenThread.start();
+            System.out.println("Started listening");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopListening() {
@@ -50,25 +62,50 @@ public class Server {
 
     class Listener extends Thread {
         ServerSocket mainServer;
-        Boolean calledQuit;
+        SSLServerSocket secureMainServer;
+        boolean calledQuit;
         Router router;
+        boolean isSsl;
 
         public Listener(ServerSocket server, Router router) {
-            mainServer = server;
-            calledQuit = false;
-            this.router = router;
+            try {
+                mainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        public Listener(SSLServerSocket server, Router router) {
+            try {
+                secureMainServer = server;
+                calledQuit = false;
+                this.router = router;
+                this.isSsl = true;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         public void run() {
             //Run until the program has requested stop/quit
             while (!calledQuit) {
                 try {
-                    Socket recievedSock = mainServer.accept();
-                    new Handler(recievedSock, router).run();
+                    if (isSsl) {
+                        SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
+                    else {
+                        SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
+                        new Handler(recievedSock, router).run();
+                    }
                 } catch (SocketException e) {
-
+                    e.printStackTrace();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -80,9 +117,9 @@ public class Server {
 
     class Handler extends Thread {
         Router router;
-        Socket sock;
+        SSocket sock;
 
-        public Handler(Socket sock, Router router) {
+        public Handler(SSocket sock, Router router) {
             this.router = router;
             this.sock = sock;
         }
@@ -92,15 +129,27 @@ public class Server {
                 InputStream in = sock.getInputStream();
                 OutputStream out = sock.getOutputStream();
                 //Max recieve size is 8 KB, allow for overhead
+				/*Thread.sleep(5);			//Sleep 5 whole seconds
                 byte[] buffer = new byte[9216];
                 int readResult = in.read(buffer);
+				System.out.println("In available: " + in.available());
                 String header = new String(buffer, 0, readResult, StandardCharsets.UTF_8);
-                //System.out.println("header: " + header);
-                //System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
+                System.out.println("header: " + header);
+                System.out.println(String.format("server.Header length: %d, read: %d", header.length(), readResult));
+                HTTPMessage mess;*/
                 HTTPMessage mess;
                 try {
-                    mess = new HTTPMessage(header);
-			System.out.println("Server recieved " + mess.method);
+                     mess = getRequest(in);
+                     if (mess == null) {
+                         //timed out
+                         System.out.println("Failed to parse HTTP Message, TIMED OUT");
+                         String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
+                         out.write(response.getBytes(Charset.forName("UTF-8")));
+                         out.flush();
+                         sock.close();
+                         return;
+                     }
+			        System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
@@ -128,8 +177,79 @@ public class Server {
                 out.flush();
                 sock.close();*/
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("e.Message: " + e.getLocalizedMessage());
             }
+        }
+        public HTTPMessage getRequest(InputStream in) throws Exception {
+            byte[] buffer = new byte[8192];     //8KB
+            StringBuilder head = new StringBuilder();
+            StringBuilder body = new StringBuilder();
+            Timer timer = new Timer(30);        //30 second timeout
+            boolean inBody = false;
+            int length = -1;
+            while (!timer.hasExpired()) {
+                //read what there is, find content-length and verify that the data has been recieved
+                if (in.available() > 0) {
+                    int read = in.read(buffer);
+                    String readstr = new String(buffer, 0, read);
+                    String[] lines = readstr.split("\n");
+                    for (int i = 0; i < lines.length; i++) {
+                        System.out.println(lines[i]);
+                        if (inBody) {
+                            if (length == 0) {
+                                return new HTTPMessage(head.toString(), body.toString());
+                            }
+                            //add body data
+                            body.append(lines[i] + '\n');
+                            if ((body.length() - 1) == length ) {
+                                return new HTTPMessage(head.toString(), body.toString());
+                            }
+                            else {
+                                System.out.println(String.format("Builder length is %d, content length is %d", body.length(), length));
+                            }
+                        }
+                        else {
+                            //add request headers
+                            if (lines[i].contains("Content-Length")) {
+                                //add to builder then parse line
+                                head.append(lines[i] + '\n');
+                                String[] keyvalue = lines[i].split(":");
+                                if (keyvalue.length < 2) {
+                                    System.out.println("Content-Length is improperly formatted");
+                                    System.out.println("Was: " + lines[i]);
+                                    return null;
+                                }
+                                try {
+                                    length = Integer.parseInt(keyvalue[1].trim());
+                                }
+                                catch (Exception e) {
+                                    System.out.println("Couldn't parse Content-Length value");
+                                    System.out.println("Was: " + lines[i]);
+                                    return null;
+                                }
+                            }
+                            else if (lines[i].length() <= 1) {
+                                //encountered the body
+                                inBody = true;
+                                if (length == -1) {
+                                    //No Content-Length specified
+                                    return new HTTPMessage(head.toString(), body.toString());
+                                }
+                                continue;
+                            }
+                            else {
+                                head.append(lines[i] + '\n');
+                            }
+                        }
+                    }
+                }
+                Thread.sleep(50);
+            }
+            if (timer.hasExpired()) {
+                return  null;
+            }
+            return null;
         }
     }
 

@@ -1,24 +1,19 @@
 package endpoints;
-
-import server.*;
-
-import java.net.Socket;
-import com.google.gson.*;
-import database.*;
+import database.User;
 import management.*;
+import server.*;
+import com.google.gson.*;
 
-//Remove friend from User
-public class FriendsRemove implements IAPIRoute {
-
+public class FriendInvite implements IAPIRoute {
     Tracker tracker;
-    public FriendsRemove(Tracker tracker) {
+    NotificationHandler handler;
+    public FriendInvite(Tracker tracker, NotificationHandler handler) {
         this.tracker = tracker;
+        this.handler = handler;
     }
+
     @Override
     public void execute(SSocket sock, HTTPMessage request) {
-        //Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
-        // { "cookie" : 3434,
-        // "username" : "friend to add"}
         Object[] args = parseArgs(request.getBody());
         if (args == null) {
             String response = "{ \"error\" : \"Invalid arguments\"}";
@@ -33,19 +28,32 @@ public class FriendsRemove implements IAPIRoute {
             return;
         }
         User requester = tracker.getUser(cookie);
-        if (requester.removeFriend(username)) {
-            if (tracker.updateUser(cookie, requester)) {
-                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-                return;
+        User toadd = tracker.getUserByName(username);
+        if (toadd == null) {
+            //check and see if user exists in db
+            toadd = User.fromDatabase(username);
+            if (toadd != null) {
+                //User to add is not in tracker, but in db, add to tracker
+                if (!tracker.addUser(toadd)) {
+                    String response = "{ \"error\" : \"Failed to add friend\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
             }
             else {
-                String response = "{ \"error\" : \"Failed to update user in API Server\"}";
-                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
+                String response = "{ \"error\" : \"Friend doesn't exist\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
         }
+        if (handler.sendFriendInvite(requester, toadd)) {
+            //success
+            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+            return;
+        }
         else {
-            String response = "{ \"error\" : \"Failed to remove friends\"}";
+            //failed
+            String response = "{ \"error\" : \"Couldn't invite friend\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }

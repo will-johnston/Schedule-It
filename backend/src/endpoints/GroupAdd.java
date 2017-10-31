@@ -8,7 +8,7 @@ import java.net.Socket;
 public class GroupAdd implements IAPIRoute {
 
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
     }
 }
