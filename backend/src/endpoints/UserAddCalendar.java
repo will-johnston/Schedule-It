@@ -87,7 +87,7 @@ public class UserAddCalendar implements IAPIRoute {
                 return null;
             }
             return new Object[] { jobj.get("cookie").getAsInt(), jobj.get("name").getAsString(),
-                    jobj.get("decription").getAsString(), jobj.get("date").getAsString() };
+                    jobj.get("description").getAsString(), jobj.get("date").getAsString() };
         }
         catch (Exception e) {
             System.out.print("Invalid arguments");
