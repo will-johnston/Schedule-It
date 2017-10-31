@@ -54,6 +54,7 @@ public class UserAddCalendar implements IAPIRoute {
             date = (Timestamp)utcFormat.parse(rawDate);
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Couldn't convert to date object");
             date = null;
         }
