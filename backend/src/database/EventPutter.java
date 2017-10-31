@@ -28,10 +28,10 @@ public class EventPutter {
             //query  database
             //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
             // description, accept, decline, maybe, userid, created
-            String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%d,NULL", event.getEventID(),
+            String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%d,%s,NULL", event.getEventID(),
                     event.getAddress(), event.getGroupID(), event.getEvent_name(), "NULL", "-1", event.getImage_path(),
-                    event.getType(), event.getTime(), event.getDescription(), event.getAcceptString(), event.getDeclineString(), event.getMaybeString(),
-                    event.getUserid(), event.getCreated());
+                    event.getType(), event.getTime().toString(), event.getDescription(), event.getAcceptString(), event.getDeclineString(), event.getMaybeString(),
+                    event.getUserid(), event.getCreated().toString());
             String query = String.format("INSERT INTO notifications VALUES(%s);", values);
             System.out.println(query);
             int result = statement.executeUpdate(query);
