@@ -20,6 +20,7 @@ public class User {
     ArrayList<Group> groups;
     int id;
     long lastCheckedIn = -1;
+    boolean updatedGroups = false;
     public User(String name, String email, String password, String phone, int id, String username) {
         this.name = name;
         this.email = email;
@@ -147,7 +148,9 @@ public class User {
         try {
             System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
             Notification[] dbnotifs = NotificationInDb.get(id);
-            if (notifications == null || dbnotifs == null) { return null; }
+            if (notifications == null || dbnotifs == null) {
+                return new Notification[0];
+            }
             for (Notification notification : dbnotifs) {
                 if (notification == null) {
                     continue;
@@ -192,6 +195,9 @@ public class User {
         return null;
     }
     private void updateNotifications() {
+        if (updatedGroups) {
+            return;
+        }
         Notification[] dbnotifs = NotificationInDb.get(id);
         for (Notification dbnotif : dbnotifs) {
             boolean exists = false;
@@ -205,6 +211,7 @@ public class User {
                 this.notifications.add(dbnotif);
             }
         }
+        updatedGroups = true;
     }
     public boolean clearNotification(Notification notification) {
         if (notification == null) {
@@ -323,6 +330,7 @@ public class User {
         return null;
     }
     public Group getGroupById(int id, Tracker tracker) {
+        refreshGroups(tracker);
         Group group = getGroupById(id);
         if (group == null) {
             group = Group.fromDatabase(tracker, id);

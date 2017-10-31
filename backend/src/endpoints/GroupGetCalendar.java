@@ -42,7 +42,7 @@ public class GroupGetCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        Group group = user.getGroupById(groupid);
+        Group group = user.getGroupById(groupid, tracker);
         if (group == null) {
             String response = "{\"error\":\"Couldn't get group\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -51,8 +51,9 @@ public class GroupGetCalendar implements IAPIRoute {
 
         Event[] events = group.getEvents(year, month);
         if (events == null) {
-            String response = "{\"error\":\"Couldn't get events\"}";
-            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+            //String response = "{\"error\":\"Couldn't get events\"}";
+            //has no events
+            Socketeer.send(HTTPMessage.makeResponse("{}", HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
         String json = toJson(events);
