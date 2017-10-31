@@ -195,9 +195,6 @@ public class User {
         return null;
     }
     private void updateNotifications() {
-        if (updatedGroups) {
-            return;
-        }
         Notification[] dbnotifs = NotificationInDb.get(id);
         for (Notification dbnotif : dbnotifs) {
             boolean exists = false;
@@ -211,7 +208,6 @@ public class User {
                 this.notifications.add(dbnotif);
             }
         }
-        updatedGroups = true;
     }
     public boolean clearNotification(Notification notification) {
         if (notification == null) {
@@ -233,7 +229,7 @@ public class User {
             return false;
         }
     }
-    public boolean addNotificatin(Notification notification) {
+    public boolean addNotification(Notification notification) {
         if (notification == null) {
             System.out.println("Tried to clear null notification");
             return false;
@@ -349,6 +345,9 @@ public class User {
         return null;
     }
     public void refreshGroups(Tracker tracker) {
+        if (updatedGroups) {
+            return;
+        }
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
 		groups.get(0).printDebug();
 		//HERE IS THE ISSUE
@@ -362,6 +361,7 @@ public class User {
 				System.out.println("Already contains group");
 			}
         }
+        this.updatedGroups = true;
     }
     public Group[] getGroups(Tracker tracker) {
         refreshGroups(tracker);
