@@ -94,6 +94,13 @@ public class SCalendar {
             if (yearCalendar.add(event)) {
                 //add to global calendar
                 calendar.put(year, yearCalendar);
+                System.out.println("Added event with year: " + year);
+                if (yearCalendar.containsEvent(event.getEventID())) {
+                    System.out.println("Contains event after add");
+                }
+                else {
+                    System.out.println("Doesn't contains event after add");
+                }
                 return true;
             }
             else {
