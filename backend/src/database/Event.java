@@ -182,7 +182,7 @@ public class Event {
     }
     public String getAcceptString() {
         if (accept == null) {
-            return null;
+            return "";
         }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < accept.length; i++) {
@@ -199,7 +199,7 @@ public class Event {
     }
     public String getDeclineString() {
         if (decline == null) {
-            return null;
+            return "";
         }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < decline.length; i++) {
@@ -216,7 +216,7 @@ public class Event {
     }
     public String getMaybeString() {
         if (maybe == null) {
-            return null;
+            return "";
         }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < maybe.length; i++) {
