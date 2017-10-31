@@ -70,7 +70,7 @@ public class EventPutter {
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
         // description, accept, decline, maybe, userid, created
         //                             ID AD ID NM EX IS IM TP TI DE AC DC MA US CREAT
-        String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%d,%s,NULL", event.getEventID(),
+        String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,NULL", event.getEventID(),
                 event.getAddress(),
                 event.getGroupID(),
                 event.getEvent_name(),
