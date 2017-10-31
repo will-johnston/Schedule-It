@@ -26,12 +26,11 @@ public class EventPutter {
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             //query  database
-            //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
-            // description, accept, decline, maybe, userid, created
-            String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%d,%s,NULL", event.getEventID(),
-                    event.getAddress(), event.getGroupID(), event.getEvent_name(), "NULL", "-1", event.getImage_path(),
-                    event.getType(), event.getTime().toString(), event.getDescription(), event.getAcceptString(), event.getDeclineString(), event.getMaybeString(),
-                    event.getUserid(), event.getCreated().toString());
+            String values = format(event);
+            if (values == null) {
+                System.out.println("Failed to format values");
+                return null;
+            }
             String query = String.format("INSERT INTO notifications VALUES(%s);", values);
             System.out.println(query);
             int result = statement.executeUpdate(query);
@@ -66,5 +65,25 @@ public class EventPutter {
         }
 		*/
         return null;
+    }
+    public static String format(Event event) {
+        //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
+        // description, accept, decline, maybe, userid, created
+        //                             ID AD ID NM EX IS IM TP TI DE AC DC MA US CREAT
+        String values = String.format("%d,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%d,%s,NULL", event.getEventID(),
+                event.getAddress(),
+                event.getGroupID(),
+                event.getEvent_name(),
+                "NULL",
+                -1,
+                event.getImage_path(),
+                event.getType(),
+                event.getTime().toString(),
+                event.getDescription(),
+                event.getAcceptString(),
+                event.getDeclineString(),
+                event.getMaybeString(),
+                event.getUserid());
+        return values;
     }
 }
