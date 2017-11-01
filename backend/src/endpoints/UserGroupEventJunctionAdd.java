@@ -37,12 +37,6 @@ public class UserGroupEventJunctionAdd implements IAPIRoute {
             //if (tracker.updateUser(cookie, requester)) {
                 Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
                 return;
-          //  }
-         //   else {
-                String response = "{ \"error\" : \"Failed to update user in API Server\"}";
-                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
-                return;
-        //    }
         }
         else {
             String response = "{ \"error\" : \"Failed to add user, group, event junction\"}";
@@ -55,7 +49,9 @@ public class UserGroupEventJunctionAdd implements IAPIRoute {
         try {
             Gson gson = new Gson();
             JsonObject jobj = gson.fromJson(body, JsonObject.class);
+	    System.out.println("Parsing args...");
             if (jobj == null) {
+		 System.out.println("null body");
                 return null;
             }
             if (!jobj.has("userID")) {

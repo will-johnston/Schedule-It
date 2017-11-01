@@ -22,11 +22,10 @@ public class TimeInputAdd implements IAPIRoute {
             return;
         }
         int groupID = (int)args[0];
-        int userID = (int)args[1];
-        int eventID = (int)args[2];
-        String time_preference = (String)args[3];
+        int eventID = (int)args[1];
+        String time = (String)args[2];
         //User requester = tracker.getUser(cookie);
-        if (AddTimeInput.addInput(groupID, userID, eventID, time_preference)) {
+        if (AddTimeInput.addInput(groupID, eventID, time)) {
                 Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
                 return;
         } else {
@@ -47,22 +46,18 @@ public class TimeInputAdd implements IAPIRoute {
             if (!jobj.has("groupID")) {
                 return null;
             }
-            if (!jobj.has("userID")) {
-                return null;
-            }
             if (!jobj.has("eventID")) {
                 return null;
             }
-            if (!jobj.has("time_preference")) {
+            if (!jobj.has("time")) {
                 return null;
             }
 
             System.out.println("Has the right parameters");
             int groupID = jobj.get("groupID").getAsInt();
-            int userID = jobj.get("userID").getAsInt();
             int eventID = jobj.get("eventID").getAsInt();
-            String time_preference = jobj.get("time_preference").getAsString();
-            return new Object[] { groupID, userID, eventID, time_preference };
+            String time = jobj.get("time").getAsString();
+            return new Object[] { groupID,eventID, time };
         }
         catch (Exception e) {
             e.printStackTrace();

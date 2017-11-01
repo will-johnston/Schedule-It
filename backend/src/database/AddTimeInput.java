@@ -12,7 +12,12 @@ import java.sql.Statement;
  */
 
 public class AddTimeInput {
-    public static boolean addInput(int groupID, int userID, int eventID, String datetime) {
+  /*public static void main(String[] args) {
+
+	boolean ret = AddTimeInput.addInput(15,1, "2017-11-01 20:00:00");	
+	System.out.println(ret);
+  }*/
+  public static boolean addInput(int groupID, int eventID, String datetime) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 
         Connection connection = null;
@@ -28,9 +33,9 @@ public class AddTimeInput {
 
             }
 
-
+	    connection = ds.getConnection();
             //perform add user functionality
-            String update = "INSERT INTO cb_user_group_event_junction VALUES(" + userID +  "," + groupID + ","  + eventID  + ")";
+            String update = "INSERT INTO time_inputs VALUES(null, "  + groupID + ", "  + "'" + datetime + "', " + eventID + ")";
             statement = connection.createStatement();
             //send an add user query to the database
             int ex = statement.executeUpdate(update);
@@ -38,12 +43,14 @@ public class AddTimeInput {
 
         } catch (SQLException e) {
             e.printStackTrace();
+	    ret = false;
             try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
+		ret = false;
             }
             return ret;
         }
@@ -53,6 +60,7 @@ public class AddTimeInput {
             if(connection != null) connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+	    ret = false;
         }
         return ret;
     }
