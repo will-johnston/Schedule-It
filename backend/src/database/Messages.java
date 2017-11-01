@@ -27,8 +27,8 @@ public class Messages {
         try {
             //Store args in logical/readable variables
             String username = (String)args[0];
-            //String groupID = args[1];
-			int groupID = 1;
+            int groupID = Integer.parseInt(args[1]);
+			//int groupID = 1;
             String line = (String) args[2];
 
             //Call DataSourceFactor
