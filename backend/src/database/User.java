@@ -518,6 +518,10 @@ public class User {
         return username;
     }
 
+    public ArrayList<Integer> getMutedGroups() {
+        return mutedGroups;
+    }
+
     public int getId() {
         return id;
     }
