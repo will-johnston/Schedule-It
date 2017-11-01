@@ -105,7 +105,7 @@ public class User {
     }
     private String MutedToString() {
         if (mutedGroups.isEmpty()) {
-            return null;
+            return "NULL";
         }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < mutedGroups.size(); i++) {

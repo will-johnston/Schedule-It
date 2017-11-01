@@ -112,7 +112,7 @@ public class ModifyUserInDb {
             System.out.println("Formatting query getFriends");
             //select * from group_user_junction where groupID=3;
             //String query = String.format("SELECT * FROM group_user_junction WHERE userID=%d;", userid);
-            String query = String.format("UPDATE users SET notif_pref_group='%s' WHERE id=%d;", newvalue, userid);
+            String query = String.format("UPDATE users SET notif_pref_group=%s WHERE id=%d;", handleNull(newvalue), userid);
             System.out.println(query);
             int result = statement.executeUpdate(query);
             if (result == 1) {
@@ -126,6 +126,14 @@ public class ModifyUserInDb {
             e.printStackTrace();
         }
         return false;
+    }
+    public static String handleNull(String value) {
+	    if (value == null || value.equals("NULL")) {
+	        return "NULL";
+        }
+        else {
+	        return String.format("'%s'", value);
+        }
     }
 }
 
