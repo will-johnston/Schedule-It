@@ -74,7 +74,7 @@ public class User {
             }
             mutedGroups.add(id);
             String value = MutedToString();
-            if (ModifyUserInDb.setNotificationPrefs(value, id)) {
+            if (ModifyUserInDb.setNotificationPrefs(value, this.id)) {
                 return true;
             }
             else {
@@ -95,7 +95,7 @@ public class User {
             }
             mutedGroups.remove(id);
             String value = MutedToString();
-            if (ModifyUserInDb.setNotificationPrefs(value, id)) {
+            if (ModifyUserInDb.setNotificationPrefs(value, this.id)) {
                 return true;
             }
             else {
@@ -463,8 +463,13 @@ public class User {
             return;
         }
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
+        if (groups == null || groups.isEmpty()) {
+            return;
+        }
 		groups.get(0).printDebug();
 		//HERE IS THE ISSUE
+        System.out.println("Starting loop");
+        System.out.println("Size: " + groups.size());
         for (Group group : groups) {
             if (!groupContainsId(group.getId())) {
 				System.out.println("adding group: " + group.getId());
