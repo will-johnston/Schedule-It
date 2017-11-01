@@ -57,8 +57,9 @@ $(document).ready(function(){
 
 				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
 					function(result) {
-						//Success that message
-						console.log("Message sent");
+						//Message sent, retrieve all messages with the same groupID
+						
+						//console.log("Message sent");
 					},
 					function(result) {
 						console.log(myJson);

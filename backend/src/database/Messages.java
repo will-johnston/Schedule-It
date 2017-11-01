@@ -71,7 +71,7 @@ public class Messages {
 		return ret;
     }
 
-    /*public static String[] getMessage() {
+    public static String[] getMessage(String groupID) {
 
-    }*/
+    }
 }

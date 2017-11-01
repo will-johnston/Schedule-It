@@ -312,9 +312,29 @@
 									transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 								 
 								<form name="message" action="">
-									<input name="usermsg" type="text" id="message_me" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
-									<button type="button" class="btn btn-primary" id="sendMessage_me"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-									<button type="button" class="btn btn-secondary" id="_sendBot"  style="width: 6em">Chatbot</button>
+									<input name="usermsg" type="text" id="message_me" style="width: 90%; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+									<button type="button" class="btn btn-primary" id="sendMessage_me"  style="width: 8%; margin-left: 1%">Send</button>
+									<!--Fix ids to be dynamic in javascript-->
+									<div class="container" style="display:inline-block">
+										<button type="button" class="btn btn-secondary" id="_sendBot"  data-toggle="modal" data-target="#chatBotModal"style="width: 100%;margin-top: 1%">Open Scheduling Chatbot</button>
+										<div class="modal fade" id="chatBotModal" role="dialog">
+											<div class="modal-dialog modal-lg">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal">&times;</button>
+														<h4 class="modal-title">Scheduling Chatbot</h4>
+													</div>
+													<div class="modal-body">
+														<div id="chatbot_" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:30em;
+															border:1px solid rgb(220, 220, 220); overflow:auto">
+														</div>
+														<input name="chatBotInput" type="text" id="inputChatBot_" style="width: 85%; border:1px solid rgb(220, 220, 220)" maxlength="100">
+														<button type="button" class="btn btn-primary" id="sendChatBot_"  style="width: 10%; margin-left: 1%">Send</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</form>
 							</div>
 						</div>
