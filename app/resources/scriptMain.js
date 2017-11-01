@@ -26,7 +26,7 @@ $(document).ready(function(){
 			updateCalendar(currentYear, currentMonth, currPill.substring(1));
 
 			//update the current active group id
-			activeGroupID = $(currPill).attr("id");
+			activeGroupRealID = $(currPill).attr("groupID");
 		});
 
 		//Chevron button to hide group information
@@ -523,7 +523,7 @@ $(document).ready(function(){
 				updateCalendar(currentYear, currentMonth, firstTabID);
 
 				//set active group ID to first group
-				activeGroupID = $("#vPillsContent .tab-pane").first().attr("id");
+				activeGroupID = $("#vPillsContent .tab-pane").first().attr("groupID");
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
@@ -796,6 +796,12 @@ $(document).ready(function(){
 		data["groupid"] = activeGroupID;
 		data = JSON.stringify(data);
 
-		console.log(data);
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/add", data,
+			function(result) { //success
+				console.log("Successfully created event");
+			},
+			function(result) { //fail
+				alert("Failed to create event");
+			});
 	});
 });
