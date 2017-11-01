@@ -8,13 +8,11 @@ var updateCalendar;
 $(document).ready(function(){
 
 	var months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-	
 
 	assignCalendarFunctionality = function() {
 		$(".cal-chevron-left").off();
 		$(".cal-chevron-right").off();
+		$(".goToTodayButton").off();
 
 		$(".cal-chevron-left").click(function(event) {
 			if(--currentMonth == -1) {
@@ -33,6 +31,15 @@ $(document).ready(function(){
 			}
 
 			var groupID = $(event.target).closest("button").parent().parent().parent().parent().attr("id");
+			updateCalendar(currentYear, currentMonth, groupID);
+		});
+
+		$(".goToTodayButton").click(function() {
+			date = new Date();
+			currentYear = date.getFullYear();
+			currentMonth = date.getMonth();
+
+			var groupID = $(event.target).parent().parent().parent().parent().attr("id");
 			updateCalendar(currentYear, currentMonth, groupID);
 		});
 	}
@@ -83,6 +90,4 @@ $(document).ready(function(){
 		}
 
 	};
-
-	updateCalendar(currentYear, currentMonth, "group1Content");
 });

@@ -1,5 +1,9 @@
 package database;
 
+import java.sql.SQLSyntaxErrorException;
+import java.lang.reflect.Array;
+import management.SCalendar;
+import management.Tracker;
 import java.util.*;
 
 //represents a user in the Database
@@ -11,9 +15,13 @@ public class User {
     String phone;       //can be null
     String imageUrl;
     ArrayList<String> friends;          //List of usernames that this user is friends with
+    ArrayList<Notification> notifications;
+    ArrayList<Group> groups;
+    ArrayList<Integer> mutedGroups;                  //notif_pref_group
     int id;
     long lastCheckedIn = -1;
-    public User(String name, String email, String password, String phone, int id, String username) {
+    boolean updatedGroups = false;
+    public User(String name, String email, String password, String phone, int id, String username, String notif_prefs) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -21,15 +29,122 @@ public class User {
         this.id = id;
         this.username = username;
         this.friends = new ArrayList<>();
+		this.notifications = new ArrayList<>();
+        this.groups = new ArrayList<>();
+        this.mutedGroups = new ArrayList<>();
+        resolveMuted(notif_prefs);
+    }
+    private void resolveMuted(String prefs) {
+        if (prefs == null || prefs.equals("")) {
+            System.out.println("Prefs are empty");
+            return;
+        }
+        if (prefs.contains("[,]")) {
+            //split csv
+            String[] split = prefs.split(",");
+            this.mutedGroups = new ArrayList<>(split.length);
+            int i = 0;
+            for (String splat : split) {
+                try {
+                    mutedGroups.add(Integer.parseInt(splat));
+                    System.out.println("Added " + splat);
+                    i++;
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to add " + splat);
+                }
+            }
+        }
+        else {
+            try {
+                mutedGroups.add(Integer.parseInt(prefs));
+                System.out.println("Added " + prefs);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to resolve muted groups");
+                return;
+            }
+        }
+    }
+    public boolean muteGroup(int id) {
+        if (inGroup(id)) {
+            if (isMuted(id)) {
+                System.out.println("id is muted");
+                return false;
+            }
+            mutedGroups.add(id);
+            String value = MutedToString();
+            if (ModifyUserInDb.setNotificationPrefs(value, this.id)) {
+                return true;
+            }
+            else {
+                //ABORT
+                mutedGroups.remove(id);
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public boolean unmuteGroup(int id) {
+        if (inGroup(id)) {
+            if (!isMuted(id)) {
+                System.out.println("id is not muted");
+                return false;
+            }
+            if (mutedGroups.size() == 1) {
+                //If I remove on a size one array, throws an exception
+                mutedGroups = new ArrayList<>();
+            }
+            else {
+                mutedGroups.remove(id);
+            }
+            String value = MutedToString();
+            if (ModifyUserInDb.setNotificationPrefs(value, this.id)) {
+                return true;
+            }
+            else {
+                //REVERT JESUS HOW DOES THIS HAPPEN
+                mutedGroups.add(id);
+                value = MutedToString();
+                ModifyUserInDb.setNotificationPrefs(value, id);         //We're fucked anyway, so who cares if this succeeds
+                return false;
+            }
+        }
+        else {
+            System.out.println("is not in group");
+            return false;
+        }
+    }
+    private String MutedToString() {
+        if (mutedGroups.isEmpty()) {
+            return "NULL";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mutedGroups.size(); i++) {
+            builder.append(mutedGroups.get(i));
+            if (i != mutedGroups.size() - 1) {
+                builder.append(',');
+            }
+        }
+        return builder.toString();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
-        //return {id, username, password, name, email, phone}
+        //return {id, username, password, name, email, phone, notif_pref}
         String[] fromDb = GetFromDb.getUserFromName(name);
         if (fromDb == null) {
             return null;
         }
-        return new User(fromDb[1], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1]);
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
+    }
+    public static User fromDatabase(int id) {
+        String[] fromDb = GetFromDb.getUserFromId(id);
+        if (fromDb == null) {
+            return null;
+        }
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
     }
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
@@ -66,8 +181,24 @@ public class User {
                 System.out.println("Not in friends list after update");
             }
         }
+		System.out.println("checking if the user in the database");
+        try {
+	    boolean exists = GetFromDb.usernameExists(username);
+            if (exists) {
+		System.out.println("User exists in database"); 
+            }
+	    else {
+		System.out.println("Not a valid user");
+                return false;
+	    }
+        }
+        catch (Exception e) {
+            System.out.println("AddFriendsInDb.addFriend failed to add friend");
+            return false;
+        }
         if (AddOrRemoveFriendsInDb.addOrRemoveFriend(username, this.username, true)) {
             friends.add(username);
+	    System.out.println("AddfriendsInDb returned true");
             return true;
         }
         else {
@@ -111,6 +242,258 @@ public class User {
         }
         return friends;
     }
+    public Notification[] getNotifications() {
+        try {
+            System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
+            Notification[] dbnotifs = NotificationInDb.get(id);
+            if (notifications == null || dbnotifs == null) {
+                return new Notification[0];
+            }
+            for (Notification notification : dbnotifs) {
+                if (notification == null) {
+                    continue;
+                }
+                boolean alreadyexists = false;
+                for (Notification actual : this.notifications) {
+                    if (actual == null) {
+                        System.out.println("Actual is null");
+                        continue;
+                    }
+                    if (actual.notifid == notification.notifid) {
+                        alreadyexists = true;
+                        break;
+                    }
+                    System.out.println(String.format("Actual: %d notification: %d", actual.notifid, notification.notifid));
+                }
+                if (!alreadyexists) {
+                    System.out.println(String.format("Adding %d to notification list", notification.notifid));
+                    this.notifications.add(notification);
+                }
+            }
+            Notification[] copy = new Notification[this.notifications.size()];
+            this.notifications.toArray(copy);
+            return copy;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+    public Notification getNotificationById(int id) {
+        for (int i = 0; i < 2; i++) {
+            for (Notification notification : notifications) {
+                if (notification.getNotifid() == id) {
+                    return notification;
+                }
+            }
+            if (i == 0) {
+                //update notifications and check if in there
+                updateNotifications();
+            }
+        }
+        return null;
+    }
+    private void updateNotifications() {
+        Notification[] dbnotifs = NotificationInDb.get(id);
+        for (Notification dbnotif : dbnotifs) {
+            boolean exists = false;
+            for (Notification notification : notifications) {
+                if (notification.getNotifid() == dbnotif.getNotifid()) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                this.notifications.add(dbnotif);
+            }
+        }
+    }
+    public boolean clearNotification(Notification notification) {
+        if (notification == null) {
+            System.out.println("Tried to clear null notification");
+            return false;
+        }
+        if (NotificationInDb.remove(notification.getNotifid(), this.id)) {
+            try {
+                this.notifications.remove(notification);
+                return true;
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't remove from User, but removed in database");
+                return false;
+            }
+        }
+        else {
+            //Fail silently
+            return false;
+        }
+    }
+    public boolean addNotification(Notification notification) {
+        if (notification == null) {
+            System.out.println("Tried to clear null notification");
+            return false;
+        }
+        if (this.notifications.contains(notification)) {
+            System.out.println("Already contains notification");
+            return false;
+        }
+        //check for matching id
+        for (Notification original : notifications) {
+            if (original.getNotifid() == notification.getNotifid()) {
+                System.out.println("Already contains notification");
+                return false;
+            }
+        }
+        this.notifications.add(notification);
+        return true;
+    }
+    public boolean addToGroup(Group group) {
+        //check if the user is actually in the group
+        if (groups.contains(group)) {
+            return false;
+        }
+        else {
+            groups.add(group);
+            return true;
+        }
+    }
+    //doesn't refresh groups
+    public boolean isMuted(int groupid) {
+        if (mutedGroups == null || mutedGroups.isEmpty()) {
+            return false;
+        }
+        if (groups == null) {
+            System.out.println("User has no groups, possible forgot to call updateGroups() before calling this");
+            return false;
+        }
+        for (int i = 0; i < mutedGroups.size(); i++) {
+            if (mutedGroups.get(i) == groupid) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean removeWithGroupId(int groupid, Tracker tracker) {
+        for (Group group : groups) {
+            if (group.id == groupid) {
+                if (group.removeUser(this, tracker)) {
+                    groups.remove(group);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean removeFromGroup(int groupid, Tracker tracker) {
+        if (!inGroup(groupid, tracker)) {
+            return false;
+        }
+        else {
+            return removeWithGroupId(groupid, tracker);
+        }
+    }
+    //TODO get all groups of user in db
+    public boolean inGroup(int groupid, Tracker tracker) {
+        if (inGroup(groupid)) {
+            return true;
+        }
+        ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
+        for (String member : members) {
+            if (member.equals(this.username)) {
+                Group group = Group.fromDatabase(tracker, groupid);
+                if (group != null) {
+                    groups.add(group);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean inGroup(int groupid) {
+        if (groupid == 0) {
+            return false;
+        }
+        //check if in group in database
+        for (Group group : groups) {
+            if (groupid == group.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+	private boolean groupContainsId(int groupid) {
+        if (id == 0) {
+            return false;
+        }
+		for (Group group : groups) {
+			if (group.getId() == groupid) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public Group getGroupByName(String groupname) {
+        if (groupname == null) {
+            return null;
+        }
+        for (Group group : groups) {
+            if (group.getName().equals(groupname)) {
+                return group;
+            }
+        }
+        return null;
+    }
+    public Group getGroupById(int id, Tracker tracker) {
+        refreshGroups(tracker);
+        Group group = getGroupById(id);
+        if (group == null) {
+            group = Group.fromDatabase(tracker, id);
+        }
+        return group;
+    }
+    public Group getGroupById(int id) {
+        if (id == 0) {
+            return null;
+        }
+        for (Group group : groups) {
+            if (group.getId() == id) {
+                return group;
+            }
+        }
+        return null;
+    }
+    public void refreshGroups(Tracker tracker) {
+        if (updatedGroups) {
+            return;
+        }
+        ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
+        if (groups == null || groups.isEmpty() || groups.size() == 0) {
+            //complains that size can never be zero, but it can
+            //so stop complaining
+            return;
+        }
+        System.out.println("Starting loop");
+        System.out.println("Size: " + groups.size());
+        for (Group group : groups) {
+            if (!groupContainsId(group.getId())) {
+				System.out.println("adding group: " + group.getId());
+                this.groups.add(group);
+				System.out.println("Added group");
+            }
+			else {
+				System.out.println("Already contains group");
+			}
+        }
+        this.updatedGroups = true;
+    }
+    public Group[] getGroups(Tracker tracker) {
+        refreshGroups(tracker);
+        Group[] arr = new Group[this.groups.size()];
+        this.groups.toArray(arr);
+        return arr;
+    }
     public long getLastCheckedIn() {
         return lastCheckedIn;
     }
@@ -133,6 +516,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public ArrayList<Integer> getMutedGroups() {
+        return mutedGroups;
     }
 
     public int getId() {
@@ -162,4 +549,8 @@ public class User {
     }
 
     public void setImageUrl(String url) {this.imageUrl = url; }
+
+    public void setLastCheckedIn(long lastCheckedIn) {
+        this.lastCheckedIn = lastCheckedIn;
+    }
 }

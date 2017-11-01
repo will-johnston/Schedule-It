@@ -41,32 +41,6 @@ $(document).ready(function(){
 				showOtherMonths: true,
 				dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 			});
-	
-			//Send message buttons
-			$('[id^="sendMessage_"]').click(function() {
-				var buttonId = this.id.toString();
-				var groupId = buttonId.replace('sendMessage_', '').toString();
-				var textBoxId = 'message_' + groupId;
-				var message = document.getElementById(textBoxId).value;
-				document.getElementById(textBoxId).value = '';
-	
-				var myJson = {};
-				myJson["cookie"] = cookie;
-				myJson["groupID"] = groupId;
-				myJson["line"] = message;
-
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
-					function(result) {
-						//Message sent, retrieve all messages with the same groupID
-						
-						//console.log("Message sent");
-					},
-					function(result) {
-						console.log(myJson);
-						console.log(result);
-						alert("Failed to send message");				}
-				);
-			});
 		};
 	
 		assignFunctionality();

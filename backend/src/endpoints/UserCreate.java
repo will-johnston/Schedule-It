@@ -29,7 +29,7 @@ public class UserCreate implements IAPIRoute {
         }
         //try {
 	if (AddUserToDb.addUser(args[4], args[2], args[1], args[0], args[3])) {
-        User user = new User(args[2], args[0],args[1],args[3], -1, args[4]);
+        User user = new User(args[2], args[0],args[1],args[3], -1, args[4], null);
         int cookie = tracker.login(user);
         System.out.println("Successfully added user, returning cookie");
         String response = String.format("{\"cookie\": \"%d\"}\n", cookie);
