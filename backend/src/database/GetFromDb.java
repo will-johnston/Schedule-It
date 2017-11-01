@@ -51,6 +51,7 @@ public class GetFromDb {
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
             results[6] = result.getString("notif_pref_group");
+            System.out.println("Pref group: " + results[6]);
             return results;
         }
         catch (SQLException e) {
