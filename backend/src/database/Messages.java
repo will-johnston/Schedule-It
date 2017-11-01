@@ -27,7 +27,7 @@ public class Messages {
         try {
             //Store args in logical/readable variables
             String username = (String)args[0];
-            int groupID = Integer.parseInt(args[1]);
+            int groupID = (int)args[1];
 			//int groupID = 1;
             String line = (String) args[2];
 
@@ -71,7 +71,7 @@ public class Messages {
 		return ret;
     }
 
-    public static String[] getMessage(String groupID) {
+    //public static String[] getMessage(int groupID) {
 
-    }
+    //}
 }

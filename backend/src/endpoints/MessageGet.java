@@ -9,10 +9,10 @@ import java.util.*;
 import com.google.gson.*;
 import java.net.Socket;
 
-public class MessageAdd implements IAPIRoute {
+public class MessageGet implements IAPIRoute {
 
     Tracker tracker;
-    public MessageAdd(Tracker tracker) {
+    public MessageGet(Tracker tracker) {
         this.tracker = tracker;
     }
 
