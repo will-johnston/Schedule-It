@@ -93,7 +93,13 @@ public class User {
                 System.out.println("id is not muted");
                 return false;
             }
-            mutedGroups.remove(id);
+            if (mutedGroups.size() == 1) {
+                //If I remove on a size one array, throws an exception
+                mutedGroups = new ArrayList<>();
+            }
+            else {
+                mutedGroups.remove(id);
+            }
             String value = MutedToString();
             if (ModifyUserInDb.setNotificationPrefs(value, this.id)) {
                 return true;
@@ -463,11 +469,11 @@ public class User {
             return;
         }
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
-        if (groups == null || groups.isEmpty()) {
+        if (groups == null || groups.isEmpty() || groups.size() == 0) {
+            //complains that size can never be zero, but it can
+            //so stop complaining
             return;
         }
-		groups.get(0).printDebug();
-		//HERE IS THE ISSUE
         System.out.println("Starting loop");
         System.out.println("Size: " + groups.size());
         for (Group group : groups) {
