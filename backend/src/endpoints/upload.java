@@ -198,6 +198,7 @@ public class upload implements IAPIRoute {
         //get json from body
         int last = body.indexOf('}');
         String json = body.substring(0, last + 1);
+        System.out.println("Trying to parse: " + json);
         System.out.println(json);
         try {
             Gson gson = new Gson();
