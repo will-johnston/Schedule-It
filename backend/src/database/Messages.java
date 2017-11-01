@@ -14,7 +14,10 @@ public class Messages {
     /*
         Function to store messages in the DB
      */
-    public static boolean setMessage(String[] args) {
+    /* Proposed changes
+     * Make SQL handle setting time
+      * */
+    public static boolean setMessage(Object[] args) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 						
 		Connection connection = null;
@@ -23,11 +26,10 @@ public class Messages {
 		boolean ret = true;
         try {
             //Store args in logical/readable variables
-            String username = args[0];
-            //String groupID = args[1]; USE THIS WHEN WE CAN AQUIRE CORRECT GROUPID
-            String groupID = "1";
-            String time = args[2];
-            String line = args[3];
+            String username = (String)args[0];
+            //String groupID = args[1];
+			int groupID = 1;
+            String line = (String) args[2];
 
             //Call DataSourceFactor
 			ds = DataSourceFactory.getDataSource();
@@ -41,12 +43,10 @@ public class Messages {
 			connection = ds.getConnection();
 			
             //Form query 
-            //--------------------REFINE THIS--------------------
-			String sqlInsert = "INSERT INTO chat_line (username, groupID, time, line) VALUES ('"+username+"','"+groupID+"','"+time+"','"+line+"')";
+			String sqlInsert = "INSERT INTO chat_line (username, groupID, line) VALUES ('"+username+"','"+groupID+"','"+line+"')";
+			//String sqlInsert = String.format("INSERT INTO chat_line (username, groupID, time, line) VALUES('%s',%d,NULL,%s)", username, groupID, line);
 			statement = connection.createStatement();
 			statement.executeUpdate(sqlInsert);
-            //--------------------REFINE THIS--------------------
-
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -71,7 +71,7 @@ public class Messages {
 		return ret;
     }
 
-    /*public static String[] getMessage() {
+    public static String[] getMessage(String groupID) {
 
-    }*/
+    }
 }

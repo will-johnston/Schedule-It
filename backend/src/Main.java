@@ -25,6 +25,7 @@ public class Main {
             router.add("/user/groups/edit", new GroupEdit());
             router.add("/user/groups/create", new GroupCreate(tracker));
             router.add("/user/groups/chat", new MessageAdd(tracker));
+            router.add("/user/groups/getChat", new MessageGet());
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
@@ -36,6 +37,8 @@ public class Main {
             //router.add("/user/notifications/dismiss", dealer);
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
+            router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
+	          router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
@@ -51,7 +54,7 @@ public class Main {
     }
     public static void main(String[] args) throws Exception {
 	// write your code here
-        Server server = new Server(8181, 8282);
+        Server server = new Server(8181,8282);
         Router router = initRouter();
         Tracker tracker = new Tracker();
         if (router == null) {

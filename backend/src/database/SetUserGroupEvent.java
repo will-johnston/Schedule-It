@@ -11,14 +11,12 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/26/17.
  */
 
-public class AddTimeInput {
-  /*public static void main(String[] args) {
-
-	boolean ret = AddTimeInput.addInput(15,1, "2017-11-01 20:00:00");	
-	System.out.println(ret);
-  }*/
-  public static boolean addInput(int groupID, int eventID, String datetime) {
-
+public class SetUserGroupEvent {
+    public static void main(String[] args) {
+	    boolean ret = SetUserGroupEvent.setuge(27,16,-2);
+    	    System.out.println(ret);
+    }
+    public static boolean setuge(int groupID, int userID, int eventID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 
         Connection connection = null;
@@ -31,28 +29,29 @@ public class AddTimeInput {
             //check for potential failed connection
             if (ds == null) {
                 ret = false;
-
             }
+	    connection = ds.getConnection();
+            //TODO: make sure event is valid
 
-	          connection = ds.getConnection();
-            //perform add user functionality
-            String update = "INSERT INTO time_inputs VALUES(null, "  + groupID + ", "  + "'" + datetime + "', " + eventID + ")";
-
+	    //delete row, if it is there, for userID and groupID
+            String delete = "delete from cb_user_group_event_junction where (userID =" + userID +" and groupID=" + groupID + ")";
             statement = connection.createStatement();
-            //send an add user query to the database
-            int ex = statement.executeUpdate(update);
-
+            int ex = statement.executeUpdate(delete);
+            
+	    //insert row to db
+            String update = "INSERT INTO cb_user_group_event_junction VALUES(" + userID +  "," + groupID + ","  + eventID  + ")";
+            statement = connection.createStatement();
+            ex = statement.executeUpdate(update);
 
         } catch (SQLException e) {
+	    ret = false;
             e.printStackTrace();
-	          ret = false;
             try {
                 if(result != null) result.close();
                 if(statement != null) statement.close();
                 if(connection != null) connection.close();
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
-		            ret = false;
             }
             return ret;
         }
@@ -61,8 +60,8 @@ public class AddTimeInput {
             if(statement != null) statement.close();
             if(connection != null) connection.close();
         } catch (SQLException e) {
+	    ret = false;
             e.printStackTrace();
-	          ret = false;
         }
         return ret;
     }
