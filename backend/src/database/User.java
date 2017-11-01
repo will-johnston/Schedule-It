@@ -48,7 +48,9 @@ public class User {
                     mutedGroups.add(Integer.parseInt(splat));
                     i++;
                 }
-                catch (Exception e) {}
+                catch (Exception e) {
+                    System.out.println("Failed to add " + splat);
+                }
             }
         }
         else {
@@ -64,6 +66,7 @@ public class User {
     public boolean muteGroup(int id) {
         if (inGroup(id)) {
             if (isMuted(id)) {
+                System.out.println("id is muted");
                 return false;
             }
             mutedGroups.add(id);
@@ -84,6 +87,7 @@ public class User {
     public boolean unmuteGroup(int id) {
         if (inGroup(id)) {
             if (!isMuted(id)) {
+                System.out.println("id is not muted");
                 return false;
             }
             mutedGroups.remove(id);
@@ -100,6 +104,7 @@ public class User {
             }
         }
         else {
+            System.out.println("is not in group");
             return false;
         }
     }
