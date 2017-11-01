@@ -25,9 +25,9 @@ public class Server {
 
     public Server(int port, int secureport) {
         try {
-            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
-            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
-            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+            //System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            //System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
+            //java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
 
             sock = new ServerSocket(port);
             SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
