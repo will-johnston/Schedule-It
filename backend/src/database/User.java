@@ -17,10 +17,11 @@ public class User {
     ArrayList<String> friends;          //List of usernames that this user is friends with
     ArrayList<Notification> notifications;
     ArrayList<Group> groups;
+    ArrayList<Integer> mutedGroups;                  //notif_pref_group
     int id;
     long lastCheckedIn = -1;
     boolean updatedGroups = false;
-    public User(String name, String email, String password, String phone, int id, String username) {
+    public User(String name, String email, String password, String phone, int id, String username, String notif_prefs) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -30,22 +31,78 @@ public class User {
         this.friends = new ArrayList<>();
 		this.notifications = new ArrayList<>();
         this.groups = new ArrayList<>();
+        this.mutedGroups = new ArrayList<>();
+        resolveMuted(notif_prefs);
+    }
+    private void resolveMuted(String prefs) {
+        if (prefs == null || prefs.equals("")) {
+            return;
+        }
+        if (prefs.contains("[,]")) {
+            //split csv
+            String[] split = prefs.split(",");
+            this.mutedGroups = new ArrayList<>(split.length);
+            int i = 0;
+            for (String splat : split) {
+                try {
+                    mutedGroups.add(Integer.parseInt(splat));
+                    i++;
+                }
+                catch (Exception e) {}
+            }
+        }
+        else {
+            try {
+                mutedGroups.add(Integer.parseInt(prefs));
+            }
+            catch (Exception e) {
+                System.out.println("Failed to resolve muted groups");
+                return;
+            }
+        }
+    }
+    public boolean muteGroup(int id) {
+        if (inGroup(id)) {
+            mutedGroups.add(id);
+            String value = MutedToString();
+            if (ModifyUserInDb.setNotificationPrefs(value, id)) {
+                return true;
+            }
+            else {
+                //ABORT
+                mutedGroups.remove(id);
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    private String MutedToString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mutedGroups.size(); i++) {
+            builder.append(mutedGroups.get(i));
+            if (i != mutedGroups.size() - 1) {
+                builder.append(',');
+            }
+        }
+        return builder.toString();
     }
     //Get the user from the database
     public static User fromDatabase(String name) {
-        //return {id, username, password, name, email, phone}
+        //return {id, username, password, name, email, phone, notif_pref}
         String[] fromDb = GetFromDb.getUserFromName(name);
         if (fromDb == null) {
             return null;
         }
-        return new User(fromDb[1], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1]);
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
     }
     public static User fromDatabase(int id) {
         String[] fromDb = GetFromDb.getUserFromId(id);
         if (fromDb == null) {
             return null;
         }
-        return new User(fromDb[1], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1]);
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
     }
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
@@ -257,6 +314,22 @@ public class User {
             return true;
         }
     }
+    //doesn't refresh groups
+    public boolean isMuted(int groupid) {
+        if (mutedGroups == null || mutedGroups.isEmpty()) {
+            return false;
+        }
+        if (groups == null) {
+            System.out.println("User has no groups, possible forgot to call updateGroups() before calling this");
+            return false;
+        }
+        for (int i = 0; i < mutedGroups.size(); i++) {
+            if (mutedGroups.get(i).intValue() == groupid) {
+                return true;
+            }
+        }
+        return false;
+    }
     private boolean removeWithGroupId(int groupid, Tracker tracker) {
         for (Group group : groups) {
             if (group.id == groupid) {
@@ -281,14 +354,8 @@ public class User {
     }
     //TODO get all groups of user in db
     public boolean inGroup(int groupid, Tracker tracker) {
-        if (groupid == 0) {
-            return false;
-        }
-        //check if in group in database
-        for (Group group : groups) {
-            if (groupid == group.id) {
-                return true;
-            }
+        if (inGroup(groupid)) {
+            return true;
         }
         ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
         for (String member : members) {
@@ -297,6 +364,18 @@ public class User {
                 if (group != null) {
                     groups.add(group);
                 }
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean inGroup(int groupid) {
+        if (groupid == 0) {
+            return false;
+        }
+        //check if in group in database
+        for (Group group : groups) {
+            if (groupid == group.id) {
                 return true;
             }
         }

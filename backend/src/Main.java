@@ -38,6 +38,7 @@ public class Main {
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
+            router.add("/user/groups/mute", new GroupMute(tracker));
             router.add("/timeinput/add", new TimeInputAdd(tracker));
 	    return router;
         }
