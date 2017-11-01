@@ -1,7 +1,7 @@
 package management;
 
 import com.google.gson.*;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import database.*;
 
 import java.sql.Timestamp;
@@ -187,7 +187,7 @@ public class InvitationHandler implements IHandler {
                 return false;
             }
             else {
-                if (toadd.addNotificatin(notification)) {
+                if (toadd.addNotification(notification)) {
                     return true;
                 }
                 else {
@@ -217,7 +217,7 @@ public class InvitationHandler implements IHandler {
                 return false;
             }
             else {
-                if (invitee.addNotificatin(notification)) {
+                if (invitee.addNotification(notification)) {
                     return true;
                 }
                 else {

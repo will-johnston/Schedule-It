@@ -92,5 +92,48 @@ public class ModifyUserInDb {
         }
         return ret;
     }
+    public static boolean setNotificationPrefs(String newvalue, int userid) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query getFriends");
+            //select * from group_user_junction where groupID=3;
+            //String query = String.format("SELECT * FROM group_user_junction WHERE userID=%d;", userid);
+            String query = String.format("UPDATE users SET notif_pref_group=%s WHERE id=%d;", handleNull(newvalue), userid);
+            System.out.println(query);
+            int result = statement.executeUpdate(query);
+            if (result == 1) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public static String handleNull(String value) {
+	    if (value == null || value.equals("NULL")) {
+	        return "NULL";
+        }
+        else {
+	        return String.format("'%s'", value);
+        }
+    }
 }
 

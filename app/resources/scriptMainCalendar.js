@@ -90,6 +90,4 @@ $(document).ready(function(){
 		}
 
 	};
-
-	updateCalendar(currentYear, currentMonth, "group1Content");
 });

@@ -13,7 +13,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 //TODO Merge this with RetrieveUserInfo
 public class GetFromDb {
-    //return {id, username, password, name, email, phone}
+    //return {id, username, password, name, email, phone, notif_pref}
     public static String[] getUserFromName(String username) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -24,7 +24,7 @@ public class GetFromDb {
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
         ResultSet result = null;  //output after query
-        String[] results = new String[6];
+        String[] results = new String[7];
         try {
             //set up connection
             connection = ds.getConnection();
@@ -50,6 +50,8 @@ public class GetFromDb {
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
+            results[6] = result.getString("notif_pref_group");
+            System.out.println("Pref group: " + results[6]);
             return results;
         }
         catch (SQLException e) {
@@ -259,9 +261,9 @@ public class GetFromDb {
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
             ArrayList<Group> list = new ArrayList<Group>();
-	    int results = 0;
+            int results = 0;
             while (result.next()) {
-		System.out.println("Result: " + results);
+                System.out.println("Result: " + results);
                 int groupid = result.getInt("groupID");
                 //get username from id
                 try {
@@ -279,9 +281,9 @@ public class GetFromDb {
                     System.out.println("Caught exception");
                     continue;
                 }
-		results++;
+                results++;
             }
-	    System.out.println("Results: " + list.size());
+            System.out.println("Results: " + list.size());
             return list;
 
         } catch (SQLException e) {
@@ -346,7 +348,7 @@ public class GetFromDb {
         }*/
 
     }
-    //return {id, username, password, name, email, phone}
+    //return {id, username, password, name, email, phone, notif_pref}
     public static String[] getUserFromId(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -374,13 +376,14 @@ public class GetFromDb {
             }*/
             result.first();
 
-            String[] results = new String[6];
+            String[] results = new String[7];
             results[0] = result.getString("id");
             results[1] = result.getString("username");
             results[2] = result.getString("password");
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
+            results[6] = result.getString("notif_pref_group");
             return results;
 
         } catch (SQLException e) {
@@ -397,7 +400,7 @@ public class GetFromDb {
 		*/
         return null;
     }
-public static boolean usernameExists(String username) {
+    public static boolean usernameExists(String username) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
 
         ds = DataSourceFactory.getDataSource();
@@ -423,28 +426,130 @@ public static boolean usernameExists(String username) {
             result = statement.executeQuery(query);
             System.out.println("Checking for null");
             ArrayList<Group> list = new ArrayList<Group>();
-	    boolean exists = false;
+            boolean exists = false;
             while (result.next()) {
                 String gotname = result.getString("username");
-		if (username.equals(gotname)) {
-		   exists = true;
-		}
+                if (username.equals(gotname)) {
+                    exists = true;
+                }
             }
 
             return exists;
 
         } catch (SQLException e) {
             e.printStackTrace();
-	    try {
-		    if(result != null) result.close();
-		    if(statement != null) statement.close();
-		    if(connection != null) connection.close();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
 
-		} catch (SQLException etwo) {
-		    etwo.printStackTrace();
-		}
-	System.out.println("Returning false");
-	return false;
-	}
-	    }
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return false;
+        }
+    }
+    public static Integer[] getEventIds(int id) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query usernameExists");
+            String query = String.format("SELECT * FROM events WHERE groupID='%d';", id);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            System.out.println("Checking for null");
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            while (result.next()) {
+                list.add(result.getInt("eventID"));
+            }
+            Integer[] arr = new Integer[list.size()];
+            list.toArray(arr);
+            return arr;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return null;
+        }
+    }
+    public static Event getEvent(int id) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            String query = String.format("SELECT * FROM events WHERE eventID=%d;", id);
+            result = statement.executeQuery(query);
+            if (result.next()) {
+                //name, type, desc, image
+                String name = result.getString("event_name");
+                String type = result.getString("type");
+                String desc = result.getString("description");
+                String image = result.getString("image_path");
+                Event event = new Event(id, name, type, desc, image);
+                event.setAddress(result.getString("address"));
+                event.setGroupID(result.getInt("groupID"));
+                event.setTime(result.getTimestamp("time"));
+                event.setAccept(result.getString("accept"));
+                event.setDecline(result.getString("decline"));
+                event.setMaybe(result.getString("maybe"));
+                event.setCreated(result.getTimestamp("created"));
+                return event;
+            }
+            else {
+                System.out.println("No events found");
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return null;
+        }
+    }
 }

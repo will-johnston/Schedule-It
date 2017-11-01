@@ -1,0 +1,22 @@
+/*Multiple calendar files for each year*/
+{
+	/*No support for other attendees yet*/
+	"owner": "username",
+	"eventcount": 2,
+	"year" : 2017,
+	"events": [{
+			/*Generic info about the event*/
+			"type": "movie",
+			"date": "10/07/2017",
+			"time": "19:30 EST",
+			"id" : 89647829
+		},
+		{
+			"type": "concert",
+			"date": "10/05/2018",
+			"time": "10:00 EST",
+			/*Get more information with an event lookup*/
+			"id" : 987524
+		}
+	]
+}

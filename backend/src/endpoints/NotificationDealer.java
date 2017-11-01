@@ -49,7 +49,7 @@ public class NotificationDealer implements IAPIRoute {
             try {
                 Notification[] notifications = user.getNotifications();
                 if (notifications == null) {
-                    Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                    Socketeer.send(HTTPMessage.makeResponse("{}", HTTPMessage.HTTPStatus.OK), sock);
                     return;
                 }
                 JsonObject[] objects = new JsonObject[notifications.length];
