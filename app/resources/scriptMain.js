@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 	var cookie = document.cookie.split("=")[1];
+	var activeGroupID;
 
 	//This stops the notification menu from closing when it's clicked on
 	$("#notificationMenu").click(function(event){
@@ -23,6 +24,9 @@ $(document).ready(function(){
 			currentYear = date.getFullYear();
 			currentMonth = date.getMonth();
 			updateCalendar(currentYear, currentMonth, currPill.substring(1));
+
+			//update the current active group id
+			activeGroupID = $(currPill).attr("id");
 		});
 
 		//Chevron button to hide group information
@@ -452,7 +456,7 @@ $(document).ready(function(){
 								</div>
 								<div class="tab-pane" id="` + id + "Cal" + `" role="tabpanel">
 									<div style="margin-top: 10px">
-										<button type="button" class="btn btn-primary">Create new event</button>
+										<button type="button" class="btn btn-primary createNewEventButton" data-toggle="modal" data-target="#createEventModal">Create new event</button>
 										<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
 									</div>
 									<div class="row-fluid text-center cal-month-heading">
@@ -510,6 +514,16 @@ $(document).ready(function(){
 
 				assignFunctionality();
 				assignCalendarFunctionality();
+
+				//update the first tab's calendar
+				var date = new Date();
+				currentYear = date.getFullYear();
+				currentMonth = date.getMonth();
+				var firstTabID = $("#vPillsContent .tab-pane").first().attr("id");
+				updateCalendar(currentYear, currentMonth, firstTabID);
+
+				//set active group ID to first group
+				activeGroupID = $("#vPillsContent .tab-pane").first().attr("id");
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
@@ -675,7 +689,6 @@ $(document).ready(function(){
 
 	updateFriends();
 
-	//This needs to be changed to send a friend request instead of automatically add them as a friend
 	$("#sendFriendRequestButton").click(function() {
 		var username = $("#sendFriendRequestTextbox").val();
 
@@ -693,5 +706,96 @@ $(document).ready(function(){
 			function(result) { //fail
 				alert("Failed to send friend request");
 			});
+	});
+
+	//EVENTS
+	$("#createEventModalConfirmButton").click(function() {
+		var name = $("#createEventModalName").val();
+		var info = $("#createEventModalInformation").val();
+		var date = $("#createEventModalDate").val();
+		var time = $("#createEventModalTime").val();
+
+		//name must not be empty
+		if(name == "") {
+			$("#createEventModalName").addClass("is-invalid");
+			return;
+		}
+		else {
+			$("#createEventModalName").removeClass("is-invalid");
+		}
+
+		var dateArr = date.split("/");
+
+		//date must have day, month and year
+		if(dateArr.length != 3) {
+			$("#createEventModalDate").addClass("is-invalid");
+			return;
+		}
+
+		var year = parseInt(dateArr[2]);
+		if(isNaN(year) || year < 1950 || year > 2500) {
+			$("#createEventModalDate").addClass("is-invalid");
+			return;
+		}
+
+		var month = parseInt(dateArr[0]);
+		if(isNaN(month) || month < 1 || month > 12) {
+			$("#createEventModalDate").addClass("is-invalid");
+			return;
+		}
+
+		var day = parseInt(dateArr[1]);
+		var endDay = new Date(year, month, 0).getDate();
+		if(isNaN(day) || day < 1 || day > endDay) {
+			$("#createEventModalDate").addClass("is-invalid");
+			return;
+		}
+
+		$("#createEventModalDate").removeClass("is-invalid");
+
+		//must have time and am/pm
+		var timeArr = time.split(" ");
+		if(timeArr.length != 2) {
+			$("#createEventModalTime").addClass("is-invalid");
+			return;
+		}
+
+		var meridiem = timeArr[1];
+		if(meridiem != "am" && meridiem != "pm") {
+			$("#createEventModalTime").addClass("is-invalid");
+			return;
+		}
+
+		//must have hours and minutes
+		var digits = timeArr[0].split(":");
+		if(digits.length != 2) {
+			$("#createEventModalTime").addClass("is-invalid");
+			return;
+		}
+
+		var hours = parseInt(digits[0]);
+		if(isNaN(hours) || hours < 1 || hours > 12) {
+			$("#createEventModalTime").addClass("is-invalid");
+			return;
+		}
+
+		var minutes = parseInt(digits[1]);
+		if(isNaN(minutes) || minutes < 0 || minutes > 59) {
+			$("#createEventModalTime").addClass("is-invalid");
+			return;
+		}
+
+		$("#createEventModalTime").removeClass("is-invalid");
+
+		var data = {}
+		data["cookie"] = cookie;
+		data["name"] = name;
+		data["description"] = info;
+		data["type"] = "group.event";
+		data["date"] = date;
+		data["groupid"] = activeGroupID;
+		data = JSON.stringify(data);
+
+		console.log(data);
 	});
 });
