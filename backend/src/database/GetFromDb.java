@@ -13,7 +13,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 //TODO Merge this with RetrieveUserInfo
 public class GetFromDb {
-    //return {id, username, password, name, email, phone}
+    //return {id, username, password, name, email, phone, notif_pref}
     public static String[] getUserFromName(String username) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -24,7 +24,7 @@ public class GetFromDb {
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
         ResultSet result = null;  //output after query
-        String[] results = new String[6];
+        String[] results = new String[7];
         try {
             //set up connection
             connection = ds.getConnection();
@@ -50,6 +50,8 @@ public class GetFromDb {
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
+            results[6] = result.getString("notif_pref_group");
+            System.out.println("Pref group: " + results[6]);
             return results;
         }
         catch (SQLException e) {
@@ -346,7 +348,7 @@ public class GetFromDb {
         }*/
 
     }
-    //return {id, username, password, name, email, phone}
+    //return {id, username, password, name, email, phone, notif_pref}
     public static String[] getUserFromId(int id) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -374,13 +376,14 @@ public class GetFromDb {
             }*/
             result.first();
 
-            String[] results = new String[6];
+            String[] results = new String[7];
             results[0] = result.getString("id");
             results[1] = result.getString("username");
             results[2] = result.getString("password");
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
+            results[6] = result.getString("notif_pref_group");
             return results;
 
         } catch (SQLException e) {

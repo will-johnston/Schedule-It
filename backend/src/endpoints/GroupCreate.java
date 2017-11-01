@@ -47,6 +47,8 @@ public class GroupCreate implements IAPIRoute {
                 return;
             }
             else {
+                owner.addToGroup(group);
+                tracker.updateUser(cookie, owner);
                 String message = String.format("{\"groupid\":\"%d\"}", groupid);
                 Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
                 return;
