@@ -197,12 +197,9 @@ public class upload implements IAPIRoute {
     private Object[] parseChunkUploadRequest(String body) {
         //get json from body
         int last = body.indexOf('}');
-        String json = body.substring(0, last + 1);
-        System.out.println("Trying to parse: " + json);
-        System.out.println(json);
         try {
             Gson gson = new Gson();
-            JsonObject bodyObj = gson.fromJson(json, JsonObject.class);
+            JsonObject bodyObj = gson.fromJson(body, JsonObject.class);
             if (!bodyObj.has("checksum")) {
                 return null;
             }
@@ -218,13 +215,16 @@ public class upload implements IAPIRoute {
             if (!bodyObj.has("chunkid")) {
                 return null;
             }
+            if (!bodyObj.has("data")) {
+                return null;
+            }
             Object[] args = new Object[6];
             args[0] = bodyObj.get("checksum").getAsInt();
             args[1] = bodyObj.get("cookie").getAsInt();
             args[2] = bodyObj.get("uploadid").getAsInt();
             args[3] = bodyObj.get("chunkid").getAsInt();
             args[4] = bodyObj.get("length").getAsInt();
-            args[5] = body.substring(last + 3).trim();
+            args[5] = bodyObj.get("data").getAsString();
             return args;
         }
         catch (Exception e) {
@@ -254,12 +254,10 @@ public class upload implements IAPIRoute {
             return null;
         }
     }
+    //Data is base64 encoded
     private byte[] getChunkData(String data) {
-        char[] chars = data.toCharArray();
-        byte[] blob = new byte[chars.length];
-        for (int i = 0; i < chars.length; i++) {
-            blob[i] = (byte)chars[i];
-        }
+        //char[] chars = data.toCharArray();
+        byte[] blob = Base64.getDecoder().decode(data);
         return blob;
     }
     private String infoToJson(Newupload up) {
