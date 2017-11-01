@@ -42,7 +42,7 @@ public class GroupGet implements IAPIRoute {
             return;
         }
         else {
-            Response res = new Response(groups);
+            Response res = new Response(groups, user);
             String json = res.toJson();
             if (json == null) {
                 String response = "{\"error\":\"Couldn't get groups\"}";
