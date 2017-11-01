@@ -3,10 +3,10 @@ package endpoints;
 import server.HTTPMessage;
 
 import java.math.BigInteger;
-import java.net.Socket;
 import java.util.*;
 import management.*;
 import com.google.gson.*;
+import server.*;
 import server.Socketeer;
 
 //A special type of endpoint where multiple uploads can happen at the same time
@@ -14,7 +14,7 @@ import server.Socketeer;
 public class upload implements IAPIRoute {
     Images images;
     Tracker tracker;
-    HashMap<Integer, newupload> uploads;        //Uploadid -> newupload
+    HashMap<Integer, Newupload> uploads;        //Uploadid -> Newupload
     public upload(Images images, Tracker tracker) {
         this.images = images;
         this.tracker = tracker;
@@ -30,7 +30,7 @@ public class upload implements IAPIRoute {
     }
 
     @Override
-    public void execute(Socket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) {
         if (request.getMethod().equals("/upload")) {
             //starting a new upload
             //returns mimeType, length, cookie, size, uploadType
@@ -51,7 +51,7 @@ public class upload implements IAPIRoute {
             String uuid = images.makeUUID();
             int uploadid = getNewUploadId();
             try {
-                newupload up = new newupload((int)args[1], (HTTPMessage.MimeType) args[0] , uuid);
+                Newupload up = new Newupload((int)args[1], (HTTPMessage.MimeType) args[0] , uuid, images);
                 uploads.put(uploadid, up);
                 String response = String.format("{\"uploadid\":\"%d\"}\n", uploadid);
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
@@ -60,23 +60,23 @@ public class upload implements IAPIRoute {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Could not add newupload");
+                System.out.println("Could not add Newupload");
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not handle request\" }",
                         HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
 
         }
-        else if (request.getMethod().equals("/upload/chunk")) {
-            //adding a chunk
+        else if (request.getMethod().equals("/upload/Chunk")) {
+            //adding a Chunk
             //{"checksum" : 69548,
             // "cookie" : 794681312,
             // "length" : 8080,
             // "uploadid" : 684216,
-            // "chunkid" : 25           //25th (starting from 0) chunk
+            // "chunkid" : 25           //25th (starting from 0) Chunk
             //}
             //Upload data
-            System.out.println("Recieved new chunk request");
+            System.out.println("Recieved new Chunk request");
             Object[] args = parseChunkUploadRequest(request.getBody());
             if (args == null) {
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
@@ -95,7 +95,7 @@ public class upload implements IAPIRoute {
             }
             try {
                 int uploadid = (int)args[2];
-                newupload up = uploads.get(uploadid);
+                Newupload up = uploads.get(uploadid);
                 boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
                 String response;
                 if (success) {
@@ -104,14 +104,24 @@ public class upload implements IAPIRoute {
                 else {
                     response = "{\"success\":\"false\"}";
                 }
+                if (up.isFinished()) {
+                    //send path
+                    System.out.println("Finished upload!");
+                    if (images.writeOut(up)) {
+                        System.out.println("Accessable at " + up.getWebPath());
+                    }
+                    else {
+                        System.out.println("Failed to write out data");
+                    }
+                }
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
                         HTTPMessage.MimeType.appJson, false), sock);
                 return;
             }
             catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Failed to handle new chunk request");
-                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not handle chunk request\" }",
+                System.out.println("Failed to handle new Chunk request");
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not handle Chunk request\" }",
                         HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
@@ -121,7 +131,7 @@ public class upload implements IAPIRoute {
             // {"cookie" : 736548,
             // "uploadid" : 67984 }
             //Returns info about the upload
-            System.out.println("Recieved chunk info request");
+            System.out.println("Recieved Chunk info request");
             int[] args = parseUploadInfoRequest(request.getBody());
             if (args == null) {
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
@@ -138,7 +148,7 @@ public class upload implements IAPIRoute {
                         HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-            newupload up = uploads.get(args[1]);
+            Newupload up = uploads.get(args[1]);
 
         }
     }
@@ -251,7 +261,7 @@ public class upload implements IAPIRoute {
         }
         return blob;
     }
-    private String infoToJson(newupload up) {
+    private String infoToJson(Newupload up) {
         try {
             JsonObject jobj = new JsonObject();
             //chunksRemaining, uuid, failed
@@ -261,121 +271,15 @@ public class upload implements IAPIRoute {
                 jobj.addProperty("failed", "");
             }
             else {
-                int[] arr = new int[];
-                for (chunk chnk : up.failed) {
-
-                }
+                Gson gson = new Gson();
+                JsonElement element = gson.toJsonTree(up.failed);
+                jobj.add("failed", element);
             }
+            return jobj.toString();
         }
         catch (Exception e) {
             System.out.println("Couldn't convert info to json");
             return null;
-        }
-    }
-    class newupload {
-        int chunkCount;         //length from client
-        int received;           //successful blocks recieved
-        int size;               //current size
-        HTTPMessage.MimeType type;
-        String path;
-        String uuid;
-        ArrayList<chunk> chunks;
-        ArrayList<chunk> failed;
-        public newupload(int chunkCount, HTTPMessage.MimeType type, String uuid) throws Exception {
-            if (chunkCount <= 0) {
-                throw new Exception("Incorrect chunk count");
-            }
-            if (uuid == null) {
-                throw new Exception("Incorrect uuid");
-            }
-            if (type == HTTPMessage.MimeType.Unknown) {
-                throw new Exception("Incorrect Mime Type");
-            }
-            received = 0;
-            size = 0;
-            this.chunkCount = chunkCount;
-            this.type = type;
-            this.uuid = uuid;
-            this.path = images.makePath(uuid, type);
-            chunks = new ArrayList<>(chunkCount);
-            failed = new ArrayList<>();
-        }
-        //returns if the chunk succeeded
-        public boolean addNewChunk(byte[] data, int checksum, int chunkid) {
-            //check if chunk is already in either list
-            chunk chnk = new chunk(data, chunkid, checksum);
-            if (failedContains(chunkid)) {
-                if (chnk.succeeded) {
-                    //add to succeeded list
-                    chunks.add(chnk);
-                }
-                received = received + 1;
-            }
-            else {
-                if (chnk.succeeded) {
-                    chunks.add(chnk);
-                }
-                else {
-                    failed.add(chnk);
-                }
-            }
-            return chnk.succeeded;
-        }
-        private boolean failedContains(int chunkid) {
-            for (int i = 0; i < failed.size(); i++) {
-                if (failed.get(i).getId() == chunkid) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        //returns all the chunks in one array
-        public byte[] getBlob() {
-            byte[] blob = new byte[size];
-            int i = 0, index = 0;
-            while (i < size) {
-                chunk src = chunks.get(i);
-                System.out.println("Copying from " + i + " to " + (src.size - 1));
-                System.arraycopy(src.data, i, blob, src.size - 1, src.size);
-                i = i + src.size;
-                index = index + 1;
-            }
-            return blob;
-        }
-    }
-    class chunk {
-        int size;
-        byte[] data;
-        boolean succeeded;
-        int recievedChecksum;
-        int actualChecksum;
-        int id;
-        public chunk(byte[] data, int checksum, int chunkid) {
-            this.data = data;
-            this.size = data.length;
-            this.recievedChecksum = checksum;
-            actualChecksum = checksum();
-            id = chunkid;
-            if (actualChecksum == recievedChecksum) {
-                succeeded = true;
-            }
-            else {
-                succeeded = false;
-            }
-        }
-        private int checksum() {
-            int MODULUS = 65535;
-            int sum = 0;
-            for (int i = 0; i < size; i++) {
-                sum = data[i] % MODULUS;
-            }
-            return sum;
-        }
-        public int getId() {
-            return id;
-        }
-        public int getSize() {
-            return size;
         }
     }
 }

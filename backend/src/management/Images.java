@@ -84,4 +84,30 @@ public class Images {
             return true;
         }
     }
+    public boolean writeOut(Newupload upload) {
+        if (upload ==  null) {
+            System.out.println("Tried to write out null");
+            return false;
+        }
+        try {
+            FileOutputStream stream = new FileOutputStream(upload.path);
+            byte[] data = upload.getBlob();
+            try {
+                stream.write(data);
+                stream.flush();
+                stream.close();
+                return true;
+            }
+            catch (Exception next) {
+                next.printStackTrace();
+                stream.close();
+                return false;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to writeout");
+            return false;
+        }
+    }
 }

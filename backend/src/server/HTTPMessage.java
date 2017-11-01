@@ -302,6 +302,22 @@ public class HTTPMessage {
         }
         return MimeType.Unknown;
     }
+    public static String getMimeExtension(MimeType type) {
+        switch (type) {
+            case appJson:
+                return "json";
+            case imageJpeg:
+                return "jpg";
+            case textPlain:
+                return "txt";
+            case imagePng:
+                return "png";
+            case Unknown:
+            default:
+                //Return
+                return null;
+        }
+    }
 
     //Getters and Setters because Java is dumb
 
