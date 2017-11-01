@@ -291,7 +291,7 @@ public class HTTPMessage {
 	    if (mime.equals("application/json")) {
 	        return MimeType.appJson;
         }
-        if (mime.equals("image/jped")) {
+        if (mime.equals("image/jpeg")) {
 	        return MimeType.imageJpeg;
         }
         if (mime.equals("text/plain")) {

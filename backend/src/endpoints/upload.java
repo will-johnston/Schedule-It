@@ -184,7 +184,7 @@ public class upload implements IAPIRoute {
             arr[1] = bodyObj.get("length").getAsInt();
             arr[2] = bodyObj.get("cookie").getAsInt();
             arr[3] = bodyObj.get("size").getAsInt();
-            arr[4] = bodyObj.get("uploadType").getAsInt();
+            arr[4] = bodyObj.get("uploadType").getAsString();
             return arr;
         }
         catch (Exception e) {
