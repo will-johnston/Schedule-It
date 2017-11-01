@@ -36,6 +36,7 @@ public class User {
     }
     private void resolveMuted(String prefs) {
         if (prefs == null || prefs.equals("")) {
+            System.out.println("Prefs are empty");
             return;
         }
         if (prefs.contains("[,]")) {
@@ -46,6 +47,7 @@ public class User {
             for (String splat : split) {
                 try {
                     mutedGroups.add(Integer.parseInt(splat));
+                    System.out.println("Added " + splat);
                     i++;
                 }
                 catch (Exception e) {
@@ -56,6 +58,7 @@ public class User {
         else {
             try {
                 mutedGroups.add(Integer.parseInt(prefs));
+                System.out.println("Added " + prefs);
             }
             catch (Exception e) {
                 System.out.println("Failed to resolve muted groups");
