@@ -11,8 +11,9 @@ public class Main {
             Tracker tracker = new Tracker();
             NotificationHandler handler = new NotificationHandler(tracker);
             NotificationDealer dealer = new NotificationDealer(tracker, handler);
-            //upload up = new upload(images, tracker);           //For special upload case
-            //router.add("/upload", up);
+            Images images = new Images();
+            upload up = new upload(images, tracker);           //For special upload case
+            router.add("/upload", up);
             //router.add("/upload/Chunk", up);
             //router.add("/upload/info", up);
             router.add("/example/example", new ExampleEndpoint());
@@ -41,7 +42,6 @@ public class Main {
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
-            router.add("/timeinput/add", new TimeInputAdd(tracker));
 	    return router;
         }
         catch (Exception e) {

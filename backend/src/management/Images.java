@@ -39,6 +39,9 @@ public class Images {
         }
     }
     private HashMap<String, Boolean> getUUIDs() {
+        if (pathCache.size() == 0 || pathCache.isEmpty()) {
+            return new HashMap<>(1);
+        }
         HashMap<String, Boolean> uuids = new HashMap<>(pathCache.size());
         String[] keys = (String[])pathCache.keySet().toArray();
         for (int i = 0; i < uuids.size(); i++) {
