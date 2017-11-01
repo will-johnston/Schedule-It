@@ -1,6 +1,6 @@
 package endpoints;
 
-import server.*;
+import server.HTTPMessage;
 
 import java.math.BigInteger;
 import java.net.Socket;
@@ -30,14 +30,10 @@ public class upload implements IAPIRoute {
     }
 
     @Override
-    public void execute(SSocket sock, HTTPMessage request) {
+    public void execute(Socket sock, HTTPMessage request) {
         if (request.getMethod().equals("/upload")) {
             //starting a new upload
-            // {{"type": "image/jpg",
-            //   "size": 65535,
-            //   "length": 78,
-            //   "cookie": 1297658432568
-            //}
+            //returns mimeType, length, cookie, size, uploadType
             System.out.println("Recieved new upload request");
             Object[] args = parseNewUploadRequest(request.getBody());
             if (args == null) {
@@ -103,10 +99,10 @@ public class upload implements IAPIRoute {
                 boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
                 String response;
                 if (success) {
-                    response = "\"success\":\"true\"\n";
+                    response = "{\"success\":\"true\"}";
                 }
                 else {
-                    response = "\"success\":\"false\"\n";
+                    response = "{\"success\":\"false\"}";
                 }
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
                         HTTPMessage.MimeType.appJson, false), sock);
@@ -142,8 +138,11 @@ public class upload implements IAPIRoute {
                         HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+            newupload up = uploads.get(args[1]);
+
         }
     }
+    //returns mimeType, length, cookie, size, uploadType
     private Object[] parseNewUploadRequest(String body) {
         try {
             System.out.println("Trying to parse upload args");
@@ -153,7 +152,7 @@ public class upload implements IAPIRoute {
                 System.out.println("Failed to parse JSON");
                 return null;
             }
-            if (!bodyObj.has("type")) {
+            if (!bodyObj.has("mimeType")) {
                 return null;
             }
             if (!bodyObj.has("size")) {
@@ -165,12 +164,17 @@ public class upload implements IAPIRoute {
             if (!bodyObj.has("cookie")) {
                 return null;
             }
+            if (!bodyObj.has("uploadType")) {
+                return null;
+            }
             System.out.println("Upload Request has correct params");
             //ArrayList<Object> arr = new ArrayList<>(4);
-            Object[] arr =  new Object[3];
-            arr[0] = (HTTPMessage.getMimeTypeFromString(bodyObj.get("type").getAsString()));
-            arr[1] = (bodyObj.get("length").getAsInt());
-            arr[2] = (bodyObj.get("cookie").getAsInt());
+            Object[] arr =  new Object[5];
+            arr[0] = HTTPMessage.getMimeTypeFromString(bodyObj.get("mimeType").getAsString());
+            arr[1] = bodyObj.get("length").getAsInt();
+            arr[2] = bodyObj.get("cookie").getAsInt();
+            arr[3] = bodyObj.get("size").getAsInt();
+            arr[4] = bodyObj.get("uploadType").getAsInt();
             return arr;
         }
         catch (Exception e) {
@@ -209,7 +213,7 @@ public class upload implements IAPIRoute {
             args[2] = bodyObj.get("uploadid").getAsInt();
             args[3] = bodyObj.get("chunkid").getAsInt();
             args[4] = bodyObj.get("length").getAsInt();
-            args[5] = body.substring(last + 3);
+            args[5] = body.substring(last + 3).trim();
             return args;
         }
         catch (Exception e) {
@@ -247,9 +251,30 @@ public class upload implements IAPIRoute {
         }
         return blob;
     }
+    private String infoToJson(newupload up) {
+        try {
+            JsonObject jobj = new JsonObject();
+            //chunksRemaining, uuid, failed
+            jobj.addProperty("chunksRemaining", up.chunkCount - up.received);
+            jobj.addProperty("uuid", up.uuid);
+            if (up.failed == null || up.failed.size() == 0) {
+                jobj.addProperty("failed", "");
+            }
+            else {
+                int[] arr = new int[];
+                for (chunk chnk : up.failed) {
+
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't convert info to json");
+            return null;
+        }
+    }
     class newupload {
         int chunkCount;         //length from client
-        int received;
+        int received;           //successful blocks recieved
         int size;               //current size
         HTTPMessage.MimeType type;
         String path;
@@ -282,7 +307,9 @@ public class upload implements IAPIRoute {
             if (failedContains(chunkid)) {
                 if (chnk.succeeded) {
                     //add to succeeded list
+                    chunks.add(chnk);
                 }
+                received = received + 1;
             }
             else {
                 if (chnk.succeeded) {
@@ -291,7 +318,6 @@ public class upload implements IAPIRoute {
                 else {
                     failed.add(chnk);
                 }
-                received = received + 1;
             }
             return chnk.succeeded;
         }
