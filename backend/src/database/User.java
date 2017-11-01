@@ -63,6 +63,9 @@ public class User {
     }
     public boolean muteGroup(int id) {
         if (inGroup(id)) {
+            if (isMuted(id)) {
+                return false;
+            }
             mutedGroups.add(id);
             String value = MutedToString();
             if (ModifyUserInDb.setNotificationPrefs(value, id)) {
@@ -78,7 +81,32 @@ public class User {
             return false;
         }
     }
+    public boolean unmuteGroup(int id) {
+        if (inGroup(id)) {
+            if (!isMuted(id)) {
+                return false;
+            }
+            mutedGroups.remove(id);
+            String value = MutedToString();
+            if (ModifyUserInDb.setNotificationPrefs(value, id)) {
+                return true;
+            }
+            else {
+                //REVERT JESUS HOW DOES THIS HAPPEN
+                mutedGroups.add(id);
+                value = MutedToString();
+                ModifyUserInDb.setNotificationPrefs(value, id);         //We're fucked anyway, so who cares if this succeeds
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
     private String MutedToString() {
+        if (mutedGroups.isEmpty()) {
+            return null;
+        }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < mutedGroups.size(); i++) {
             builder.append(mutedGroups.get(i));
@@ -324,7 +352,7 @@ public class User {
             return false;
         }
         for (int i = 0; i < mutedGroups.size(); i++) {
-            if (mutedGroups.get(i).intValue() == groupid) {
+            if (mutedGroups.get(i) == groupid) {
                 return true;
             }
         }
