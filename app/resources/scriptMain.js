@@ -88,19 +88,6 @@ $(document).ready(function(){
 	assignFunctionality();
 
 	var accessServer = function(method, url, data, onSuccess, onFail) {
-		//send friend request stub
-		if(url == "send-friend-request") {
-			onFail();
-			return;
-		}
-
-		//join group stub
-		if(url == "https://scheduleit.duckdns.org/api/user/groups/join") {
-			onFail();
-			return;
-		}
-
-
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
@@ -409,9 +396,9 @@ $(document).ready(function(){
 				var json = JSON.parse(result);
 
 				var l = $("#vPillsTab").children().length;
-				for(var i = 1; i < l; i++) {
-					$("#vPillsTab").children().eq(1).remove();
-					$("#vPillsContent").children().eq(1).remove();
+				for(var i = 0; i < l; i++) {
+					$("#vPillsTab").children().eq(0).remove();
+					$("#vPillsContent").children().eq(0).remove();
 				}
 
 				for(var i = 0; i < json.length; i++) {
@@ -429,8 +416,13 @@ $(document).ready(function(){
 									<div class="card-body">
 										<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 										<h3>` + name + `</h3>
-										<p>` + info + `</p>
-										<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>
+										<p>` + info + `</p>`;
+
+										if(name != "Me") {
+											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>';
+										}
+						
+					contentHTML += `
 									</div>
 								</div>
 							</div>
@@ -509,6 +501,12 @@ $(document).ready(function(){
 					$("#vPillsContent").append(contentHTML);
 					$("#vPillsTab").append(tabHTML);
 				}
+
+				//make first tab active
+				$("#vPillsTab").children().eq(0).addClass("active");
+				$("#vPillsContent").children().eq(0).addClass("show active");
+				$("#vPillsContent .nav-tabs a").first().addClass("active");
+				$("#vPillsContent .tab-content .tab-pane").first().addClass("active");
 
 				assignFunctionality();
 				assignCalendarFunctionality();
@@ -589,8 +587,6 @@ $(document).ready(function(){
 				function(result) { //fail
 					alert("Failed to create group");
 				});
-
-			updateGroups();
 
 			$("#newGroupModal").modal("hide");
 
