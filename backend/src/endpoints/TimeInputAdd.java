@@ -9,7 +9,6 @@ import com.google.gson.*;
 //Adds a friend to a User
 public class TimeInputAdd implements IAPIRoute {
     Tracker tracker;
-
     public TimeInputAdd(Tracker tracker, NotificationHandler handler) {
         this.tracker = tracker;
     }
@@ -51,7 +50,6 @@ public class TimeInputAdd implements IAPIRoute {
                 return null;
             }
             if (!jobj.has("time")) {
-
                 return null;
             }
 
@@ -60,7 +58,6 @@ public class TimeInputAdd implements IAPIRoute {
             int eventID = jobj.get("eventID").getAsInt();
             String time = jobj.get("time").getAsString();
             return new Object[] { groupID,eventID, time };
-
         }
         catch (Exception e) {
             e.printStackTrace();

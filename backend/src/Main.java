@@ -38,11 +38,12 @@ public class Main {
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
-	          router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
-            router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
+	    router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
+	    router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
+	    router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
-            router.add("/timeinput/add", new TimeInputAdd(tracker));
+>>>>>>> dc97c7a6e4f1504873bef111989d5e25e8235f2c
 	    return router;
         }
         catch (Exception e) {
