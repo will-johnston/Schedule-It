@@ -43,6 +43,7 @@ public class MessageGet implements IAPIRoute {
 
     //returns cookie, groupID, line
     /*private String[] parseArgs(String message) {
+
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
