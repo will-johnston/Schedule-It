@@ -76,6 +76,7 @@ public class Group {
             User user = tracker.getUserByName(username);
             if (!user.isMuted(this.id)) {
                 System.out.println("Adding notification to " + user.getId());
+                notification.userid = user.getId();
                 user.addNotification(notification);
             }
         }
