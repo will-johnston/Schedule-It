@@ -14,6 +14,7 @@ import database.Event;
 public class SCalendar {
     //use a hash table
     HashMap<Integer, YearCalendar> calendar;
+    boolean refreshed = false;
     public SCalendar() {
         calendar = new HashMap<>(2);
     }
@@ -196,6 +197,9 @@ public class SCalendar {
         return events;
     }
     private void refreshEvents(int id) {
+        if (refreshed) {
+            return;
+        }
         Integer[] ids = GetFromDb.getEventIds(id);
         for (Integer newid : ids) {
             int value = newid.intValue();
@@ -216,6 +220,7 @@ public class SCalendar {
                 }
             }
         }
+        refreshed = true;
     }
     public Event getEvent(int id) {
         for (YearCalendar years : calendar.values()) {
