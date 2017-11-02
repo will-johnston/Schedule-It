@@ -24,8 +24,8 @@ public class Main {
             //router.add("/user/groups/add", new GroupAdd());
             router.add("/user/groups/edit", new GroupEdit());
             router.add("/user/groups/create", new GroupCreate(tracker));
-            router.add("/user/groups/chat", new MessageAdd(tracker));
-            router.add("/user/groups/getChat", new MessageGet());
+            //router.add("/user/groups/chat", new MessageAdd(tracker));
+            //router.add("/user/groups/getChat", new MessageGet());
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
@@ -43,7 +43,6 @@ public class Main {
 	    router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
->>>>>>> dc97c7a6e4f1504873bef111989d5e25e8235f2c
 	    return router;
         }
         catch (Exception e) {
