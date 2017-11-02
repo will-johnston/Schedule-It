@@ -13,6 +13,7 @@ public class Chunk {
         this.recievedChecksum = checksum;
         actualChecksum = checksum();
         id = chunkid;
+        System.out.println(String.format("checksum: %d, actual: %d", recievedChecksum, actualChecksum));
         if (actualChecksum == recievedChecksum) {
             succeeded = true;
         }
