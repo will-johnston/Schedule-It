@@ -21,6 +21,7 @@ public class Images {
         else {
             try {
                 File tmpFile = new File(path);
+                tmpFile.createNewFile();
                 if (tmpFile.isDirectory()) {
                     return false;
                 }
