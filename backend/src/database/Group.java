@@ -77,7 +77,13 @@ public class Group {
             if (!user.isMuted(this.id)) {
                 System.out.println("Adding notification to " + user.getId());
                 notification.userid = user.getId();
-                user.addNotification(notification);
+                Notification newer = NotificationInDb.add(notification);
+                if (newer != null) {
+                    user.addNotification(notification);
+                }
+                else {
+                    System.out.println("Failed to add notification");
+                }
             }
         }
     }
