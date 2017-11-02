@@ -99,7 +99,7 @@ public class Images {
             try {
                 int remaining = data.length;
                 int location = 0;
-                while (remaining > 0) {
+                /*while (remaining > 0) {
                     if (remaining < 1000)  {
                         stream.write(data, location, remaining);
                         location += remaining;
@@ -111,6 +111,9 @@ public class Images {
                         location += 1000;
                     }
                     stream.flush();
+                }*/
+                for (int i = 0; i < data.length; i++) {
+                    stream.write(data[i]);
                 }
                 stream.flush();
                 stream.close();
