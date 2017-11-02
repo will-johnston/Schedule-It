@@ -165,6 +165,7 @@ public class NotificationInDb {
                 return notification;
             }
             else {
+                System.out.println("Notification.put returned 0 results");
                 return null;
             }
         }
