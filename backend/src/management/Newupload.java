@@ -41,15 +41,18 @@ public class Newupload {
         if (failedContains(chunkid)) {
             if (chnk.succeeded) {
                 //add to succeeded list
+                System.out.println("Added to succeeded");
                 chunks.add(chnk);
             }
             received = received + 1;
         }
         else {
             if (chnk.succeeded) {
+                System.out.println("added to succeeded");
                 chunks.add(chnk);
             }
             else {
+                System.out.println("Added to failed");
                 failed.add(chnk);
             }
         }
@@ -78,6 +81,10 @@ public class Newupload {
     }
     public boolean isFinished() {
         if (received == chunkCount && failed.isEmpty()) {
+            return true;
+        }
+        if (received == chunkCount) {
+            System.out.println("Recieved equals chunkCount but failed isn't empty");
             return true;
         }
         return false;

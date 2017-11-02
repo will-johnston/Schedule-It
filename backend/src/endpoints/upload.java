@@ -103,27 +103,29 @@ public class upload implements IAPIRoute {
                 System.out.println("Adding chunk");
                 boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
                 String response;
-                if (success && up.isFinished()) {
-                    //send path
-                    System.out.println("Finished upload!");
-                    if (images.writeOut(up)) {
-                        System.out.println("Accessable at " + up.getWebPath());
+
+                if (success) {
+                    response = "{\"success\":\"true\"}";
+                    if (up.isFinished()) {
+                        //send path
+                        System.out.println("Finished upload!");
+                        if (images.writeOut(up)) {
+                            System.out.println("Accessable at " + up.getWebPath());
+                        }
+                        else {
+                            System.out.println("Failed to write out data");
+                        }
                     }
                     else {
-                        System.out.println("Failed to write out data");
+                        System.out.println("Isn't finished");
                     }
                 }
                 else {
-                    if (success) {
-                        response = "{\"success\":\"true\"}";
-                    }
-                    else {
-                        response = "{\"success\":\"false\"}";
-                    }
-                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
-                            HTTPMessage.MimeType.appJson, false), sock);
-                    return;
+                    response = "{\"success\":\"false\"}";
                 }
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK,
+                        HTTPMessage.MimeType.appJson, false), sock);
+                return;
 
             }
             catch (Exception e) {
@@ -266,8 +268,22 @@ public class upload implements IAPIRoute {
     private byte[] getChunkData(String data) {
         //char[] chars = data.toCharArray();
         byte[] blob = Base64.getDecoder().decode(data);
-        System.out.println("" + blob[0] + " " + blob[1]);
+        System.out.println("" + blob[0] + " " + blob[1] + " " + blob[2] + " " + blob[3]);
         return blob;
+    }
+    private byte[] resolveUint(byte[] blob) {
+        return null;
+        /*for (int i = 0; i < blob.length; i++) {
+
+        }*/
+    }
+    private int makeUint(int num) {
+        if (num < 0) {
+            return 256 + num;
+        }
+        else {
+            return num;
+        }
     }
     private String infoToJson(Newupload up) {
         try {
