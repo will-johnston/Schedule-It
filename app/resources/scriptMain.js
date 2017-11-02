@@ -782,8 +782,7 @@ $(document).ready(function(){
 				});
 		});
 
-		//getting messages
-
+//getting messages
 var messages = [];
 
 var updateChat = function() {
@@ -801,7 +800,7 @@ var updateChat = function() {
 
 			//if there are no messages in the array they should all be put in there
 			if(messages.lenth == 0) {
-				messages = json["messages"];
+				messages = json["chat"];
 			}
 			else {
 				var newMessages = [];
@@ -810,8 +809,9 @@ var updateChat = function() {
 
 				for(var i = 0; i < newMessages.length; i++) {
 					//update the chat box for the group 
-					var messageBoxHTML = "...";
-					$("#group" + activeGroupID + "Content .chatBox").append(messageBoxHTML);
+					$("#chatbox_" + activeGroupID).empty();
+					var messageBoxHTML = "<p>" + messages[i] + "</p>";
+					$("#chatbox_" + activeGroupID).append(messageBoxHTML);
 				}
 			}
 			
@@ -823,21 +823,4 @@ var updateChat = function() {
 
 //update chat every 3 seconds
 setInterval(updateChat, 3000);
-
-	/*your json output could look somthing like this:
-	{
-	"messages": [
-		{
-		"user": "[user who sent message]",
-		"text": "[message text]",
-		"timestamp": "[time message was sent, hh:mm:ss]"
-		},
-		{
-		"user": "[user who sent message]",
-		"text": "[message text]",
-		"timestamp": "[time message was sent, hh:mm:ss]"
-		}
-	]
-	} */
-
 	});

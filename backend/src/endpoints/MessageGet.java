@@ -26,23 +26,59 @@ public class MessageGet implements IAPIRoute {
     * */
     @Override
     public void execute(SSocket sock, HTTPMessage request) { 
-/*
+
         try {
-            //Have username, groupID, line
+            String[] args = parseArgs(request.getBody());
+
+            if (args == null) {
+                String response = "{ \"error\" : \"Invalid arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+
+            int groupID = Integer.parseInt(args[0]);
+            int cookie = Integer.parseInt(args[1]);
+
+            if (cookie == 0) {
+                String response = "{\"error\":\"Invalid Arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+
+            if (!tracker.isLoggedIn(cookie)) {
+                String response = "{\"error\":\"User is not logged in\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            User user = tracker.getUser(cookie);
+
+            if (user == null) {
+                String response = "{\"error\":\"Couldn't get user\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+
+
             Messages message = new Messages();
-            String groupID = args[0];
-            boolean ret = message.getMessage(args);
-            Socketeer.send(HTTPMessage.makeResponse("{\"Success\":\"Message sent to database\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
+            ArrayList<String> chat = message.getMessage(groupID);
+
+            if (chat == null) {
+                String response = "{\"error\":\"Couldn't get chat from database\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            String json_chat = new Gson().toJson(chat);
+            Socketeer.send(HTTPMessage.makeResponse(json_chat, HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
             return;
         } 
         catch (Exception e) {
             e.printStackTrace();
         }
-*/
+
     }
 
     //returns cookie, groupID, line
-    /*private String[] parseArgs(String message) {
+    private String[] parseArgs(String message) {
 
         try {
             Gson gson = new Gson();
@@ -50,13 +86,17 @@ public class MessageGet implements IAPIRoute {
             if (!bodyObj.has("groupID")) {
                 return null;
             }
-            String[] arr = new String[3];
+            if (!bodyObj.has("cookie")) {
+                return null;
+            }
+            String[] arr = new String[2];
             arr[0] = bodyObj.get("groupID").getAsString();
+            arr[1] = bodyObj.get("cookie").getAsString();
             return arr;
         } 
         catch (Exception e) {
             System.out.println("Caught an exception");
             return null;
         }
-    }*/
+    }
 }
