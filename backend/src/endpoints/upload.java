@@ -11,6 +11,11 @@ import server.Socketeer;
 
 //A special type of endpoint where multiple uploads can happen at the same time
 //
+
+
+/*
+Current issue, Images.writeOut doesn't write any data out
+ */
 public class upload implements IAPIRoute {
     Images images;
     Tracker tracker;
