@@ -202,11 +202,11 @@ public class Server {
                             }
                             //add body data
                             body.append(lines[i] + '\n');
-                            if ((body.length() - 2) >= length ) {
+                            if ((body.length() - 1) == length || body.length() == length) {
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             else {
-                                System.out.println(String.format("Builder length is %d, content length is %d", body.length(), length));
+                                System.out.println(String.format("Builder length is %d, -1 is %d, content length is %d", body.length(), body.length() - 1, length));
                             }
                         }
                         else {
