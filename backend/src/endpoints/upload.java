@@ -88,6 +88,7 @@ public class upload implements IAPIRoute {
                         HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
                 return;
             }
+            System.out.println("Checking if contains key");
             if (!uploads.containsKey((int)args[2])) {
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Uploadid is incorrect\" }",
                         HTTPMessage.HTTPStatus.BadRequest), sock);
