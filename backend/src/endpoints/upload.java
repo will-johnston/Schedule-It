@@ -95,7 +95,9 @@ public class upload implements IAPIRoute {
             }
             try {
                 int uploadid = (int)args[2];
+                System.out.println("Getting upload");
                 Newupload up = uploads.get(uploadid);
+                System.out.println("Adding chunk");
                 boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
                 String response;
                 if (success && up.isFinished()) {
