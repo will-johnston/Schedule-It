@@ -67,7 +67,7 @@ public class upload implements IAPIRoute {
             }
 
         }
-        else if (request.getMethod().equals("/upload/Chunk")) {
+        else if (request.getMethod().equals("/upload/chunk")) {
             //adding a Chunk
             //{"checksum" : 69548,
             // "cookie" : 794681312,
@@ -78,11 +78,13 @@ public class upload implements IAPIRoute {
             //Upload data
             System.out.println("Recieved new Chunk request");
             Object[] args = parseChunkUploadRequest(request.getBody());
+            System.out.println("Checking for null");
             if (args == null) {
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to parse arguments\" }",
                         HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+            System.out.println("Checking if logged in");
             if (!tracker.isLoggedIn((int)args[1])) {
                 Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"User not logged in\" }",
                         HTTPMessage.HTTPStatus.MethodNotAllowed), sock);
