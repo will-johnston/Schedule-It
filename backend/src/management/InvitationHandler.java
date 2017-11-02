@@ -72,6 +72,9 @@ public class InvitationHandler implements IHandler {
                 return null;
             }
         }
+        else if (type.equals("invite.event")) {
+            user.clearNotification(notification);
+        }
         else {
             return null;
         }
