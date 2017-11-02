@@ -8,7 +8,7 @@ public class CreateGroupTest {
     public void CreateGroupTest() {
         //fails on anything but 200
         CAssert.AssertDoesNotFail(() -> {
-            String url = "http://scheduleit.duckdns.org/api/user/groups/create";
+            String url = Misc.getUrl() + "user/groups/create";
             System.out.println("logging in");
             int cookie = Misc.login();
             if (cookie == -1) {

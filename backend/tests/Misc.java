@@ -18,4 +18,7 @@ public class Misc {
         obj.addProperty("cookie", cookie);
         return HttpRequest.postRequest(url, obj.toString());
     }
+    public static String getUrl() {
+        return "http://scheduleit.duckdns.org/api/";
+    }
 }
