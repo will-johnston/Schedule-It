@@ -67,28 +67,36 @@ public class GroupAddCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        Group group = user.getGroupById(groupid);
-        //int eventID, String name, String type, String description, String image
-        Event event = new Event(0,name, type, description, null);
-        event.setTime(date);
-        event.setGroupID(group.getId());
-        if (group.addEvent(event)) {
-            //send notifications
-            try {
-                //groupid, eventid
-                String params = String.format("%d,%d",  group.getId(), event.getEventID());
-                Notification notification = new Notification(-1,-1,"invite.event", params, event.getTime());
-                group.notifyMembers(notification, tracker);
-                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-                return;
+        try {
+            Group group = user.getGroupById(groupid);
+            //int eventID, String name, String type, String description, String image
+            Event event = new Event(0,name, type, description, null);
+            event.setTime(date);
+            event.setGroupID(group.getId());
+            if (group.addEvent(event)) {
+                //send notifications
+                try {
+                    //groupid, eventid
+                    String params = String.format("%d,%d",  group.getId(), event.getEventID());
+                    Notification notification = new Notification(-1,-1,"invite.event", params, event.getTime());
+                    group.notifyMembers(notification, tracker);
+                    Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                    return;
+                }
+                catch (Exception e) {
+                    String response = "{\"error\":\"Couldn't add notification\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
             }
-            catch (Exception e) {
-                String response = "{\"error\":\"Couldn't add notification\"}";
+            else {
+                String response = "{\"error\":\"Couldn't add event\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
         }
-        else {
+        catch (Exception e) {
+            e.printStackTrace();
             String response = "{\"error\":\"Couldn't add event\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
