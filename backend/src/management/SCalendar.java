@@ -193,6 +193,7 @@ public class SCalendar {
         int i = 0;
         for (Event event : monthCalendar.values()) {
             events[i] = event;
+            i++;
         }
         return events;
     }
@@ -385,9 +386,11 @@ public class SCalendar {
                 System.out.println("Event already exists");
                 return null;
             }
+            System.out.println(String.format("List length: %d", list.size()));
             //put in list
             list.put(event.getEventID(), event);
             eventCount++;
+            System.out.println(String.format("List length: %d", list.size()));
             System.out.println("Update list with event: " + event.getEventID());
             return list;
         }
