@@ -182,8 +182,6 @@ public class SCalendar {
         ArrayList<Event> events = new ArrayList<Event>();
         for (Integer newid : ids) {
             int value = newid.intValue();
-            boolean contains = false;
-            for (YearCalendar yearCalendar : calendar.values()) {
                 Event event = Event.fromDatabase(newid);
                 if (event == null) {
                     System.out.println("Failed to add missing local event");
@@ -191,7 +189,6 @@ public class SCalendar {
                 else {
                     events.add(event);
                 }
-            }
         }
         Event[] arr = new Event[events.size()];
         events.toArray(arr);
