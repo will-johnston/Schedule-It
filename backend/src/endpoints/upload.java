@@ -267,7 +267,7 @@ public class upload implements IAPIRoute {
     //Data is base64 encoded
     private byte[] getChunkData(String data) {
         //char[] chars = data.toCharArray();
-        byte[] blob = Base64.getDecoder().decode(data);
+        byte[] blob = resolveUint(Base64.getDecoder().decode(data));
         System.out.println("" + blob[0] + " " + blob[1] + " " + blob[2] + " " + blob[3]);
         return blob;
     }
