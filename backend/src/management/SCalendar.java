@@ -177,8 +177,27 @@ public class SCalendar {
             return null;
         }
         //get year, then get month
-        refreshEvents(id);
-        if (!calendar.containsKey(year)) {
+        //refreshEvents(id);
+        Integer[] ids = GetFromDb.getEventIds(id);
+        ArrayList<Event> events = new ArrayList<Event>();
+        for (Integer newid : ids) {
+            int value = newid.intValue();
+            boolean contains = false;
+            for (YearCalendar yearCalendar : calendar.values()) {
+                Event event = Event.fromDatabase(newid);
+                if (event == null) {
+                    System.out.println("Failed to add missing local event");
+                }
+                else {
+                    events.add(event);
+                }
+            }
+        }
+        Event[] arr = new Event[events.size()];
+        events.toArray(arr);
+        return arr;
+
+        /*if (!calendar.containsKey(year)) {
             System.out.println("Doesn't contain year");
             return null;
         }
@@ -195,7 +214,7 @@ public class SCalendar {
             events[i] = event;
             i++;
         }
-        return events;
+        return events;*/
     }
     private void refreshEvents(int id) {
         if (refreshed) {
