@@ -384,7 +384,7 @@ public class User {
                 }
             }
         }
-        return true;
+        return false;
     }
     public boolean removeFromGroup(int groupid, Tracker tracker) {
         if (!inGroup(groupid, tracker)) {
