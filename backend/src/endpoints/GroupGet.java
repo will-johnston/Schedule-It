@@ -7,6 +7,7 @@ import server.*;
 import database.*;
 
 import java.net.Socket;
+import java.util.ArrayList;
 
 //gets the list of groups a user is a part of
 public class GroupGet implements IAPIRoute {
@@ -41,7 +42,7 @@ public class GroupGet implements IAPIRoute {
             return;
         }
         else {
-            Response res = new Response(groups);
+            Response res = new Response(groups, user);
             String json = res.toJson();
             if (json == null) {
                 String response = "{\"error\":\"Couldn't get groups\"}";
@@ -73,8 +74,10 @@ public class GroupGet implements IAPIRoute {
     }
     class Response {
         Group[] groups;
-        public Response(Group[] groups) {
+        ArrayList<Integer> muted;
+        public Response(Group[] groups, User user) {
             this.groups = groups;
+            this.muted = user.getMutedGroups();
             System.out.println("Groups length: " + groups.length);
         }
         public String toJson() {
@@ -91,6 +94,12 @@ public class GroupGet implements IAPIRoute {
                     else {
                         jobj.addProperty("imageUrl", group.getImagePath());
                     }
+                    if (isMuted(group.getId())) {
+                        jobj.addProperty("muted",  "true");
+                    }
+                    else {
+                        jobj.addProperty("muted", "false");
+                    }
                     arr[i] = jobj;
                     i++;
                 }
@@ -100,6 +109,17 @@ public class GroupGet implements IAPIRoute {
                 System.out.println("Couldn't convert to json");
                 return null;
             }
+        }
+        public boolean isMuted(int id) {
+            if (muted.isEmpty() || muted == null || muted.size() == 0) {
+                return false;
+            }
+            for (Integer groupid : muted) {
+                if (groupid == id) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

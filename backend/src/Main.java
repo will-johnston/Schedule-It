@@ -18,8 +18,6 @@ public class Main {
             router.add("/example/example", new ExampleEndpoint());
             router.add("/user/login", new UserLogin(tracker));
             router.add("/user/edit", new UserEdit(tracker));
-            router.add("/user/groups/calendar/get", new GroupGetCalendar());
-            router.add("/user/calendar/get", new UserGetCalendar());
             router.add("/user/groups/leave", new GroupLeave(tracker));
             //router.add("/user/groups/join", new GroupJoin());
             //router.add("/user/search", new UserSearch());
@@ -27,6 +25,7 @@ public class Main {
             router.add("/user/groups/edit", new GroupEdit());
             router.add("/user/groups/create", new GroupCreate(tracker));
             router.add("/user/groups/chat", new MessageAdd(tracker));
+            router.add("/user/groups/getChat", new MessageGet());
             router.add("/user/friends/remove", new FriendsRemove(tracker));
             router.add("/user/create", new UserCreate(tracker));
             router.add("/user/friends/add", new FriendsAdd(tracker));
@@ -40,7 +39,11 @@ public class Main {
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
 	    router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
-
+	    router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
+	    router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
+            router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
+            router.add("/user/groups/mute", new GroupMute(tracker));
+>>>>>>> dc97c7a6e4f1504873bef111989d5e25e8235f2c
 	    return router;
         }
         catch (Exception e) {
