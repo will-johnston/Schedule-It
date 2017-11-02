@@ -1,5 +1,6 @@
 package endpoints;
 
+
 import database.ModifyUserInDb;
 import database.User;
 import database.Messages;
@@ -34,6 +35,7 @@ public class MessageAdd implements IAPIRoute {
                 return;
             }
             int cookie = Integer.parseInt(args[0]);
+
             if (cookie == 0) {
                 //invalid cookie sent error
                 Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
@@ -53,17 +55,23 @@ public class MessageAdd implements IAPIRoute {
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+
             String username = user.getUsername();
+            int groupID = Integer.parseInt(args[1]);
+            String line = args[2];
+
             if (username == null) {
                 //This shouldn't happen BUT IF IT DOES, we're f-ed
                 String response = "{\"error\":\"Couldn't get username\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+
+
+
             //Have username, groupID, line
             Messages message = new Messages();
-            args[0] = username;
-            boolean ret = message.setMessage(args);
+            boolean ret = message.setMessage(username, groupID, line);
             Socketeer.send(HTTPMessage.makeResponse("{\"Success\":\"Message sent to database\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
 
             return;
