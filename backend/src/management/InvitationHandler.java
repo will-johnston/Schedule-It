@@ -72,6 +72,10 @@ public class InvitationHandler implements IHandler {
                 return null;
             }
         }
+        else if (type.equals("invite.event")) {
+            user.clearNotification(notification);
+            return "";
+        }
         else {
             return null;
         }
@@ -101,6 +105,30 @@ public class InvitationHandler implements IHandler {
                     return null;
                 }
                 return makeGroupInvite(notification, group);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else if (type.equals("invite.event")) {
+            try {
+                //Get User that invited
+                //Get Group that being invited to
+                Event event = getEvent(notification);
+                if (event == null) {
+                    return null;
+                }
+                try {
+                    JsonObject jobj = new JsonObject();
+                    jobj.addProperty("name", event.getEvent_name());
+                    jobj.addProperty("time", event.getTime().toString());
+                    jobj.addProperty("id", event.getEventID());
+                    return jobj;
+                }
+                catch (Exception e) {
+                    return null;
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -140,6 +168,27 @@ public class InvitationHandler implements IHandler {
             }
         }
         return user;
+    }
+    //groupid, eventid
+    public Event getEvent(Notification notification) throws Exception {
+        int eventid = -1;
+        int groupid = -1;
+           try {
+               String[] split = notification.getParams().split("[,]");
+               groupid = Integer.parseInt(split[0]);
+               eventid = Integer.parseInt(split[1]);
+           }
+           catch (Exception e) {
+           }
+        if (eventid == -1 || groupid == -1) {
+            System.out.println("Invalid event_id format in params");
+            throw new Exception("Invalid event_id format in params");
+        }
+        Group group = tracker.getGroupById(groupid);
+        if (group == null) {
+            return null;
+        }
+        return group.getEvent(eventid);
     }
     public JsonObject makeFriendInvite(Notification notification, User user) {
         JsonObject jobj = new JsonObject();

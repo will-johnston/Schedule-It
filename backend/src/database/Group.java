@@ -11,6 +11,7 @@ public class Group {
     ArrayList<String> users;
     ArrayList<String> admins;             //not implemented
     SCalendar calendar;
+    boolean gotUsers = false;
 
     public Group(int id, User owner, String name, String imagePath) {
         this.id = id;
@@ -42,12 +43,49 @@ public class Group {
             }
         }
         tracker.addGroup(group);
+        group.updateUsers(tracker);
         return group;
         //set list of users and eventually admins
     }
     //TODO
-    public void updateUsers() {
-
+    public void updateUsers(Tracker tracker) {
+        if (gotUsers) {
+            return;
+        }
+        ArrayList<String> members = GetFromDb.getGroupMembers(this.id);
+        if (members == null || members.isEmpty() || members.size() == 0) {
+            gotUsers = true;
+            return;
+        }
+        for (String member : members) {
+            User user = User.fromDatabase(member);
+            if (user == null) {
+                continue;
+            }
+            if (tracker.addUser(user)) {
+                users.add(user.username);
+            }
+        }
+        gotUsers = true;
+    }
+    public void notifyMembers(Notification notification, Tracker tracker) throws Exception {
+        if (notification == null || tracker == null) {
+            throw new Exception("Invalid arguments");
+        }
+        for (String username : users) {
+            User user = tracker.getUserByName(username);
+            if (!user.isMuted(this.id)) {
+                System.out.println("Adding notification to " + user.getId());
+                notification.userid = user.getId();
+                Notification newer = NotificationInDb.add(notification);
+                if (newer != null) {
+                    user.addNotification(notification);
+                }
+                else {
+                    System.out.println("Failed to add notification");
+                }
+            }
+        }
     }
     public boolean removeUser(User user, Tracker tracker) {
             if (ModifyGroup.removeUserFromGroup(id, user.getId())) {
@@ -62,6 +100,9 @@ public class Group {
         if (!users.contains(user.getUsername())) {
             users.add(user.username);
         }
+    }
+    public Event getEvent(int id) {
+        return calendar.getEvent(id);
     }
 
     public int getId() {
