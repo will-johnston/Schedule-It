@@ -202,7 +202,7 @@ public class Server {
                             }
                             //add body data
                             body.append(lines[i] + '\n');
-                            if ((body.length() - 1) == length ) {
+                            if ((body.length() - 2) >= length ) {
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             else {
@@ -217,7 +217,7 @@ public class Server {
                                 String[] keyvalue = lines[i].split(":");
                                 if (keyvalue.length < 2) {
                                     System.out.println("Content-Length is improperly formatted");
-                                    System.out.println("Was: " + lines[i]);
+                                    //System.out.println("Was: " + lines[i]);
                                     return null;
                                 }
                                 try {
@@ -225,7 +225,7 @@ public class Server {
                                 }
                                 catch (Exception e) {
                                     System.out.println("Couldn't parse Content-Length value");
-                                    System.out.println("Was: " + lines[i]);
+                                    //System.out.println("Was: " + lines[i]);
                                     return null;
                                 }
                             }
