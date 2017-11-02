@@ -205,6 +205,14 @@ public class SCalendar {
             }
         }
     }
+    public Event getEvent(int id) {
+        for (YearCalendar years : calendar.values()) {
+            if (years.containsEvent(id)) {
+                return years.getEvent(id);
+            }
+        }
+        return null;
+    }
     class YearCalendar {
         //jan, feb, mar, apri, may, june, july, august, sept, oct, nov, dec
         HashMap<Integer, Event> january;   //1
@@ -365,6 +373,45 @@ public class SCalendar {
             eventCount++;
             System.out.println("Update list with event: " + event.getEventID());
             return list;
+        }
+        public Event getEvent(int id) {
+            if (january != null && january.containsKey(id)) {
+                return january.get(id);
+            }
+            else if (february != null && february.containsKey(id)) {
+                return february.get(id);
+            }
+            else if (march != null && march.containsKey(id)) {
+                return march.get(id);
+            }
+            else if (april != null && april.containsKey(id)) {
+                return april.get(id);
+            }
+            else if (may != null && may.containsKey(id)) {
+                return march.get(id);
+            }
+            else if (june != null && june.containsKey(id)) {
+                return june.get(id);
+            }
+            else if (july != null && july.containsKey(id)) {
+                return july.get(id);
+            }
+            else if (august != null && august.containsKey(id)) {
+                return august.get(id);
+            }
+            else if (september != null && september.containsKey(id)) {
+                return september.get(id);
+            }
+            else if (october != null && october.containsKey(id)) {
+                return october.get(id);
+            }
+            else if (november != null && november.containsKey(id)) {
+                return november.get(id);
+            }
+            else if (december != null && december.containsKey(id)) {
+                return december.get(id);
+            }
+            return null;
         }
         private int resolveMonth(Timestamp timestamp) {
             try {

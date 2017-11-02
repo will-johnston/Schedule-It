@@ -65,7 +65,7 @@ public class NotificationType {
         else if (method.toLowerCase().equals("group")) {
             return 1;
         }
-        else if (method.toLowerCase().equals("")) {
+        else if (method.toLowerCase().equals("event")) {
             return 2;
         }
         else {

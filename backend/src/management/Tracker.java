@@ -105,7 +105,12 @@ public class Tracker {
                 return user;
             }
         }
-        return User.fromDatabase(username);
+        User fromdb = User.fromDatabase(username);
+        if (fromdb != null) {
+            addUser(fromdb);
+            return fromdb;
+        }
+        return null;
     }
     public User getUserById(int id) {
 		if (id == 0) {
