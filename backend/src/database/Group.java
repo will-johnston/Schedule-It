@@ -50,7 +50,6 @@ public class Group {
 
     }
     public boolean removeUser(User user, Tracker tracker) {
-        if (user.inGroup(id, tracker)) {
             if (ModifyGroup.removeUserFromGroup(id, user.getId())) {
                 users.remove(user);
                 return true;
@@ -58,10 +57,6 @@ public class Group {
             else {
                 return false;
             }
-        }
-        else {
-            return false;
-        }
     }
     public void addUser(User user) {
         if (!users.contains(user.getUsername())) {
