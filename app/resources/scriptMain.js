@@ -44,42 +44,20 @@ $(document).ready(function(){
 			//Send message buttons
 			$('[id^="sendMessage_"]').click(function() {
 				var buttonId = this.id.toString();
-				var groupId = buttonId.replace('sendMessage_', '').toString();
+				var groupId = activeGroupID;
 				var textBoxId = 'message_' + groupId;
 				var message = document.getElementById(textBoxId).value; //Message being sent
 				var username; //Username that sent the message
 				document.getElementById(textBoxId).value = '';
 	
-				var data = {};
-				data["cookie"] = cookie;
-		
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
-					function(result) { //success
-						var json = JSON.parse(result);
-						username = json.username;
-					},
-					function(result) { //fail
-						console.log(data);
-						console.log(result);
-						alert("Failed to obtain user account settings");
-				});
-				var a = new Date();
-				var year = a.getFullYear();
-				var month = a.getMonth();
-				var day = a.getDay();
-				var hours = a.getHours();
-				var minutes = a.getMinutes();
-				var seconds = a.getSeconds();
-				var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
-	
 				var myJson = {};
-				myJson["username"] = username;
+				myJson["cookie"] = cookie;
 				myJson["groupID"] = groupId;
-				myJson["time"] = timeStamp;
 				myJson["line"] = message;
 				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
 					function(result) {
 						//Success that message
+						console.log("Message sent.");
 					},
 					function(result) {
 						console.log(myJson);
@@ -803,4 +781,63 @@ $(document).ready(function(){
 					alert("Failed to create event");
 				});
 		});
+
+		//getting messages
+
+var messages = [];
+
+var updateChat = function() {
+	//call endpoint
+	var data = {};
+	data["cookie"] = cookie;
+	data["groupid"] = activeGroupID;
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", data,
+		function(result) { //success
+			console.log("Successfully retrieved chat messages");
+
+			//parse messages
+			var json = JSON.parse(result);
+
+			//if there are no messages in the array they should all be put in there
+			if(messages.lenth == 0) {
+				messages = json["messages"];
+			}
+			else {
+				var newMessages = [];
+				//update newMessages with the new messages
+				//update messages with the new messages
+
+				for(var i = 0; i < newMessages.length; i++) {
+					//update the chat box for the group 
+					var messageBoxHTML = "...";
+					$("#group" + activeGroupID + "Content .chatBox").append(messageBoxHTML);
+				}
+			}
+			
+		},
+		function(result) { //fail
+			alert("Failed to retrieve chat messages");
+		});
+}
+
+//update chat every 3 seconds
+setInterval(updateChat, 3000);
+
+	/*your json output could look somthing like this:
+	{
+	"messages": [
+		{
+		"user": "[user who sent message]",
+		"text": "[message text]",
+		"timestamp": "[time message was sent, hh:mm:ss]"
+		},
+		{
+		"user": "[user who sent message]",
+		"text": "[message text]",
+		"timestamp": "[time message was sent, hh:mm:ss]"
+		}
+	]
+	} */
+
 	});
