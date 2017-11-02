@@ -25,7 +25,8 @@ public class MessageGet implements IAPIRoute {
     * Also updated Tracker
     * */
     @Override
-    public void execute(SSocket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) { 
+/*
         try {
             //Have username, groupID, line
             Messages message = new Messages();
@@ -38,10 +39,12 @@ public class MessageGet implements IAPIRoute {
         catch (Exception e) {
             e.printStackTrace();
         }
+*/
     }
 
     //returns cookie, groupID, line
-    private String[] parseArgs(String message) {
+    /*private String[] parseArgs(String message) {
+
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
@@ -56,5 +59,5 @@ public class MessageGet implements IAPIRoute {
             System.out.println("Caught an exception");
             return null;
         }
-    }
+    }*/
 }
