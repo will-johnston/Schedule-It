@@ -214,12 +214,13 @@ $(document).ready(function(){
 
 				$("#notificationMenu").empty();
 
-				if(result == "") {
+				var json = JSON.parse(result);
+				console.log(json);
+
+				if(json[0] == null) {
 					$("#notificationsBadge").text("0");
 					return;
 				}
-
-				var json = JSON.parse(result);
 
 				$("#notificationsBadge").text(json.length);
 
