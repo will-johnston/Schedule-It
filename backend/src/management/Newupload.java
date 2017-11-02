@@ -43,13 +43,14 @@ public class Newupload {
                 //add to succeeded list
                 System.out.println("Added to succeeded");
                 chunks.add(chnk);
+                received = received + 1;
             }
-            received = received + 1;
         }
         else {
             if (chnk.succeeded) {
                 System.out.println("added to succeeded");
                 chunks.add(chnk);
+                received++;
             }
             else {
                 System.out.println("Added to failed");
@@ -87,6 +88,7 @@ public class Newupload {
             System.out.println("Recieved equals chunkCount but failed isn't empty");
             return true;
         }
+        System.out.println("ChunkCount: " + chunkCount + ", recieved: " + received);
         return false;
     }
     public String getWebPath() {
