@@ -33,7 +33,6 @@ public class MessageGet implements IAPIRoute {
             String groupID = args[0];
             boolean ret = message.getMessage(args);
             Socketeer.send(HTTPMessage.makeResponse("{\"Success\":\"Message sent to database\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
-
             return;
         } 
         catch (Exception e) {
