@@ -272,14 +272,14 @@ public class upload implements IAPIRoute {
         return blob;
     }
     private byte[] resolveUint(byte[] blob) {
-        return null;
-        /*for (int i = 0; i < blob.length; i++) {
-
-        }*/
+        for (int i = 0; i < blob.length; i++) {
+            blob[i] = makeUint(blob[i]);
+        }
+        return blob;
     }
-    private int makeUint(int num) {
+    private byte makeUint(byte num) {
         if (num < 0) {
-            return 256 + num;
+            return (byte)(256 + (int)num);
         }
         else {
             return num;
