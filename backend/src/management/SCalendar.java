@@ -14,6 +14,7 @@ import database.Event;
 public class SCalendar {
     //use a hash table
     HashMap<Integer, YearCalendar> calendar;
+    boolean refreshed = false;
     public SCalendar() {
         calendar = new HashMap<>(2);
     }
@@ -60,75 +61,87 @@ public class SCalendar {
     //doesn't resolve descrepancies in the db
     //returns false if can't add
     public boolean addLocal(Event event) {
-        if (event == null) {
-            System.out.println("Can't addLocal event to year, event is null");
-            return false;
-        }
-        int year = resolveYear(event.getTime());
-        if (year == -1) {
-            System.out.println("Year is -1");
-            return false;
-        }
-        if (calendar.containsKey(year)) {
-            YearCalendar yearCalendar = calendar.get(year);
-            if (yearCalendar == null) {
-                //initialize
-                yearCalendar = new YearCalendar();
-            }
-            if (yearCalendar.add(event)) {
-                calendar.put(year, yearCalendar);
-                System.out.println("Added event with year: " + year);
-                if (yearCalendar.containsEvent(event.getEventID())) {
-                    System.out.println("Contains event after add");
-                }
-                else {
-                    System.out.println("Doesn't contains event after add");
-                }
-                return true;
-            }
-            else {
-                System.out.println("Couldn't add event");
+        try {
+            if (event == null) {
+                System.out.println("Can't addLocal event to year, event is null");
                 return false;
             }
-        }
-        else {
-            YearCalendar yearCalendar = new YearCalendar();
-            if (yearCalendar.add(event)) {
-                //add to global calendar
-                calendar.put(year, yearCalendar);
-                System.out.println("Added event with year: " + year);
-                if (yearCalendar.containsEvent(event.getEventID())) {
-                    System.out.println("Contains event after add");
-                }
-                else {
-                    System.out.println("Doesn't contains event after add");
-                }
-                return true;
-            }
-            else {
-                System.out.println("Couldn't add event with non-contained yearCalendar");
+            int year = resolveYear(event.getTime());
+            if (year == -1) {
+                System.out.println("Year is -1");
                 return false;
             }
+            if (calendar.containsKey(year)) {
+                YearCalendar yearCalendar = calendar.get(year);
+                if (yearCalendar == null) {
+                    //initialize
+                    yearCalendar = new YearCalendar();
+                }
+                if (yearCalendar.add(event)) {
+                    calendar.put(year, yearCalendar);
+                    System.out.println("Added event with year: " + year);
+                    if (yearCalendar.containsEvent(event.getEventID())) {
+                        System.out.println("Contains event after add");
+                    }
+                    else {
+                        System.out.println("Doesn't contains event after add");
+                    }
+                    return true;
+                }
+                else {
+                    System.out.println("Couldn't add event");
+                    return false;
+                }
+            }
+            else {
+                YearCalendar yearCalendar = new YearCalendar();
+                if (yearCalendar.add(event)) {
+                    //add to global calendar
+                    calendar.put(year, yearCalendar);
+                    System.out.println("Added event with year: " + year);
+                    if (yearCalendar.containsEvent(event.getEventID())) {
+                        System.out.println("Contains event after add");
+                    }
+                    else {
+                        System.out.println("Doesn't contains event after add");
+                    }
+                    return true;
+                }
+                else {
+                    System.out.println("Couldn't add event with non-contained yearCalendar");
+                    return false;
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("failed to addLocal");
+            e.printStackTrace();
+            return false;
         }
     }
     //adds an event locally and adds it in the database
     //returns false if failed to add event
     public boolean add(Event event) {
-        if (event == null) {
-            System.out.println("Can't add event to year, event is null");
-            return false;
-        }
-        Event newevent = EventPutter.addEvent(event);
-        if (newevent == null) {
-            return false;
-        }
-        else {
-            if (addLocal(event)) {
-                return true;
-            }
-            else {
+        try {
+            if (event == null) {
+                System.out.println("Can't add event to year, event is null");
                 return false;
             }
+            Event newevent = EventPutter.addEvent(event);
+            if (newevent == null) {
+                return false;
+            } else {
+                if (addLocal(event)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("SCalendar.add failed");
+            e.printStackTrace();
+            return false;
         }
     }
     private int resolveYear(Timestamp time) {
@@ -164,8 +177,24 @@ public class SCalendar {
             return null;
         }
         //get year, then get month
-        refreshEvents(id);
-        if (!calendar.containsKey(year)) {
+        //refreshEvents(id);
+        Integer[] ids = GetFromDb.getEventIds(id);
+        ArrayList<Event> events = new ArrayList<Event>();
+        for (Integer newid : ids) {
+            int value = newid.intValue();
+                Event event = Event.fromDatabase(newid);
+                if (event == null) {
+                    System.out.println("Failed to add missing local event");
+                }
+                else {
+                    events.add(event);
+                }
+        }
+        Event[] arr = new Event[events.size()];
+        events.toArray(arr);
+        return arr;
+
+        /*if (!calendar.containsKey(year)) {
             System.out.println("Doesn't contain year");
             return null;
         }
@@ -180,10 +209,14 @@ public class SCalendar {
         int i = 0;
         for (Event event : monthCalendar.values()) {
             events[i] = event;
+            i++;
         }
-        return events;
+        return events;*/
     }
     private void refreshEvents(int id) {
+        if (refreshed) {
+            return;
+        }
         Integer[] ids = GetFromDb.getEventIds(id);
         for (Integer newid : ids) {
             int value = newid.intValue();
@@ -204,6 +237,7 @@ public class SCalendar {
                 }
             }
         }
+        refreshed = true;
     }
     public Event getEvent(int id) {
         for (YearCalendar years : calendar.values()) {
@@ -368,9 +402,11 @@ public class SCalendar {
                 System.out.println("Event already exists");
                 return null;
             }
+            System.out.println(String.format("List length: %d", list.size()));
             //put in list
             list.put(event.getEventID(), event);
             eventCount++;
+            System.out.println(String.format("List length: %d", list.size()));
             System.out.println("Update list with event: " + event.getEventID());
             return list;
         }

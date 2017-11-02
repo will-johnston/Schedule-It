@@ -117,6 +117,7 @@ public class InvitationHandler implements IHandler {
                 //Get Group that being invited to
                 Event event = getEvent(notification);
                 if (event == null) {
+                    System.out.println("Null event");
                     return null;
                 }
                 try {
@@ -127,15 +128,17 @@ public class InvitationHandler implements IHandler {
                     return jobj;
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     return null;
                 }
             }
-            catch (Exception e) {
-                e.printStackTrace();
+            catch (Exception etwo) {
+                etwo.printStackTrace();
                 return null;
             }
         }
         else {
+            System.out.println("Invalid type");
             return null;
         }
     }
@@ -186,9 +189,14 @@ public class InvitationHandler implements IHandler {
         }
         Group group = tracker.getGroupById(groupid);
         if (group == null) {
+            System.out.println("Null group");
             return null;
         }
-        return group.getEvent(eventid);
+        Event event = group.getEvent(eventid);
+        if (event == null) {
+            event = GetFromDb.getEvent(eventid);
+        }
+        return event;
     }
     public JsonObject makeFriendInvite(Notification notification, User user) {
         JsonObject jobj = new JsonObject();
