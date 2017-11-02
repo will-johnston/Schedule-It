@@ -97,7 +97,21 @@ public class Images {
             FileOutputStream stream = new FileOutputStream(upload.path);
             byte[] data = upload.getBlob();
             try {
-                stream.write(data);
+                int remaining = data.length;
+                int location = 0;
+                while (remaining > 0) {
+                    if (remaining < 1000)  {
+                        stream.write(data, location, remaining);
+                        location += remaining;
+                        remaining = remaining - remaining;
+                    }
+                    else {
+                        stream.write(data, location, 1000);
+                        remaining = remaining - 1000;
+                        location += 1000;
+                    }
+                    stream.flush();
+                }
                 stream.flush();
                 stream.close();
                 return true;
