@@ -157,6 +157,7 @@ public class InvitationHandler implements IHandler {
             System.out.println("Invalid user_id format in params");
             throw new Exception("Invalid user_id format in params");
         }
+        System.out.println("Userid in notification is " + requester + ", with params " + notification.getParams());
         User user = tracker.getUserById(requester);
         if (user == null) {
             //try getting from database
