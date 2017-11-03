@@ -12,12 +12,14 @@ public class Tracker {
     volatile int userCount;
     volatile int groupCount;
     int timeout;
+    User Clarence;
     public Tracker() {
         users = new HashMap<>(10);
 		groups = new HashMap<>(10);
         userCount = 0;
         groupCount = 0;
         timeout = 60 * 30;      //30 Minutes
+        Clarence = User.fromDatabase(46);
         //timeout = 30;           //testy
     }
     public Boolean isLoggedIn(int cookie) {
@@ -46,6 +48,9 @@ public class Tracker {
         users.put(cookie, user);
         userCount++;
         return cookie;
+    }
+    public User getClarence() {
+        return Clarence;
     }
     private int makeCookie() {
         int cookie = 0;
@@ -100,7 +105,12 @@ public class Tracker {
                 return user;
             }
         }
-        return User.fromDatabase(username);
+        User fromdb = User.fromDatabase(username);
+        if (fromdb != null) {
+            addUser(fromdb);
+            return fromdb;
+        }
+        return null;
     }
     public User getUserById(int id) {
 		if (id == 0) {

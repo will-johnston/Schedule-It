@@ -38,11 +38,12 @@ public class Main {
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
-	          router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
-            router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
+	    router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
+	    router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
+	    router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
-            //router.add("/timeinput/add", new TimeInputAdd(tracker));
+
 	    return router;
         }
         catch (Exception e) {
@@ -54,7 +55,7 @@ public class Main {
     }
     public static void main(String[] args) throws Exception {
 	// write your code here
-        Server server = new Server(9191,9292);
+        Server server = new Server(11011,12012);
         Router router = initRouter();
         Tracker tracker = new Tracker();
         if (router == null) {
