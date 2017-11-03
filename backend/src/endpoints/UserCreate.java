@@ -34,6 +34,7 @@ public class UserCreate implements IAPIRoute {
         System.out.println("Successfully added user, returning cookie");
         String response = String.format("{\"cookie\": \"%d\"}\n", cookie);
         //create the Me group
+        System.out.println("Creating group Me with creatorID: " + user.getId());
         int groupid = CreateGroup.createGroup("Me", user.getId());
         if (groupid > 0) {
             //add to tracker and all that jazz
