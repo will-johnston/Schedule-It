@@ -89,18 +89,20 @@ $(document).ready(function(){
 	};
 
 	//Attemp to create a me tab
-	var data = {};
-	data["cookie"] = cookie;
-	data["groupname"] = "Me";
-	data = JSON.stringify(data);
+	if($("#vPillsContent").children().length == 0) {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupname"] = "Me";
+		data = JSON.stringify(data);
 
-	accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
-		function(result) { //success
-			console.log("Successfully created me group");
-		},
-		function(result) { //fail
-			console.log("Failed to created me group");
-		});
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+			function(result) { //success
+				console.log("Successfully created me group");
+			},
+			function(result) { //fail
+				console.log("Failed to created me group");
+			});
+	}
 
 
 	//NOTIFICATIONS
@@ -191,27 +193,6 @@ $(document).ready(function(){
 				},
 				function(result) { //fail
 					alert("Failed to decline group invite");
-				});
-		});
-
-		$(".").click(function(event) {
-			var data = {};
-			data["cookie"] = cookie;
-			data["notification"] = {};
-			data["notification"]["id"] = $(event.target).parent().attr("notifID");
-			data["notification"]["type"] = "invite.group";
-			data["response"] = {};
-			data["response"]["accept"] = "true";
-			data = JSON.stringify(data);
-
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
-				function(result) { //success
-					console.log("Successfully accepted group invite");
-					updateGroups();
-					updateNotifications();
-				},
-				function(result) { //fail
-					alert("Failed to accept group invite");
 				});
 		});
 	};
@@ -487,9 +468,9 @@ $(document).ready(function(){
 										<div id="` + "chatbox_" + realID + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 											 
 										<form name="message" action="">
-											<input name="usermsg" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
 											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-											<button type="button" class="btn btn-secondary" id="` + "sendBot_" + realID + `"  style="width: 6em">Chatbot</button>
+											<button type="button" class="btn btn-secondary chatbotButton" id="` + "sendBot_" + realID + `"  style="width: 6em">Chatbot</button>
 										</form>
 									</div>
 								</div>
@@ -574,6 +555,44 @@ $(document).ready(function(){
 
 					$("#groupSettingsModalName").val(parent.attr("groupName"));
 					//info & pic...
+				});
+
+				$(".chatbotButton").off();
+				$(".chatbotButton").click(function() {
+					//get user ID
+					var data = {};
+					data["cookie"] = cookie;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getId", data,
+						function(result) { //success
+							var userID = parseInt(result);
+							console.log(userID);
+
+							var messageSend = $(id + " .chatbotTextField").val();
+
+							console.log(messageSend);
+
+							var data = {};
+							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
+							data = JSON.stringify(data);
+
+							accessServer("POST", "http://willjohnston.pythonanywhere.com/api/chatterbot", data,
+								function(result) { //success
+									console.log("Successfully sent message to chat bot");
+									var json = JSON.parse(result);
+
+									var messageRecieved = json["text"];
+									var html = "<p>Chatbot: " + messageRecieved + "</p>";
+									$("#group" + activeGroupID + "Content input").append(html);
+								},
+								function(result) { //fail
+									alert("Failed to send message to chat bot");
+								});
+						},
+						function(result) { //fail
+							alert("Failed to get user ID");
+						});
 				});
 			},
 			function(result) { //fail
