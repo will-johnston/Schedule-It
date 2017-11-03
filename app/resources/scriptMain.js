@@ -566,18 +566,19 @@ $(document).ready(function(){
 
 					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getId", data,
 						function(result) { //success
-							var userID = parseInt(result);
-							console.log(userID);
+							var userID = result.substring(1);
+							userID = userID.substring(0, userID.length - 1);
+							userID = parseInt(userID);
 
-							var messageSend = $(id + " .chatbotTextField").val();
-
-							console.log(messageSend);
+							var messageSend = $("#group" + activeGroupID + "Content .chatbotTextField").val();
 
 							var data = {};
 							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
 							data = JSON.stringify(data);
 
-							accessServer("POST", "http://willjohnston.pythonanywhere.com/api/chatterbot", data,
+							console.log(data);
+
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
@@ -876,7 +877,7 @@ $(document).ready(function(){
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
-				console.log("Successfully retrieved chat messages");
+				//console.log("Successfully retrieved chat messages");
 
 				//parse messages
 				var json = JSON.parse(result);
@@ -901,7 +902,7 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				//alert("Failed to retrieve chat messages");
-				Console.log("Failed to retrieve chat messages");
+				console.log("Failed to retrieve chat messages");
 			});
 	}
 
