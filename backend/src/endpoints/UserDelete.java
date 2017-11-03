@@ -36,6 +36,12 @@ public class UserDelete implements IAPIRoute {
             Connection connection = null;  //used to connect to database
             Statement statement = null;  //statement to enter command
             ResultSet result = null;  //output after query
+
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
             try {
                 //delete friends
                 //userID_1 and userID_2
