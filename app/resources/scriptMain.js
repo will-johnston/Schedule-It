@@ -818,7 +818,8 @@ var updateChat = function() {
 			
 		},
 		function(result) { //fail
-			alert("Failed to retrieve chat messages");
+			//alert("Failed to retrieve chat messages");
+			console.log("Failed to retrieve chat messages");
 		});
 }
 
