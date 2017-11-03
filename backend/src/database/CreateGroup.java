@@ -34,6 +34,7 @@ public class CreateGroup {
                 //we have a group already
                 System.out.println("ERROR: Already a group with same name and same creator");
                 groupID = -1;
+                return -1;
             }
 
             //create group
