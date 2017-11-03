@@ -465,7 +465,7 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div id="` + "chatbox_" + realID + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+										<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 											 
 										<form name="message" action="">
 											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
@@ -865,14 +865,14 @@ $(document).ready(function(){
 			});
 	});
     
-    //getting messages
+   //getting messages
 	var messages = [];
 
-	/*var updateChat = function() {
+	var updateChat = function() {
 		//call endpoint
 		var data = {};
-		data["cookie"] = json.cookie;
-		data["groupid"] = activeGroupID;
+		data["cookie"] = cookie;
+		data["groupID"] = activeGroupID;
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
@@ -882,7 +882,7 @@ $(document).ready(function(){
 				var json = JSON.parse(result);
 
 				//if there are no messages in the array they should all be put in there
-				if(messages.lenth == 0) {
+				if(json.lenth == 0) {
 					messages = json["chat"];
 				}
 				else {
@@ -890,11 +890,11 @@ $(document).ready(function(){
 					//update newMessages with the new messages
 					//update messages with the new messages
 
-					for(var i = 0; i < newMessages.length; i++) {
+					//console.log($("#group" + activeGroupID + "Content .chatBox"));
+					$("#chatbox_" + activeGroupID).empty();
+					for(var i = 0; i < json.length; i++) {
 						//update the chat box for the group 
-						$("#chatbox_" + activeGroupID).empty();
-						var messageBoxHTML = "<p>" + messages[i] + "</p>";
-						$("#chatbox_" + activeGroupID).append(messageBoxHTML);
+						$("#group" + activeGroupID + "Content .chatBox").append("<p>" + json[i][1] + "[" + json[i][2] + "]" + ": " + json[i][0] + "\n" + "</p>");
 					}
 				}
 				
@@ -906,6 +906,8 @@ $(document).ready(function(){
 	}
 
 	//update chat every 3 seconds
-	setInterval(updateChat, 3000);*/
+	setInterval(updateChat, 3000);
+
 });
 
+	
