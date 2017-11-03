@@ -790,10 +790,10 @@ $(document).ready(function(){
 	/*var updateChat = function() {
 		//call endpoint
 		var data = {};
-		data["cookie"] = cookie;
+		data["cookie"] = json.cookie;
 		data["groupid"] = activeGroupID;
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
 				console.log("Successfully retrieved chat messages");
 
@@ -819,7 +819,8 @@ $(document).ready(function(){
 				
 			},
 			function(result) { //fail
-				alert("Failed to retrieve chat messages");
+				//alert("Failed to retrieve chat messages");
+				Console.log("Failed to retrieve chat messages");
 			});
 	}
 
