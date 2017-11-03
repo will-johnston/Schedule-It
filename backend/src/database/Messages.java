@@ -74,13 +74,13 @@ public class Messages {
 		return ret;
     }
 
-    public static ArrayList<String> getMessage(int groupID) {
+    public static ArrayList<Object[]> getMessage(int groupID) {
 		MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
 
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result1 = null;
-		ArrayList<String> chat = null;
+		ArrayList<Object[]> chat = null;
 		try {
 
 			//Call DataSourceFactory
@@ -95,14 +95,16 @@ public class Messages {
 			connection = ds.getConnection();
 
 			//Form query
-			String query = "select line from chat_line where groupID=" + groupID +  " order by time asc";
+			String query = "select line, time, username from chat_line where groupID=" + groupID +  " order by time asc";
 			//String sqlInsert = String.format("INSERT INTO chat_line (username, groupID, time, line) VALUES('%s',%d,NULL,%s)", username, groupID, line);
 			statement = connection.createStatement();
 			result1 = statement.executeQuery(query);
-			chat = new ArrayList<String>();
+			chat = new ArrayList<Object[]>();
 			while (result1.next()) {
 				String line = result1.getString(1);
-				chat.add(line);
+				String time = result1.getString(2);
+				String username = result1.getString(3);
+				chat.add(new Object[] {line, username, time});
 			}
 			//ret = (String[]) chat.toArray();
 

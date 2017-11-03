@@ -60,8 +60,8 @@ public class MessageGet implements IAPIRoute {
 
 
             Messages message = new Messages();
-            ArrayList<String> chat = message.getMessage(groupID);
-
+            ArrayList<Object[]> chat = message.getMessage(groupID);
+            
             if (chat == null) {
                 String response = "{\"error\":\"Couldn't get chat from database\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
