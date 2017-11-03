@@ -39,7 +39,7 @@ public class UserCreate implements IAPIRoute {
         if (results != null) {
             try {
                 System.out.println("Setting id");
-                user.setId(Integer.parseInt(args[0]));
+                user.setId(Integer.parseInt(results[0]));
                 int groupid = CreateGroup.createGroup("Me", user.getId());
                 if (groupid > 0) {
                     //add to tracker and all that jazz
