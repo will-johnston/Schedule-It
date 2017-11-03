@@ -52,6 +52,14 @@ public class Tracker {
     public User getClarence() {
         return Clarence;
     }
+    public boolean removeGroup(int id) {
+        if (groups.remove(id) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     private int makeCookie() {
         int cookie = 0;
         do {
