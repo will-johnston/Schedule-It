@@ -19,14 +19,14 @@ $(document).ready(function(){
 			var currPill = event.target.getAttribute("href");
 			$(currPill + " .nav a:first").tab("show");
 
+			//update the current active group id
+			activeGroupID = $(currPill).attr("groupID");
+
 			//update the calendar
 			var date = new Date();
 			currentYear = date.getFullYear();
 			currentMonth = date.getMonth();
-			updateCalendar(currentYear, currentMonth, currPill.substring(1));
-
-			//update the current active group id
-			activeGroupRealID = $(currPill).attr("groupID");
+			updateCalendar(currentYear, currentMonth, activeGroupID);
 		});
 
 		//Chevron button to hide group information
@@ -67,6 +67,31 @@ $(document).ready(function(){
 						alert("Failed to send message");				}
 				);
 			});
+			var a = new Date();
+			var year = a.getFullYear();
+			var month = a.getMonth();
+			var day = a.getDay();
+			var hours = a.getHours();
+			var minutes = a.getMinutes();
+			var seconds = a.getSeconds();
+			var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
+
+			var myJson = {};
+			myJson["username"] = username;
+			myJson["groupID"] = groupId;
+			myJson["time"] = timeStamp;
+			myJson["line"] = message;
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+				function(result) {
+					//Success that message
+				},
+				function(result) {
+					console.log(myJson);
+					console.log(result);
+					//alert("Failed to send message");
+				}
+			);
+		});
 	};
 
 	assignFunctionality();
@@ -127,8 +152,6 @@ $(document).ready(function(){
 			data["response"] = {};
 			data["response"]["accept"] = "false";
 			data = JSON.stringify(data);
-
-			console.log(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
 				function(result) { //success
@@ -195,7 +218,6 @@ $(document).ready(function(){
 				$("#notificationMenu").empty();
 
 				var json = JSON.parse(result);
-				console.log(json);
 
 				if(json[0] == null) {
 					$("#notificationsBadge").text("0");
@@ -265,7 +287,7 @@ $(document).ready(function(){
 				}
 			},
 			function(result) { //fail
-				alert("Failed to retrived notifications");
+				//alert("Failed to retrived notifications");
 			});
 	};
 
@@ -500,7 +522,7 @@ $(document).ready(function(){
 				var date = new Date();
 				currentYear = date.getFullYear();
 				currentMonth = date.getMonth();
-				var firstTabID = $("#vPillsContent .tab-pane").first().attr("id");
+				var firstTabID = $("#vPillsContent .tab-pane").first().attr("groupID");
 				updateCalendar(currentYear, currentMonth, firstTabID);
 
 				//set active group ID to first group
@@ -773,13 +795,15 @@ $(document).ready(function(){
 		data["name"] = name;
 		data["description"] = info;
 		data["type"] = "group.event";
-		data["date"] = date;
+		data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
 		data["groupid"] = activeGroupID;
 		data = JSON.stringify(data);
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/add", data,
 			function(result) { //success
 				console.log("Successfully created event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#createEventModal").modal("hide");
 			},
 			function(result) { //fail
 				alert("Failed to create event");
