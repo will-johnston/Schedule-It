@@ -43,35 +43,45 @@ public class UserDelete implements IAPIRoute {
                 System.out.println(query);
                 statement.execute(query);
             }
-            catch (Exception x) {}
+            catch (Exception x) {
+                x.printStackTrace();
+            }
             try {
                 //delete groupuser
                 String query = "DELETE from group_user_junction WHERE userID=" + id + ";";
                 System.out.println(query);
                 statement.execute(query);
             }
-            catch (Exception x) {}
+            catch (Exception x) {
+                x.printStackTrace();
+            }
             try {
                 //delete groups
                 String query = "DELETE from groups WHERE creatorid=" + id + ";";
                 System.out.println(query);
                 statement.execute(query);
             }
-            catch (Exception x) {}
+            catch (Exception x) {
+                x.printStackTrace();
+            }
             try {
                 //delete cb
                 String query = "DELETE from group_user_junction WHERE userID=" + id + ";";
                 System.out.println(query);
                 statement.execute(query);
             }
-            catch (Exception x) {}
+            catch (Exception x) {
+                x.printStackTrace();
+            }
             try {
                 //delete users
                 String query = "DELETE from users WHERE id=" + id + ";";
                 System.out.println(query);
                 statement.execute(query);
             }
-            catch (Exception x) {}
+            catch (Exception x) {
+                x.printStackTrace();
+            }
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
