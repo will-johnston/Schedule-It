@@ -193,6 +193,27 @@ $(document).ready(function(){
 					alert("Failed to decline group invite");
 				});
 		});
+
+		$(".").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "invite.group";
+			data["response"] = {};
+			data["response"]["accept"] = "true";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully accepted group invite");
+					updateGroups();
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to accept group invite");
+				});
+		});
 	};
 
 	var updateNotifications = function() {
@@ -264,6 +285,32 @@ $(document).ready(function(){
 									<div class="float-right" notifID="` + id + `">
 										<button type="button" class="btn btn-primary btn-sm groupInviteAcceptButton">Accept</button>
 										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "invite.event") {
+						var id = notification["id"];
+						var name = notification["name"];
+
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Event added
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">An event has been created: ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm groupEventGoingButton">Going</button>
+										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
 									</div>
 								</div>
 							</div>
