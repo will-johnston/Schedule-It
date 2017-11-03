@@ -33,6 +33,36 @@ public class UserCreate implements IAPIRoute {
         int cookie = tracker.login(user);
         System.out.println("Successfully added user, returning cookie");
         String response = String.format("{\"cookie\": \"%d\"}\n", cookie);
+        //create the Me group
+        System.out.println("Creating group Me with creatorID: " + user.getId());
+        String[] results = GetFromDb.getUserFromName(args[4]);
+        if (results != null) {
+            try {
+                System.out.println("Setting id");
+                user.setId(Integer.parseInt(results[0]));
+                int groupid = CreateGroup.createGroup("Me", user.getId());
+                if (groupid > 0) {
+                    //add to tracker and all that jazz
+                    Group group = Group.fromDatabase(tracker, groupid);
+                    if (group != null) {
+                        user.addToGroup(group);
+                        tracker.updateUser(cookie, user);
+                        //Add clarence to group
+                        User clarence = tracker.getClarence();
+                        group.addUser(clarence);
+                        clarence.addToGroup(group);
+                    }
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Failed to get id");
+                e.printStackTrace();
+            }
+
+        }
+        else {
+            System.out.println("Couldn't get user from db after putting");
+        }
 		Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
 	}
 	else {
