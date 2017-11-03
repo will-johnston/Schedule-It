@@ -44,7 +44,7 @@ public class Main {
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
             router.add("/test/user/delete", new UserDelete());
-
+	    router.add("/user/getId", new UserGetId(tracker));
 	    return router;
         }
         catch (Exception e) {
