@@ -782,46 +782,49 @@ $(document).ready(function(){
 			function(result) { //fail
 				alert("Failed to create event");
 			});
+	});
     
     //getting messages
-var messages = [];
+	var messages = [];
 
-var updateChat = function() {
-	//call endpoint
-	var data = {};
-	data["cookie"] = cookie;
-	data["groupid"] = activeGroupID;
+	var updateChat = function() {
+		//call endpoint
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
 
-	accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", data,
-		function(result) { //success
-			console.log("Successfully retrieved chat messages");
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", data,
+			function(result) { //success
+				console.log("Successfully retrieved chat messages");
 
-			//parse messages
-			var json = JSON.parse(result);
+				//parse messages
+				var json = JSON.parse(result);
 
-			//if there are no messages in the array they should all be put in there
-			if(messages.lenth == 0) {
-				messages = json["chat"];
-			}
-			else {
-				var newMessages = [];
-				//update newMessages with the new messages
-				//update messages with the new messages
-
-				for(var i = 0; i < newMessages.length; i++) {
-					//update the chat box for the group 
-					$("#chatbox_" + activeGroupID).empty();
-					var messageBoxHTML = "<p>" + messages[i] + "</p>";
-					$("#chatbox_" + activeGroupID).append(messageBoxHTML);
+				//if there are no messages in the array they should all be put in there
+				if(messages.lenth == 0) {
+					messages = json["chat"];
 				}
-			}
-			
-		},
-		function(result) { //fail
-			alert("Failed to retrieve chat messages");
-		});
-}
+				else {
+					var newMessages = [];
+					//update newMessages with the new messages
+					//update messages with the new messages
 
-//update chat every 3 seconds
-setInterval(updateChat, 3000);
-	});
+					for(var i = 0; i < newMessages.length; i++) {
+						//update the chat box for the group 
+						$("#chatbox_" + activeGroupID).empty();
+						var messageBoxHTML = "<p>" + messages[i] + "</p>";
+						$("#chatbox_" + activeGroupID).append(messageBoxHTML);
+					}
+				}
+				
+			},
+			function(result) { //fail
+				alert("Failed to retrieve chat messages");
+			});
+	}
+
+	//update chat every 3 seconds
+	setInterval(updateChat, 3000);
+});
+
+
