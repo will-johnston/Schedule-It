@@ -41,8 +41,7 @@ $(document).ready(function(){
 			}
 		});
 
-		//Send message buttons
-			$('[id^="sendMessage_"]').click(function() {
+		$('[id^="sendMessage_"]').click(function() {
 				var buttonId = this.id.toString();
 				var groupId = activeGroupID;
 				var textBoxId = 'message_' + groupId;
@@ -67,31 +66,6 @@ $(document).ready(function(){
 						alert("Failed to send message");				}
 				);
 			});
-			var a = new Date();
-			var year = a.getFullYear();
-			var month = a.getMonth();
-			var day = a.getDay();
-			var hours = a.getHours();
-			var minutes = a.getMinutes();
-			var seconds = a.getSeconds();
-			var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
-
-			var myJson = {};
-			myJson["username"] = username;
-			myJson["groupID"] = groupId;
-			myJson["time"] = timeStamp;
-			myJson["line"] = message;
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
-				function(result) {
-					//Success that message
-				},
-				function(result) {
-					console.log(myJson);
-					console.log(result);
-					//alert("Failed to send message");
-				}
-			);
-		});
 	};
 
 	assignFunctionality();
