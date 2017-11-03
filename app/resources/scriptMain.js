@@ -42,51 +42,31 @@ $(document).ready(function(){
 		});
 
 		//Send message buttons
-		$('[id^="sendMessage_"]').click(function() {
-			var buttonId = this.id.toString();
-			var groupId = buttonId.replace('sendMessage_', '').toString();
-			var textBoxId = 'message_' + groupId;
-			var message = document.getElementById(textBoxId).value; //Message being sent
-			var username; //Username that sent the message
-			document.getElementById(textBoxId).value = '';
-
-			var data = {};
-			data["cookie"] = cookie;
+			$('[id^="sendMessage_"]').click(function() {
+				var buttonId = this.id.toString();
+				var groupId = activeGroupID;
+				var textBoxId = 'message_' + groupId;
+				console.log("This is the id: " + groupId);
+				console.log("This is the button id: " + buttonId);
+				var message = document.getElementById(textBoxId).value; //Message being sent
+				var username; //Username that sent the message
+				document.getElementById(textBoxId).value = '';
 	
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", JSON.stringify(data),
-				function(result) { //success
-					var json = JSON.parse(result);
-					username = json.username;
-				},
-				function(result) { //fail
-					console.log(data);
-					console.log(result);
-					alert("Failed to obtain user account settings");
+				var myJson = {};
+				myJson["cookie"] = cookie;
+				myJson["groupID"] = groupId;
+				myJson["line"] = message;
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
+					function(result) {
+						//Success that message
+						console.log("Message sent.");
+					},
+					function(result) {
+						console.log(myJson);
+						console.log(result);
+						alert("Failed to send message");				}
+				);
 			});
-			var a = new Date();
-			var year = a.getFullYear();
-			var month = a.getMonth();
-			var day = a.getDay();
-			var hours = a.getHours();
-			var minutes = a.getMinutes();
-			var seconds = a.getSeconds();
-			var timeStamp = year + ":" + month + ":" + day + " " + hours + ":" + minutes + ":" + seconds; //Timestamp for message
-
-			var myJson = {};
-			myJson["username"] = username;
-			myJson["groupID"] = groupId;
-			myJson["time"] = timeStamp;
-			myJson["line"] = message;
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat", JSON.stringify(myJson),
-				function(result) {
-					//Success that message
-				},
-				function(result) {
-					console.log(myJson);
-					console.log(result);
-					alert("Failed to send message");				}
-			);
-		});
 	};
 
 	assignFunctionality();
@@ -446,12 +426,12 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div id="` + "chatbox_" + id + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+										<div id="` + "chatbox_" + realID + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 											 
 										<form name="message" action="">
-											<input name="usermsg" type="text" id="` + "message_" +  id + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
-											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + id + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-											<button type="button" class="btn btn-secondary" id="` + id + "_sendBot" + `"  style="width: 6em">Chatbot</button>
+											<input name="usermsg" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
+											<button type="button" class="btn btn-secondary" id="` + "sendBot_" + realID + `"  style="width: 6em">Chatbot</button>
 										</form>
 									</div>
 								</div>
@@ -804,5 +784,46 @@ $(document).ready(function(){
 			function(result) { //fail
 				alert("Failed to create event");
 			});
+    
+    //getting messages
+var messages = [];
+
+var updateChat = function() {
+	//call endpoint
+	var data = {};
+	data["cookie"] = cookie;
+	data["groupid"] = activeGroupID;
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", data,
+		function(result) { //success
+			console.log("Successfully retrieved chat messages");
+
+			//parse messages
+			var json = JSON.parse(result);
+
+			//if there are no messages in the array they should all be put in there
+			if(messages.lenth == 0) {
+				messages = json["chat"];
+			}
+			else {
+				var newMessages = [];
+				//update newMessages with the new messages
+				//update messages with the new messages
+
+				for(var i = 0; i < newMessages.length; i++) {
+					//update the chat box for the group 
+					$("#chatbox_" + activeGroupID).empty();
+					var messageBoxHTML = "<p>" + messages[i] + "</p>";
+					$("#chatbox_" + activeGroupID).append(messageBoxHTML);
+				}
+			}
+			
+		},
+		function(result) { //fail
+			alert("Failed to retrieve chat messages");
+		});
+}
+
+//update chat every 3 seconds
+setInterval(updateChat, 3000);
 	});
-});
