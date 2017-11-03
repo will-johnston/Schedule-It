@@ -122,6 +122,7 @@ public class InvitationHandler implements IHandler {
                 }
                 try {
                     JsonObject jobj = new JsonObject();
+                    jobj.addProperty("type", "invite.event");
                     jobj.addProperty("name", event.getEvent_name());
                     jobj.addProperty("time", event.getTime().toString());
                     jobj.addProperty("id", event.getEventID());
