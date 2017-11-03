@@ -51,6 +51,7 @@ public class GroupCreate implements IAPIRoute {
                 tracker.updateUser(cookie, owner);
                 User clarence = tracker.getClarence();
                 clarence.addToGroup(group);
+                group.addUser(clarence);
                 String message = String.format("{\"groupid\":\"%d\"}", groupid);
                 Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
                 return;
