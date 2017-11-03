@@ -40,30 +40,35 @@ public class UserDelete implements IAPIRoute {
                 //delete friends
                 //userID_1 and userID_2
                 String query = "DELETE from friends WHERE userID_1=" + id + " OR userID_2=" + id + ";";
+                System.out.println(query);
                 statement.execute(query);
             }
             catch (Exception x) {}
             try {
                 //delete groupuser
                 String query = "DELETE from group_user_junction WHERE userID=" + id + ";";
+                System.out.println(query);
                 statement.execute(query);
             }
             catch (Exception x) {}
             try {
                 //delete groups
                 String query = "DELETE from groups WHERE creatorid=" + id + ";";
+                System.out.println(query);
                 statement.execute(query);
             }
             catch (Exception x) {}
             try {
                 //delete cb
                 String query = "DELETE from group_user_junction WHERE userID=" + id + ";";
+                System.out.println(query);
                 statement.execute(query);
             }
             catch (Exception x) {}
             try {
                 //delete users
                 String query = "DELETE from users WHERE id=" + id + ";";
+                System.out.println(query);
                 statement.execute(query);
             }
             catch (Exception x) {}
