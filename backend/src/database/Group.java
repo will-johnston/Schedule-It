@@ -96,6 +96,9 @@ public class Group {
                 return false;
             }
     }
+    public boolean removeUser(User user) {
+        return users.remove(user);
+    }
     public void addUser(User user) {
         if (!users.contains(user.getUsername())) {
             users.add(user.username);

@@ -3,6 +3,7 @@ package endpoints;
 import server.*;
 import management.Tracker;
 import database.User;
+import database.Group;
 import com.google.gson.*;
 import java.net.Socket;
 
@@ -37,9 +38,26 @@ public class GroupLeave implements IAPIRoute {
         }
         else {
             //send false
-            String response = "{\"error\":\"Failed to remove from group\"}\n";
-            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+            //check if user is creator of group
+            Group group = user.getGroupById(args[1]);
+            /*This is a temporary fix for deleting a group*/
+            if (group != null) {
+                if (group.removeUser(user)) {
+                    tracker.removeGroup(group.getId());
+                    Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                    return;
+                }
+                else {
+                    String response = "{\"error\":\"Failed to remove from group\"}\n";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
+            }
+            else {
+                String response = "{\"error\":\"User not a part of group\"}\n";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
     }
     /*
