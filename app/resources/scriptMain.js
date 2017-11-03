@@ -88,6 +88,21 @@ $(document).ready(function(){
 		xhr.send(data);
 	};
 
+	//Attemp to create a me tab
+	var data = {};
+	data["cookie"] = cookie;
+	data["groupname"] = "Me";
+	data = JSON.stringify(data);
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+		function(result) { //success
+			console.log("Successfully created me group");
+		},
+		function(result) { //fail
+			console.log("Failed to created me group");
+		});
+
+
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
