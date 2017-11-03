@@ -6,6 +6,23 @@ var assignCalendarFunctionality;
 var updateCalendar;
 
 $(document).ready(function(){
+	var accessServer = function(method, url, data, onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				onSuccess(xhr.response);
+			}
+			else {
+				console.log("FAILED TO ACCESS SERVER");
+				console.log("DATA: " + data);
+				console.log("RESULT: " + xhr.response);
+				onFail(xhr.response);
+			}
+		};
+
+		xhr.send(data);
+	};
 
 	var months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -20,7 +37,7 @@ $(document).ready(function(){
 				currentMonth = 11;
 			}
 
-			var groupID = $(event.target).closest("button").parent().parent().parent().parent().attr("id");
+			var groupID = $(event.target).closest("button").parent().parent().parent().parent().attr("groupID");
 			updateCalendar(currentYear, currentMonth, groupID);
 		});
 
@@ -30,7 +47,7 @@ $(document).ready(function(){
 				currentMonth = 0;
 			}
 
-			var groupID = $(event.target).closest("button").parent().parent().parent().parent().attr("id");
+			var groupID = $(event.target).closest("button").parent().parent().parent().parent().attr("groupID");
 			updateCalendar(currentYear, currentMonth, groupID);
 		});
 
@@ -39,7 +56,7 @@ $(document).ready(function(){
 			currentYear = date.getFullYear();
 			currentMonth = date.getMonth();
 
-			var groupID = $(event.target).parent().parent().parent().parent().attr("id");
+			var groupID = $(event.target).parent().parent().parent().parent().attr("groupID");
 			updateCalendar(currentYear, currentMonth, groupID);
 		});
 	}
@@ -48,7 +65,7 @@ $(document).ready(function(){
 
 	updateCalendar = function(year, month, groupID) {
 		//update the calendar month heading
-		$("#" + groupID + " .cal-month-heading h3").text(months[month] + " " + year);
+		$("#group" + groupID + "Content .cal-month-heading h3").text(months[month] + " " + year);
 
 		//update the days of the month
 		var startDay = new Date(year, month, 1).getDay();
@@ -62,16 +79,18 @@ $(document).ready(function(){
 			var prevMonthIndex = d.getDate();
 
 			for(var i = lastDayOfPrevMonth; i >= 0; i--) {
-				var cell = $("#" + groupID + " .cal")[0].rows[1].cells[i];
+				var cell = $("#group" + groupID + "Content .cal")[0].rows[1].cells[i];
 				cell.innerHTML = prevMonthIndex--;
 				cell.classList.add("text-muted");
+				cell.style.backgroundColor = "";
 			}
 		}
 
 		for(var i = 1; i < endDate + 1 && row < 6; i++) {
-			var cell = $("#" + groupID + " .cal")[0].rows[row].cells[col];
+			var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
 			cell.innerHTML = i;
 			cell.classList.remove("text-muted");
+			cell.style.backgroundColor = "";
 
 			if(++col == 7) {
 				row++;
@@ -83,11 +102,54 @@ $(document).ready(function(){
 			var index = 1;
 
 			for(var i = col; i < 7; i++) {
-				var cell = $("#" + groupID + " .cal")[0].rows[5].cells[col++];
+				var cell = $("#group" + groupID + "Content .cal")[0].rows[5].cells[col++];
 				cell.innerHTML = index++;
 				cell.classList.add("text-muted");
+				cell.style.backgroundColor = "";
 			}
 		}
 
+		var data = {}
+		data["cookie"] = document.cookie.split("=")[1];
+		data["month"] = month + 1;
+		data["year"] = year;
+		data["groupid"] = groupID;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/get", data,
+			function(result) { //success
+				console.log("Successfully retrieved events");
+
+				var json = JSON.parse(result);
+
+				//endpoint needs to return an array of events but it's fine for now
+				if(Object.keys(json).length == 0) {
+					return;
+				}
+
+				for(var i = 0; i < 1; i++) {
+					var event = json["event"];
+
+					//temporary fix for event bug
+					var eventMonthTemp = parseInt(event["time"].split(" ")[0].split("-")[1]);
+					var eventYearTemp = parseInt(event["time"].split(" ")[0].split("-")[0]);
+					if(eventMonthTemp == month + 1 && eventYearTemp == year) {
+						var eventDay = parseInt(event["time"].split(" ")[0].split("-")[2]);
+						var eventDate = new Date(year, month, eventDay);
+						var col = eventDate.getDay();
+						var row = Math.floor((eventDay + startDay - 1) / 7) + 1;
+
+						var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
+						cell.style.backgroundColor = "LightGreen";
+
+						cell.onclick = function() {
+							alert("Event info:\n" + "Name: " + event["name"] + "\n" + "Description: " + event["description"] + "\n" + "Time: " + event["time"] + "\n");
+						}
+					}
+				}
+			},
+			function(result) { //fail
+				alert("Failed to retrieve event");
+			});
 	};
 });
