@@ -827,4 +827,3 @@ $(document).ready(function(){
 	setInterval(updateChat, 3000);
 });
 
-
