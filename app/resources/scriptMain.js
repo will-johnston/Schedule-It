@@ -603,14 +603,14 @@ $(document).ready(function(){
 	$("#groupSettingsLeaveGroupButton").click(function() {
 		var data = {};
 		data["cookie"] = cookie;
-		data["id"] = "group id to leave";
+		data["groupid"] = activeGroupID;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "leave group endpoint", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/leave", data,
 			function(result) { //success
 				console.log("Successfully left group");
 
-				//update the groups
+				updateGroups();
 			},
 			function(result) { //fail
 				alert("Failed to leave group");
@@ -787,7 +787,7 @@ $(document).ready(function(){
     //getting messages
 	var messages = [];
 
-	var updateChat = function() {
+	/*var updateChat = function() {
 		//call endpoint
 		var data = {};
 		data["cookie"] = cookie;
@@ -824,6 +824,6 @@ $(document).ready(function(){
 	}
 
 	//update chat every 3 seconds
-	setInterval(updateChat, 3000);
+	setInterval(updateChat, 3000);*/
 });
 
