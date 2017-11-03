@@ -88,23 +88,6 @@ $(document).ready(function(){
 		xhr.send(data);
 	};
 
-	//Attemp to create a me tab
-	/*if($("#vPillsContent").children().length == 0) {
-		var data = {};
-		data["cookie"] = cookie;
-		data["groupname"] = "Me";
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
-			function(result) { //success
-				console.log("Successfully created me group");
-			},
-			function(result) { //fail
-				console.log("Failed to created me group");
-			});
-	}*/
-
-
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
@@ -715,6 +698,40 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				alert("Failed to leave group");
+			});
+	});
+
+	$("#groupSettingsModalMuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "true";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully muted group");
+				alert("Successfully muted group");
+			},
+			function(result) { //fail
+				alert("Failed to mute group");
+			});
+	});
+
+	$("#groupSettingsModalUnmuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "false";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully unmuted group");
+				alert("Successfully unmuted group");
+			},
+			function(result) { //fail
+				alert("Failed to unmuted group");
 			});
 	});
 
