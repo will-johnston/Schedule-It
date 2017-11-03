@@ -95,10 +95,10 @@ public class InvitationHandler implements IHandler {
             try {
                 //Get User that invited
                 //Get Group that being invited to
-                User user = getRequestingUser(notification);
+                /*User user = getRequestingUser(notification);
                 if (user == null) {
                     return null;
-                }
+                }*/
                 Group group = tracker.getGroupById(Integer.parseInt(notification.getParams()));
                 if (group == null) {
                     System.out.println("Couldn't get group with id " + notification.getParams());
@@ -157,6 +157,7 @@ public class InvitationHandler implements IHandler {
             System.out.println("Invalid user_id format in params");
             throw new Exception("Invalid user_id format in params");
         }
+        System.out.println("Userid in notification is " + requester + ", with params " + notification.getParams());
         User user = tracker.getUserById(requester);
         if (user == null) {
             //try getting from database
