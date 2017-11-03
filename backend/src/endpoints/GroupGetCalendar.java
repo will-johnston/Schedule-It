@@ -70,17 +70,29 @@ public class GroupGetCalendar implements IAPIRoute {
     public String toJson(Event[] events) {
         try {
             JsonObject jobj = new JsonObject();
+            System.out.println("Adding events");
             for (Event event : events) {
-                //id, name, time, description, address, type
-                JsonObject item = new JsonObject();
-                item.addProperty("id", event.getEventID());
-                item.addProperty("name", event.getEvent_name());
-                item.addProperty("time", event.getTime().toString());
-                item.addProperty("description", event.getDescription());
-                item.addProperty("address", event.getAddress());
-                item.addProperty("type", event.getType());
-                jobj.add("event", item);
+                if (event == null) {
+                    System.out.println("Tried to serialize null event");
+                    continue;
+                }
+                try {
+                    //id, name, time, description, address, type
+                    JsonObject item = new JsonObject();
+                    item.addProperty("id", event.getEventID());
+                    item.addProperty("name", event.getEvent_name());
+                    item.addProperty("time", event.getTime().toString());
+                    item.addProperty("description", event.getDescription());
+                    item.addProperty("address", event.getAddress());
+                    item.addProperty("type", event.getType());
+                    jobj.add("event", item);
+                }
+                catch (Exception e) {
+                    System.out.println("Couldn't serialize event");
+                    e.printStackTrace();
+                }
             }
+            System.out.println("Serializing to json");
             Gson gson = new Gson();
             return gson.toJson(jobj, JsonObject.class);
         }
