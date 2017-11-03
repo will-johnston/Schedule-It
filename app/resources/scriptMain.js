@@ -89,7 +89,7 @@ $(document).ready(function(){
 	};
 
 	//Attemp to create a me tab
-	if($("#vPillsContent").children().length == 0) {
+	/*if($("#vPillsContent").children().length == 0) {
 		var data = {};
 		data["cookie"] = cookie;
 		data["groupname"] = "Me";
@@ -102,7 +102,7 @@ $(document).ready(function(){
 			function(result) { //fail
 				console.log("Failed to created me group");
 			});
-	}
+	}*/
 
 
 	//NOTIFICATIONS
@@ -418,6 +418,25 @@ $(document).ready(function(){
 				console.log("Successfully retrieved groups");
 
 				var json = JSON.parse(result);
+
+				//Create a me tab if there are no groups
+				if(json.length == 0) {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupname"] = "Me";
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+						function(result) { //success
+							console.log("Successfully created me group");
+							updateGroups();
+						},
+						function(result) { //fail
+							console.log("Failed to created me group");
+						});
+
+					return;
+				}
 
 				var l = $("#vPillsTab").children().length;
 				for(var i = 0; i < l; i++) {
