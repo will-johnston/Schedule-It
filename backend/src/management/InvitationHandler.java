@@ -72,6 +72,10 @@ public class InvitationHandler implements IHandler {
                 return null;
             }
         }
+        else if (type.equals("invite.event")) {
+            user.clearNotification(notification);
+            return "";
+        }
         else {
             return null;
         }
@@ -91,10 +95,10 @@ public class InvitationHandler implements IHandler {
             try {
                 //Get User that invited
                 //Get Group that being invited to
-                User user = getRequestingUser(notification);
+                /*User user = getRequestingUser(notification);
                 if (user == null) {
                     return null;
-                }
+                }*/
                 Group group = tracker.getGroupById(Integer.parseInt(notification.getParams()));
                 if (group == null) {
                     System.out.println("Couldn't get group with id " + notification.getParams());
@@ -107,7 +111,34 @@ public class InvitationHandler implements IHandler {
                 return null;
             }
         }
+        else if (type.equals("invite.event")) {
+            try {
+                //Get User that invited
+                //Get Group that being invited to
+                Event event = getEvent(notification);
+                if (event == null) {
+                    System.out.println("Null event");
+                    return null;
+                }
+                try {
+                    JsonObject jobj = new JsonObject();
+                    jobj.addProperty("name", event.getEvent_name());
+                    jobj.addProperty("time", event.getTime().toString());
+                    jobj.addProperty("id", event.getEventID());
+                    return jobj;
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            catch (Exception etwo) {
+                etwo.printStackTrace();
+                return null;
+            }
+        }
         else {
+            System.out.println("Invalid type");
             return null;
         }
     }
@@ -126,6 +157,7 @@ public class InvitationHandler implements IHandler {
             System.out.println("Invalid user_id format in params");
             throw new Exception("Invalid user_id format in params");
         }
+        System.out.println("Userid in notification is " + requester + ", with params " + notification.getParams());
         User user = tracker.getUserById(requester);
         if (user == null) {
             //try getting from database
@@ -140,6 +172,32 @@ public class InvitationHandler implements IHandler {
             }
         }
         return user;
+    }
+    //groupid, eventid
+    public Event getEvent(Notification notification) throws Exception {
+        int eventid = -1;
+        int groupid = -1;
+           try {
+               String[] split = notification.getParams().split("[,]");
+               groupid = Integer.parseInt(split[0]);
+               eventid = Integer.parseInt(split[1]);
+           }
+           catch (Exception e) {
+           }
+        if (eventid == -1 || groupid == -1) {
+            System.out.println("Invalid event_id format in params");
+            throw new Exception("Invalid event_id format in params");
+        }
+        Group group = tracker.getGroupById(groupid);
+        if (group == null) {
+            System.out.println("Null group");
+            return null;
+        }
+        Event event = group.getEvent(eventid);
+        if (event == null) {
+            event = GetFromDb.getEvent(eventid);
+        }
+        return event;
     }
     public JsonObject makeFriendInvite(Notification notification, User user) {
         JsonObject jobj = new JsonObject();

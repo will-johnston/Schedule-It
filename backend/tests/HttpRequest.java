@@ -39,6 +39,9 @@ public class HttpRequest {
         InputStream in = conn.getInputStream();
         byte[] buffer = new byte[8192];
         int readresult = in.read(buffer);
+        if (readresult == -1) {
+            return null;
+        }
         String res = new String(buffer, 0, readresult);
         System.out.println(res);
         conn.disconnect();

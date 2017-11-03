@@ -63,6 +63,20 @@ $(document).ready(function(){
 					if(request.status == 200) { //Valid registration, continue
 						var json = JSON.parse(recieved);
 						storeLoginCookie(json.cookie);
+
+						var data = {};
+						data["cookie"] = cookie;
+						data["groupname"] = "Me";
+						data = JSON.stringify(data);
+			
+						accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+							function(result) { //success
+								console.log("Successfully created group");
+							},
+							function(result) { //fail
+								alert("Failed to create group");
+							});
+
 						window.location.href = "https://scheduleit.duckdns.org/pictureUpload.html";
 					} else { //Invalid registration, stop
 						window.alert("Failed to create account.");

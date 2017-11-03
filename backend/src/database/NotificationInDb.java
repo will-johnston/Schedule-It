@@ -124,6 +124,7 @@ public class NotificationInDb {
     public static Notification add(Notification notification) {
         //check if notification already exists
         if (exists(notification.userid, notification.getType().toString(), notification.params)) {
+            System.out.println("Notification already exists");
             return null;
         }
 
@@ -165,6 +166,7 @@ public class NotificationInDb {
                 return notification;
             }
             else {
+                System.out.println("Notification.put returned 0 results");
                 return null;
             }
         }
@@ -178,6 +180,7 @@ public class NotificationInDb {
             } catch (SQLException r) {
                 r.printStackTrace();
             }*/
+            System.out.println("Caught an exception, returning null");
             return null;
         }
     }
