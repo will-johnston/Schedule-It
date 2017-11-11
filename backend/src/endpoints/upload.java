@@ -164,7 +164,28 @@ public class upload implements IAPIRoute {
                 return;
             }
             Newupload up = uploads.get(args[1]);
-
+            if (!up.isFinished()) {
+                System.out.println("Called info but not finished");
+            }
+            try {
+                //return successful info
+                JsonObject response = new JsonObject();
+                response.addProperty("finished", up.isFinished());
+                if (up.isFinished()) {
+                    response.addProperty("path", up.getWebPath());
+                }
+                else {
+                    response.addProperty("path", (String)null);
+                }
+                Socketeer.send(HTTPMessage.makeResponse(response.toString(), HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
+            catch (Exception e) {
+                //return error
+                Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Failed to serialize response\" }",
+                        HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
     }
     //returns mimeType, length, cookie, size, uploadType

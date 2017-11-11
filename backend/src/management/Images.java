@@ -117,7 +117,7 @@ public class Images {
                 for (Chunk blob  : upload.chunks) {
                     System.out.println("Blob size: " + blob.size + ", length: "  + blob.data.length);
                     for (int i = 0; i < blob.data.length; i++) {
-                        System.out.println((int)blob.data[i]);
+                        //System.out.println((int)blob.data[i]);
                         stream.write(blob.data[i]);
                     }
                 }

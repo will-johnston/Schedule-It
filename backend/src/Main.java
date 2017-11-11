@@ -15,7 +15,7 @@ public class Main {
             upload up = new upload(images, tracker);           //For special upload case
             router.add("/upload", up);
             router.add("/upload/chunk", up);
-            //router.add("/upload/info", up);
+            router.add("/upload/info", up);
             router.add("/example/example", new ExampleEndpoint());
             router.add("/user/login", new UserLogin(tracker));
             router.add("/user/edit", new UserEdit(tracker));
