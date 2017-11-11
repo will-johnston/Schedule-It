@@ -93,7 +93,7 @@ public class Newupload {
     }
     public String getWebPath() {
         try {
-            return String.format("%s%s.%s", Images.webPath, uuid, HTTPMessage.getMimeExtension(type));
+            return String.format("https://%s%s.%s", Images.webPath, uuid, HTTPMessage.getMimeExtension(type));
         }
         catch (Exception e) {
             return null;
