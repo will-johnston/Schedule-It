@@ -95,6 +95,7 @@ public class Images {
         }
         try {
             FileOutputStream stream = new FileOutputStream(upload.path);
+            System.out.println("writing to " + upload.path);
             byte[] data = upload.getBlob();
             try {
                 int remaining = data.length;
@@ -113,6 +114,7 @@ public class Images {
                     stream.flush();
                 }*/
                 for (int i = 0; i < data.length; i++) {
+                    System.out.println((int)data[i]);
                     stream.write(data[i]);
                 }
                 stream.flush();

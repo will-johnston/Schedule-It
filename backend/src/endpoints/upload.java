@@ -286,7 +286,7 @@ public class upload implements IAPIRoute {
     private byte makeUint(byte num) {
         byte add = (byte)256;
         if (num < 0) {
-            System.out.print((byte)(add + num));
+            //System.out.print((byte)(add + num));
             return (byte)(add + num);
         }
         else {
