@@ -113,6 +113,7 @@ public class Images {
                     }
                     stream.flush();
                 }*/
+                System.out.println("Data length: " + data.length);
                 for (int i = 0; i < data.length; i++) {
                     System.out.println((int)data[i]);
                     stream.write(data[i]);
