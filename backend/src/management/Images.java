@@ -96,9 +96,9 @@ public class Images {
         try {
             FileOutputStream stream = new FileOutputStream(upload.path);
             System.out.println("writing to " + upload.path);
-            byte[] data = upload.getBlob();
+            //byte[] data = upload.getBlob();
             try {
-                int remaining = data.length;
+                //int remaining = data.length;
                 int location = 0;
                 /*while (remaining > 0) {
                     if (remaining < 1000)  {
@@ -113,11 +113,18 @@ public class Images {
                     }
                     stream.flush();
                 }*/
-                System.out.println("Data length: " + data.length);
-                for (int i = 0; i < data.length; i++) {
+                //System.out.println("Data length: " + data.length);
+                for (Chunk blob  : upload.chunks) {
+                    System.out.println("Blob size: " + blob.size + ", length: "  + blob.data.length);
+                    for (int i = 0; i < blob.data.length; i++) {
+                        System.out.println((int)blob.data[i]);
+                        stream.write(blob.data[i]);
+                    }
+                }
+                /*for (int i = 0; i < data.length; i++) {
                     System.out.println((int)data[i]);
                     stream.write(data[i]);
-                }
+                }*/
                 stream.flush();
                 stream.close();
                 return true;
