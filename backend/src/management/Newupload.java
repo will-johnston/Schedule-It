@@ -3,6 +3,7 @@ package management;
 import server.HTTPMessage;
 import management.Chunk;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Newupload {
     public int chunkCount;         //length from client
@@ -79,6 +80,18 @@ public class Newupload {
             index = index + 1;
         }
         return blob;
+    }
+    public void sortChunks() {
+        chunks.sort(new Comparator<Chunk>() {
+                        @Override
+                        public int compare(Chunk o1, Chunk o2) {
+                            //return 0 if equal
+                            //return -1 if o1 is < o2
+                            //return 1 if 02 is > o1
+                            return Integer.compare(o1.id, o2.id);
+                        }
+                    }
+        );
     }
     public boolean isFinished() {
         if (received == chunkCount && failed.isEmpty()) {
