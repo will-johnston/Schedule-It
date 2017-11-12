@@ -27,7 +27,9 @@ public class CreateGroup {
             connection = ds.getConnection(); //acquire datasource object
 
             //if userID already has a group with same name, reject.
-            String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+            //String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
+            String query = String.format("SELECT * FROM groups WHERE name='%s' AND creatorID='%s';", name, creatorID);
+            System.out.println(query);
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
