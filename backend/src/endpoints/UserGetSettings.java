@@ -75,13 +75,18 @@ public class UserGetSettings implements IAPIRoute {
         String fullname;
         String email;
         String phone;
-        String imageURL;
+        String image;
         public Response(String username, String fullname, String email, String phone, String imageURL) {
             this.username = username;
             this.fullname = fullname;
             this.email = email;
             this.phone = phone;
-            this.imageURL = imageURL;
+            if (imageURL == null) {
+                this.image = "";
+            }
+            else {
+                this.image = imageURL;
+            }
         }
         public String toJson() {
             try {
