@@ -68,11 +68,17 @@ public class MessageGet implements IAPIRoute {
                 return;
             }
             String json_chat = new Gson().toJson(chat);
-            Socketeer.send(HTTPMessage.makeResponse(json_chat, HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
+            //Stupid amount of padding to handle Content-Length being wrong with emojis.
+            String padded = rightPad(json_chat, 100);
+            Socketeer.send(HTTPMessage.makeResponse(padded, HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
             return;
         } 
         catch (Exception e) {
             e.printStackTrace();
+            //We have to send a response or else the client will hang
+            String response = "{\"error\":\"Couldn't get chat from database\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
         }
 
     }
@@ -98,5 +104,18 @@ public class MessageGet implements IAPIRoute {
             System.out.println("Caught an exception");
             return null;
         }
+    }
+    private String rightPad(String original, int padAmount) {
+        char[] origArr = original.toCharArray();
+        char[] padded = new char[original.length() + padAmount];
+        for (int i = 0; i < padded.length; i++) {
+            if (i < original.length()) {
+                padded[i] = origArr[i];
+            }
+            else {
+                padded[i] = ' ';
+            }
+        }
+        return new String(padded);
     }
 }
