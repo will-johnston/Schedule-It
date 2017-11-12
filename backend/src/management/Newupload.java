@@ -38,7 +38,7 @@ public class Newupload {
     //returns if the Chunk succeeded
     public boolean addNewChunk(byte[] data, int checksum, int chunkid) {
         //check if Chunk is already in either list
-        Chunk chnk = new Chunk(data, chunkid, checksum);
+        Chunk chnk = new Chunk(data, checksum, chunkid);
         if (failedContains(chunkid)) {
             if (chnk.succeeded) {
                 //add to succeeded list
