@@ -282,6 +282,28 @@ $(document).ready(function(){
 
 						$("#notificationMenu").append(html);
 					}
+					else if(notification["type"] == "eventReminder") {
+						var id = notification["id"];
+						var name = notification["name"];
+
+						var html = `
+							<!-- event reminder -->
+							<div class="card">
+								<div class="card-header">
+									Upcoming event
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">` + name + ` in one day</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+									</div>
+								</div>
+							</div>
+							`;
+					}
 
 					assignNotificationFunctionality();
 				}
@@ -580,7 +602,7 @@ $(document).ready(function(){
 
 							console.log(data);
 
-							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot", data,
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
