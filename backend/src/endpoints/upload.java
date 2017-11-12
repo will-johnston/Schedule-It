@@ -53,9 +53,9 @@ public class upload implements IAPIRoute {
             }
             System.out.println("Handling request");
             //create new uuid and uploadid
-            String uuid = images.makeUUID();
-            int uploadid = getNewUploadId();
             try {
+                String uuid = images.makeUUID((HTTPMessage.MimeType) args[0]);
+                int uploadid = getNewUploadId();
                 Newupload up = new Newupload((int)args[1], (HTTPMessage.MimeType) args[0] , uuid, images);
                 uploads.put(uploadid, up);
                 String response = String.format("{\"uploadid\":\"%d\"}\n", uploadid);
