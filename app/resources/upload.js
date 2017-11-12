@@ -210,10 +210,10 @@ function uploadLoop(passCallback, failCallback) {
 }
 //Calls success(path)
 //Calls fail(null)
-function upload(filepickerID,success, fail) {
+function upload(fileElement,success, fail) {
 	start = new Date();
 	console.log("Called upload");
-	var fileElement = document.getElementById(filePickerID);
+	//var fileElement = document.getElementById(filePickerID);
 	if (fileElement == null) {
 		consol.log("Coudln't get element");
 		return;
