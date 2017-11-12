@@ -66,7 +66,7 @@ function test() {
 	reader.readAsArrayBuffer(file);
 }
 //Starts the upload process
-function requestUpload(success) {
+function requestUpload(cookie, success) {
 	console.log("requesting upload");
 	// {{"type": "image/jpg",
 	//   "size": 65535,
@@ -116,7 +116,7 @@ function toBase64(chunk) {
 		return null;
 	}
 }
-function uploadchunk(chunk, cid, callback) {
+function uploadchunk(chunk, cookie, cid, callback) {
 	var sum = checksum(chunk);
 	var len = chunk.length;
 	console.log("Uploading chunk with id:", cid, "size:", len, "and checksum:", sum);
@@ -156,7 +156,7 @@ function uploadchunk(chunk, cid, callback) {
 //Uploads all chunks from array
 //Calls passCallback(path)
 //Calls failCallback(null)
-function uploadLoop(passCallback, failCallback) {
+function uploadLoop(cookie, passCallback, failCallback) {
 	//console.log("length:", chunks.length);
 	for (var i = 0; i < chunks.length; i++) {
 		var chunk = chunks[i];
@@ -204,13 +204,13 @@ function uploadLoop(passCallback, failCallback) {
 		else {
 			//upload like normal
 			//console.log("uploading normal chunk");
-			uploadchunk(chunk, i, null);
+			uploadchunk(chunk, cookie, i, null);
 		}
 	}
 }
 //Calls success(path)
 //Calls fail(null)
-function upload(fileElement,success, fail) {
+function upload(fileElement,cookie,success, fail) {
 	start = new Date();
 	console.log("Called upload");
 	//var fileElement = document.getElementById(filePickerID);
@@ -244,8 +244,8 @@ function upload(fileElement,success, fail) {
 			uploadchunk(chunks[0], 0, null);
 		});*/
 		//uploadchunk(newBuf[0], 0, null)
-		requestUpload(function() {
-			uploadLoop(success, fail);
+		requestUpload(cookie, function() {
+			uploadLoop(cookie, success, fail);
 		})
 	});
 	reader.readAsArrayBuffer(file);
