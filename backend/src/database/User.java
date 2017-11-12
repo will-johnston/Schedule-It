@@ -21,7 +21,7 @@ public class User {
     int id;
     long lastCheckedIn = -1;
     boolean updatedGroups = false;
-    public User(String name, String email, String password, String phone, int id, String username, String notif_prefs) {
+    public User(String name, String email, String password, String phone, int id, String username, String notif_prefs, String imageUrl) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -32,6 +32,7 @@ public class User {
 		this.notifications = new ArrayList<>();
         this.groups = new ArrayList<>();
         this.mutedGroups = new ArrayList<>();
+        this.imageUrl = imageUrl;
         resolveMuted(notif_prefs);
     }
     private void resolveMuted(String prefs) {
@@ -137,14 +138,14 @@ public class User {
         if (fromDb == null) {
             return null;
         }
-        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6], fromDb[7]);
     }
     public static User fromDatabase(int id) {
         String[] fromDb = GetFromDb.getUserFromId(id);
         if (fromDb == null) {
             return null;
         }
-        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6]);
+        return new User(fromDb[3], fromDb[4], fromDb[2], fromDb[5], Integer.parseInt(fromDb[0]), fromDb[1], fromDb[6], fromDb[7]);
     }
     public void checkin() {
         lastCheckedIn = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
