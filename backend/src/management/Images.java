@@ -50,15 +50,23 @@ public class Images {
         }
         return uuids;
     }
-    public String makeUUID() {
+    public String makeUUID(HTTPMessage.MimeType type) {
         HashMap<String, Boolean> uuids = getUUIDs();
         String uuid = "";
-        do {
+        while(true) {
             uuid = UUID.randomUUID().toString();
+            if (uuids.containsKey(uuid)) {
+                continue;
+            }
+            File f = new File(makePath(uuid,type));
+            if (f.exists()) {
+                uuids.put(uuid, true);
+            }
+            else {
+                uuids.put(uuid, false);
+                return uuid;
+            }
         }
-        while (uuids.containsKey(uuid));
-        uuids.put(uuid, false);
-        return uuid;
     }
     //should format as images/{UUID}.{type}
     public String makePath(String uuid, HTTPMessage.MimeType type) {
