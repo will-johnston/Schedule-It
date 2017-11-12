@@ -178,6 +178,66 @@ $(document).ready(function(){
 					alert("Failed to decline group invite");
 				});
 		});
+
+		$(".groupEventGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "going";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventMaybeGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "maybeGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventNotGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "notGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
 	};
 
 	var updateNotifications = function() {
