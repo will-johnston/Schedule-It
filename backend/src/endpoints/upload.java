@@ -106,7 +106,13 @@ public class upload implements IAPIRoute {
                 System.out.println("Getting upload");
                 Newupload up = uploads.get(uploadid);
                 System.out.println("Adding chunk");
-                boolean success = up.addNewChunk(getChunkData((String)args[5]), (int)args[0], (int)args[3]);
+                byte[] data = getChunkData((String)args[5]);
+                if (data == null) {
+                    Socketeer.send(HTTPMessage.makeResponse("{ \"error\" : \"Could not convert from base64\" }",
+                            HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
+                boolean success = up.addNewChunk(data, (int)args[0], (int)args[3]);
                 String response;
 
                 if (success) {
@@ -293,9 +299,16 @@ public class upload implements IAPIRoute {
     //Data is base64 encoded
     private byte[] getChunkData(String data) {
         //char[] chars = data.toCharArray();
-        byte[] blob = resolveUint(Base64.getDecoder().decode(data));
-        System.out.println("" + blob[0] + " " + blob[1] + " " + blob[2] + " " + blob[3]);
-        return blob;
+        try {
+            byte[] blob = resolveUint(Base64.getDecoder().decode(data));
+            //System.out.println("" + blob[0] + " " + blob[1] + " " + blob[2] + " " + blob[3]);
+            return blob;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(data);
+            return null;
+        }
     }
     private byte[] resolveUint(byte[] blob) {
         byte[] copy = blob;

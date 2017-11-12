@@ -27,7 +27,7 @@ public class Chunk {
         int MODULUS = 65535;
         int sum = 0;
         for (int i = 0; i < size; i++) {
-            sum = data[i] % MODULUS;
+            sum = makeUint(data[i]) % MODULUS;
         }
         return sum;
     }
@@ -36,5 +36,15 @@ public class Chunk {
     }
     public int getSize() {
         return size;
+    }
+    private int makeUint(int num) {
+        int add = 256;
+        if (num < 0) {
+            //System.out.print((byte)(add + num));
+            return (add + num);
+        }
+        else {
+            return num;
+        }
     }
 }
