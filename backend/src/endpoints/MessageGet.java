@@ -1,6 +1,5 @@
 package endpoints;
 
-
 import database.ModifyUserInDb;
 import database.User;
 import database.Messages;
@@ -10,10 +9,10 @@ import java.util.*;
 import com.google.gson.*;
 import java.net.Socket;
 
-public class MessageAdd implements IAPIRoute {
+public class MessageGet implements IAPIRoute {
 
     Tracker tracker;
-    public MessageAdd(Tracker tracker) {
+    public MessageGet(Tracker tracker) {
         this.tracker = tracker;
     }
 
@@ -26,73 +25,73 @@ public class MessageAdd implements IAPIRoute {
     * Also updated Tracker
     * */
     @Override
-    public void execute(SSocket sock, HTTPMessage request) {
+    public void execute(SSocket sock, HTTPMessage request) { 
+
         try {
             String[] args = parseArgs(request.getBody());
-            if(args == null) {
-                System.out.println("Args is null");
-                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+
+            if (args == null) {
+                String response = "{ \"error\" : \"Invalid arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-            int cookie = Integer.parseInt(args[0]);
+
+            int groupID = Integer.parseInt(args[0]);
+            int cookie = Integer.parseInt(args[1]);
 
             if (cookie == 0) {
-                //invalid cookie sent error
-                Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"No Arguments specified\"}\n", HTTPMessage.HTTPStatus.BadRequest, HTTPMessage.MimeType.appJson, true), sock);
+                String response = "{\"error\":\"Invalid Arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+
             if (!tracker.isLoggedIn(cookie)) {
-                //disallow adding chats when not logged in because that would be weird
                 String response = "{\"error\":\"User is not logged in\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
             User user = tracker.getUser(cookie);
+
             if (user == null) {
-                //For some reason, we couldn't get the User from the tracker and bad things could stem from this
-                //If this happens, Ryan should be let known
                 String response = "{\"error\":\"Couldn't get user\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
 
-            String username = user.getUsername();
-            int groupID = Integer.parseInt(args[1]);
-            String line = args[2];
 
-            if (username == null) {
-                //This shouldn't happen BUT IF IT DOES, we're f-ed
-                String response = "{\"error\":\"Couldn't get username\"}";
+            Messages message = new Messages();
+            ArrayList<String> chat = message.getMessage(groupID);
+
+            if (chat == null) {
+                String response = "{\"error\":\"Couldn't get chat from database\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-
-
-
-            //Have username, groupID, line
-            Messages message = new Messages();
-            boolean ret = message.setMessage(username, groupID, line);
-            Socketeer.send(HTTPMessage.makeResponse("{\"Success\":\"Message sent to database\"}\n", HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
-
+            String json_chat = new Gson().toJson(chat);
+            Socketeer.send(HTTPMessage.makeResponse(json_chat, HTTPMessage.HTTPStatus.OK, HTTPMessage.MimeType.appJson, true), sock);
             return;
         } 
         catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     //returns cookie, groupID, line
     private String[] parseArgs(String message) {
+
         try {
             Gson gson = new Gson();
             JsonObject bodyObj = gson.fromJson(message, JsonObject.class);
-            if (!bodyObj.has("cookie") || !bodyObj.has("line") || !bodyObj.has("groupID")) {
+            if (!bodyObj.has("groupID")) {
                 return null;
             }
-            String[] arr = new String[3];
-            arr[0] = bodyObj.get("cookie").getAsString();
-            arr[1] = bodyObj.get("groupID").getAsString();
-            arr[2] = bodyObj.get("line").getAsString();
+            if (!bodyObj.has("cookie")) {
+                return null;
+            }
+            String[] arr = new String[2];
+            arr[0] = bodyObj.get("groupID").getAsString();
+            arr[1] = bodyObj.get("cookie").getAsString();
             return arr;
         } 
         catch (Exception e) {

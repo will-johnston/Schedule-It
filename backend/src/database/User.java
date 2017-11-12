@@ -385,15 +385,10 @@ public class User {
                 }
             }
         }
-        return true;
+        return false;
     }
     public boolean removeFromGroup(int groupid, Tracker tracker) {
-        if (!inGroup(groupid, tracker)) {
-            return false;
-        }
-        else {
-            return removeWithGroupId(groupid, tracker);
-        }
+        return removeWithGroupId(groupid, tracker);
     }
     //TODO get all groups of user in db
     public boolean inGroup(int groupid, Tracker tracker) {

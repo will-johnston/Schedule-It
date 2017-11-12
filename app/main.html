@@ -168,8 +168,7 @@
 				</div>
 				<div class="modal-footer">
 					<div class="mr-auto">
-						<button type="button" class="btn btn-danger">Delete group</button>
-						<button type="button" class="btn btn-danger">Leave group</button>
+						<button type="button" class="btn btn-danger" id="groupSettingsLeaveGroupButton">Leave group</button>
 					</div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" id="groupSettingsSaveButton">Confirm</button>
@@ -420,9 +419,10 @@
 									transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 								 
 								<form name="message" action="">
-									<input name="usermsg" type="text" id="message_me" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
-									<button type="button" class="btn btn-primary" id="sendMessage_me"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-									<button type="button" class="btn btn-secondary" id="_sendBot"  style="width: 6em">Chatbot</button>
+									<input name="usermsg" type="text" id="message_me" style="width: 90%; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+									<button type="button" class="btn btn-primary" id="sendMessage_me"  style="width: 8%; margin-left: 1%">Send</button>
+									<!--Fix ids to be dynamic in javascript-->
+									
 								</form>
 							</div>
 						</div>
