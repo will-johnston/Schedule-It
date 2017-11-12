@@ -177,7 +177,7 @@ public class Server {
             }
         }
         public HTTPMessage getRequest(InputStream in) throws Exception {
-            byte[] buffer = new byte[8192];     //8KB
+            byte[] buffer = new byte[20480];     //was 8KB, now 20KB
             StringBuilder head = new StringBuilder();
             StringBuilder body = new StringBuilder();
             Timer timer = new Timer(30);        //30 second timeout

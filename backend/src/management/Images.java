@@ -116,10 +116,11 @@ public class Images {
                 upload.sortChunks();
                 for (Chunk blob  : upload.chunks) {
                     System.out.println("Blob size: " + blob.size + ", length: "  + blob.data.length + ", id: " + blob.id);
-                    for (int i = 0; i < blob.data.length; i++) {
+                    /*for (int i = 0; i < blob.data.length; i++) {
                         //System.out.println((int)blob.data[i]);
                         stream.write(blob.data[i]);
-                    }
+                    }*/
+                    stream.write(blob.data,0,blob.data.length);
                 }
                 /*for (int i = 0; i < data.length; i++) {
                     System.out.println((int)data[i]);
