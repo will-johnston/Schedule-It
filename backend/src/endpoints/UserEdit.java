@@ -40,6 +40,8 @@ public class UserEdit implements IAPIRoute {
         if (args[4] != null) { System.out.println("Set new email"); }
         if (args[5] != null) { user.setPhone((String)args[5]); }
         if (args[5] != null) { System.out.println("Set new phone"); }
+        if (args[6] != null) { user.setImageUrl((String)args[6]); }
+        if (args[6] != null) { System.out.println("Set new image"); }
         //Update Db
         try {
             ModifyUserInDb.modifyUser(makeMods(user), username);
@@ -66,7 +68,7 @@ public class UserEdit implements IAPIRoute {
             if (!jobj.has("cookie")) {
                 return null;
             }
-            String username = jobj.get("username").getAsString(), password = null, fullname = null, email = null, phonenumber = null;
+            String username = jobj.get("username").getAsString(), password = null, fullname = null, email = null, phonenumber = null, image = null;
             int cookie = jobj.get("cookie").getAsInt();
             if (jobj.has("pass")) {
                 password = jobj.get("pass").getAsString();
@@ -80,13 +82,16 @@ public class UserEdit implements IAPIRoute {
             if (jobj.has("phone")) {
                 phonenumber = jobj.get("phone").getAsString();
             }
+            if (jobj.has("image")) {
+                image = jobj.get("image").getAsString();
+            }
             /*for (Map.Entry keyvalue : jobj.entrySet()) {
                 if (keyvalue.getKey() == "pass") { password = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "fullname") { fullname = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "email") { email = keyvalue.getValue().toString(); }
                 else if (keyvalue.getKey() == "phone") { phonenumber = keyvalue.getValue().toString(); }
             }*/
-            return new Object[] { username, cookie, password, fullname, email, phonenumber };
+            return new Object[] { username, cookie, password, fullname, email, phonenumber, image };
         }
         catch (Exception e) {
             System.out.println("Failed to parse UserEdit args");
@@ -95,7 +100,7 @@ public class UserEdit implements IAPIRoute {
     }
     private String[] makeMods(User values) {
         //Format is {"email", "example@gmail.com", "fullname", "Clarence tarence", "password", "pss", "phone_number", "7"};
-        String[] mods = new String[8];
+        String[] mods = new String[10];
         mods[0] = "email";
         mods[1] = values.getEmail();
         mods[2] = "fullname";
@@ -104,6 +109,8 @@ public class UserEdit implements IAPIRoute {
         mods[5] = values.getPassword();
         mods[6] = "phone_number";
         mods[7] = values.getPhone();
+        mods[8] = "image_path";
+        mods[9] = values.getImageUrl();
         for (int i = 0; i < mods.length; i++) {
             System.out.println(String.format("%d: %s", i, mods[i]));
         }

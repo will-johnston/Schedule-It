@@ -7,14 +7,14 @@ public class Main {
     public static Router initRouter() {
         try {
             Router router = new Router();
-            //Images images = new Images();
+            Images images = new Images();
             Tracker tracker = new Tracker();
             NotificationHandler handler = new NotificationHandler(tracker);
             NotificationDealer dealer = new NotificationDealer(tracker, handler);
-            //upload up = new upload(images, tracker);           //For special upload case
-            //router.add("/upload", up);
-            //router.add("/upload/chunk", up);
-            //router.add("/upload/info", up);
+            upload up = new upload(images, tracker);           //For special upload case
+            router.add("/upload", up);
+            router.add("/upload/chunk", up);
+            router.add("/upload/info", up);
             router.add("/example/example", new ExampleEndpoint());
             router.add("/user/login", new UserLogin(tracker));
             router.add("/user/edit", new UserEdit(tracker));
