@@ -192,7 +192,7 @@ public class Server {
                     String readstr = new String(buffer, 0, read);
                     String[] lines = readstr.split("\n");
                     for (int i = 0; i < lines.length; i++) {
-                        System.out.println(lines[i]);
+                        //System.out.println(lines[i]);
                         if (inBody) {
                             if (length == 0) {
                                 //GET requests and other requests without bodies
