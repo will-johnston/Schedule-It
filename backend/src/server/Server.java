@@ -144,7 +144,7 @@ public class Server {
                          sock.close();
                          return;
                      }
-			        System.out.println("Server recieved " + mess.method);
+			        //System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
