@@ -178,6 +178,66 @@ $(document).ready(function(){
 					alert("Failed to decline group invite");
 				});
 		});
+
+		$(".groupEventGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "going";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventMaybeGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "maybeGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventNotGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "notGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
 	};
 
 	var updateNotifications = function() {
@@ -255,6 +315,54 @@ $(document).ready(function(){
 							`;
 
 						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "invite.event") {
+						var id = notification["id"];
+						var name = notification["name"];
+
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Event added
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">An event has been created: ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm groupEventGoingButton">Going</button>
+										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+									</div>
+								</div>
+							</div>
+							`;
+
+						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "eventReminder") {
+						var id = notification["id"];
+						var name = notification["name"];
+
+						var html = `
+							<!-- event reminder -->
+							<div class="card">
+								<div class="card-header">
+									Upcoming event
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">` + name + ` in one day</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+									</div>
+								</div>
+							</div>
+							`;
 					}
 
 					assignNotificationFunctionality();
@@ -376,6 +484,25 @@ $(document).ready(function(){
 
 				var json = JSON.parse(result);
 
+				//Create a me tab if there are no groups
+				if(json.length == 0) {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupname"] = "Me";
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+						function(result) { //success
+							console.log("Successfully created me group");
+							updateGroups();
+						},
+						function(result) { //fail
+							console.log("Failed to created me group");
+						});
+
+					return;
+				}
+
 				var l = $("#vPillsTab").children().length;
 				for(var i = 0; i < l; i++) {
 					$("#vPillsTab").children().eq(0).remove();
@@ -422,12 +549,12 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div id="` + "chatbox_" + realID + `" style="border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
+										<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
 											 
 										<form name="message" action="">
-											<input name="usermsg" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
+											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
 											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
-											<button type="button" class="btn btn-secondary" id="` + "sendBot_" + realID + `"  style="width: 6em">Chatbot</button>
+											<button type="button" class="btn btn-secondary chatbotButton" id="` + "sendBot_" + realID + `"  style="width: 6em">Chatbot</button>
 										</form>
 									</div>
 								</div>
@@ -512,6 +639,45 @@ $(document).ready(function(){
 
 					$("#groupSettingsModalName").val(parent.attr("groupName"));
 					//info & pic...
+				});
+
+				$(".chatbotButton").off();
+				$(".chatbotButton").click(function() {
+					//get user ID
+					var data = {};
+					data["cookie"] = cookie;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getId", data,
+						function(result) { //success
+							var userID = result.substring(1);
+							userID = userID.substring(0, userID.length - 1);
+							userID = parseInt(userID);
+
+							var messageSend = $("#group" + activeGroupID + "Content .chatbotTextField").val();
+
+							var data = {};
+							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
+							data = JSON.stringify(data);
+
+							console.log(data);
+
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
+								function(result) { //success
+									console.log("Successfully sent message to chat bot");
+									var json = JSON.parse(result);
+
+									var messageRecieved = json["text"];
+									var html = "<p>Chatbot: " + messageRecieved + "</p>";
+									$("#group" + activeGroupID + "Content input").append(html);
+								},
+								function(result) { //fail
+									alert("Failed to send message to chat bot");
+								});
+						},
+						function(result) { //fail
+							alert("Failed to get user ID");
+						});
 				});
 			},
 			function(result) { //fail
@@ -614,6 +780,40 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				alert("Failed to leave group");
+			});
+	});
+
+	$("#groupSettingsModalMuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "true";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully muted group");
+				alert("Successfully muted group");
+			},
+			function(result) { //fail
+				alert("Failed to mute group");
+			});
+	});
+
+	$("#groupSettingsModalUnmuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "false";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully unmuted group");
+				alert("Successfully unmuted group");
+			},
+			function(result) { //fail
+				alert("Failed to unmuted group");
 			});
 	});
 
@@ -784,24 +984,24 @@ $(document).ready(function(){
 			});
 	});
     
-    //getting messages
+   //getting messages
 	var messages = [];
 
-	/*var updateChat = function() {
+	var updateChat = function() {
 		//call endpoint
 		var data = {};
-		data["cookie"] = json.cookie;
-		data["groupid"] = activeGroupID;
+		data["cookie"] = cookie;
+		data["groupID"] = activeGroupID;
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
-				console.log("Successfully retrieved chat messages");
+				//console.log("Successfully retrieved chat messages");
 
 				//parse messages
 				var json = JSON.parse(result);
 
 				//if there are no messages in the array they should all be put in there
-				if(messages.lenth == 0) {
+				if(json.lenth == 0) {
 					messages = json["chat"];
 				}
 				else {
@@ -809,22 +1009,24 @@ $(document).ready(function(){
 					//update newMessages with the new messages
 					//update messages with the new messages
 
-					for(var i = 0; i < newMessages.length; i++) {
+					//console.log($("#group" + activeGroupID + "Content .chatBox"));
+					$("#chatbox_" + activeGroupID).empty();
+					for(var i = 0; i < json.length; i++) {
 						//update the chat box for the group 
-						$("#chatbox_" + activeGroupID).empty();
-						var messageBoxHTML = "<p>" + messages[i] + "</p>";
-						$("#chatbox_" + activeGroupID).append(messageBoxHTML);
+						$("#group" + activeGroupID + "Content .chatBox").append("<p>" + json[i][1] + "[" + json[i][2] + "]" + ": " + json[i][0] + "\n" + "</p>");
 					}
 				}
 				
 			},
 			function(result) { //fail
 				//alert("Failed to retrieve chat messages");
-				Console.log("Failed to retrieve chat messages");
+				console.log("Failed to retrieve chat messages");
 			});
 	}
 
 	//update chat every 3 seconds
-	setInterval(updateChat, 3000);*/
+	setInterval(updateChat, 3000);
+
 });
 
+	

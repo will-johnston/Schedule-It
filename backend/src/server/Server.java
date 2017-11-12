@@ -135,17 +135,17 @@ public class Server {
                 HTTPMessage mess;*/
                 HTTPMessage mess;
                 try {
-                     mess = getRequest(in);
-                     if (mess == null) {
-                         //timed out
-                         System.out.println("Failed to parse HTTP Message, TIMED OUT");
-                         String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
-                         out.write(response.getBytes(Charset.forName("UTF-8")));
-                         out.flush();
-                         sock.close();
-                         return;
-                     }
-			        //System.out.println("Server recieved " + mess.method);
+                    mess = getRequest(in);
+                    if (mess == null) {
+                        //timed out
+                        System.out.println("Failed to parse HTTP Message, TIMED OUT");
+                        String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
+                        out.write(response.getBytes(Charset.forName("UTF-8")));
+                        out.flush();
+                        sock.close();
+                        return;
+                    }
+                    //System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
