@@ -296,13 +296,35 @@ public class upload implements IAPIRoute {
             return null;
         }
     }
+    private String removeNewLines(String data) {
+        if (!data.contains("\n")) {
+            return data;
+        }
+        System.out.println("has a new line");
+        try {
+            StringBuilder bigBuilder = new StringBuilder();
+            String[] lines = data.split("\n");
+            for (int i = 0; i < lines.length; i++) {
+                bigBuilder.append(lines[i]);
+            }
+            return bigBuilder.toString();
+        }
+        catch (Exception e) {
+            System.out.println("Could remove newlines from string");
+            e.printStackTrace();
+            return null;
+        }
+    }
     //Data is base64 encoded
     private byte[] getChunkData(String data) {
         //char[] chars = data.toCharArray();
         try {
-            byte[] blob = resolveUint(Base64.getDecoder().decode(data));
+            String withoutLines = removeNewLines(data);
+            if (withoutLines == null) {
+                return null;
+            }
+            return Base64.getDecoder().decode(withoutLines);
             //System.out.println("" + blob[0] + " " + blob[1] + " " + blob[2] + " " + blob[3]);
-            return blob;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -310,7 +332,7 @@ public class upload implements IAPIRoute {
             return null;
         }
     }
-    private byte[] resolveUint(byte[] blob) {
+    /*private byte[] resolveUint(byte[] blob) {
         byte[] copy = blob;
         for (int i = 0; i < blob.length; i++) {
             copy[i] = makeUint(blob[i]);
@@ -326,7 +348,7 @@ public class upload implements IAPIRoute {
         else {
             return num;
         }
-    }
+    }*/
     private String infoToJson(Newupload up) {
         try {
             JsonObject jobj = new JsonObject();
