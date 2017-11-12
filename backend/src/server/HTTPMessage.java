@@ -204,6 +204,7 @@ public class HTTPMessage {
 		textPlain,
 		imageJpeg,
 		imagePng,
+        imageGif,
 		Unknown
 	}
     public static int getHTTPStatusCode(HTTPStatus status) {
@@ -273,6 +274,8 @@ public class HTTPMessage {
                 return "text/plain";
             case imagePng:
 				return "image/png";
+            case imageGif:
+                return "image/gif";
 			case Unknown:
 			default:
 				//Return 
@@ -300,6 +303,9 @@ public class HTTPMessage {
         if (mime.equals("image/png")) {
 	        return MimeType.imagePng;
         }
+        if (mime.equals("image/gif")) {
+	        return MimeType.imageGif;
+        }
         return MimeType.Unknown;
     }
     public static String getMimeExtension(MimeType type) {
@@ -312,6 +318,8 @@ public class HTTPMessage {
                 return "txt";
             case imagePng:
                 return "png";
+            case imageGif:
+                return "gif";
             case Unknown:
             default:
                 //Return
