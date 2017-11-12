@@ -109,7 +109,7 @@ public class UserEdit implements IAPIRoute {
         mods[5] = values.getPassword();
         mods[6] = "phone_number";
         mods[7] = values.getPhone();
-        mods[8] = "image";
+        mods[8] = "image_path";
         mods[9] = values.getImageUrl();
         for (int i = 0; i < mods.length; i++) {
             System.out.println(String.format("%d: %s", i, mods[i]));
