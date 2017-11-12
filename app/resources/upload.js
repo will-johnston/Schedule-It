@@ -163,7 +163,7 @@ function uploadLoop(cookie, passCallback, failCallback) {
 		if (i == (chunks.length - 1)) {
 			//console.log("uploading last chunk");
 			//last one
-			uploadchunk(chunk, i, function () {
+			uploadchunk(chunk, cookie, i, function () {
 			   //get image info and set uploadedImg to new image
 				// /upload/info
 				var xhr = new XMLHttpRequest();
