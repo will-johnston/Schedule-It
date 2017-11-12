@@ -3,17 +3,12 @@ package server; /**
  */
 
 import endpoints.IAPIRoute;
-import server.HTTPMessage;
-import server.Router;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.net.ssl.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.Stack;
 
 public class Server {
     private Boolean isSSL;
@@ -188,6 +183,8 @@ public class Server {
             Timer timer = new Timer(30);        //30 second timeout
             boolean inBody = false;
             int length = -1;
+            Stack<Character> jsonStack = new Stack<>();
+            boolean hasPushed = false;
             while (!timer.hasExpired()) {
                 //read what there is, find content-length and verify that the data has been recieved
                 if (in.available() > 0) {
@@ -198,15 +195,29 @@ public class Server {
                         System.out.println(lines[i]);
                         if (inBody) {
                             if (length == 0) {
+                                //GET requests and other requests without bodies
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             //add body data
+                            char[] chars = lines[i].toCharArray();
+                            for (int j = 0; j < chars.length; j++) {
+                                if (chars[j] == '{') {
+                                    jsonStack.push('{');
+                                    hasPushed = true;
+                                }
+                                else if (chars[j] == '}') {
+                                    jsonStack.pop();
+                                }
+                            }
                             body.append(lines[i] + '\n');
-                            if ((body.length() - 1) == length || body.length() == length) {
+                            /*if ((body.length() - 1) == length || body.length() == length) {
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             else {
                                 System.out.println(String.format("Builder length is %d, -1 is %d, content length is %d", body.length(), body.length() - 1, length));
+                            }*/
+                            if (jsonStack.empty() && hasPushed) {
+                                return new HTTPMessage(head.toString(), body.toString());
                             }
                         }
                         else {
