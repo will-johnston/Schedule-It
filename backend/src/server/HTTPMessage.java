@@ -75,8 +75,8 @@ public class HTTPMessage {
     }
     public HTTPMessage(String headers, String body) throws Exception {
         //do it ourselves
-        System.out.println("Recieved headers: " + headers);
-        System.out.println("Recieved body: " + body);
+        //System.out.println("Recieved headers: " + headers);
+        //System.out.println("Recieved body: " + body);
         //Parse HTTP type, method, and HTTP version
         this.body = body;
         String[] lines = headers.split("\n");
