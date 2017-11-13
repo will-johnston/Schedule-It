@@ -29,7 +29,8 @@ public class Socketeer {
         try {
             //System.out.println("Try to send " + message);
             OutputStream out = sock.getOutputStream();
-            out.write(message.getBytes(Charset.forName("UTF-8")));
+            byte[] payload = message.getBytes("UTF-8");
+            out.write(payload, 0, payload.length);
             out.flush();
             sock.close();
             System.out.println("Sent!");
