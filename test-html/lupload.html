@@ -1,0 +1,23 @@
+<!--
+Upload files using the upload.js library
+-->
+<html>
+<head>
+    <script src="resources/upload.js"> </script>
+    <script type="application/javascript">
+        function uploadFile() {
+            var fileElement = document.getElementById("filePick");
+            upload(fileElement, "-1012945030", function(resultPath) {
+                document.getElementById("resultImg").setAttribute("src", resultPath);
+            }, function() {
+                alert("Failed to upload file");
+            });
+        }
+    </script>
+</head>
+<body>
+    <input type="file" id="filePick" title="Pick File" />
+    <button id="goBtn" onclick="uploadFile()">Upload</button>
+    <img src="" id="resultImg" />
+</body>
+</html>

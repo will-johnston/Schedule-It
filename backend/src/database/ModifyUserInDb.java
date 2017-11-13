@@ -56,7 +56,7 @@ public class ModifyUserInDb {
             for (int i = 0; i < length; i += 2) {
                 if (!mods[i].equals("fullname")
                         && !mods[i].equals("password") && !mods[i].equals("email")
-                        && !mods[i].equals("phone_number")) {
+                        && !mods[i].equals("phone_number") && !mods[i].equals("image_path")) {
                     //invalid input
                     //rollback
                     System.out.println("INVALID INPUT");

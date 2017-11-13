@@ -24,7 +24,7 @@ public class GetFromDb {
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
         ResultSet result = null;  //output after query
-        String[] results = new String[7];
+        String[] results = new String[8];
         try {
             //set up connection
             connection = ds.getConnection();
@@ -51,6 +51,7 @@ public class GetFromDb {
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
             results[6] = result.getString("notif_pref_group");
+            results[7] = result.getString("image_path");
             System.out.println("Pref group: " + results[6]);
             return results;
         }
@@ -376,7 +377,7 @@ public class GetFromDb {
             }*/
             result.first();
 
-            String[] results = new String[7];
+            String[] results = new String[8];
             results[0] = result.getString("id");
             results[1] = result.getString("username");
             results[2] = result.getString("password");
@@ -384,6 +385,7 @@ public class GetFromDb {
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
             results[6] = result.getString("notif_pref_group");
+            results[7] = result.getString("image_path");
             return results;
 
         } catch (SQLException e) {

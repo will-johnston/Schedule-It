@@ -11,7 +11,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 //TODO Merge this with RetrieveUserInfo
 public class RetrieveUserInfo {
-    //return {id, username, password, name, email, phone}
+    //return {id, username, password, name, email, phone, image}
     public static String[] getUserFromName(String username) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -22,7 +22,7 @@ public class RetrieveUserInfo {
         Connection connection = null;  //used to connect to database
         Statement statement = null;  //statement to enter command
         ResultSet result = null;  //output after query
-        String[] results = new String[6];
+        String[] results = new String[7];
         try {
             //set up connection
             connection = ds.getConnection();
@@ -48,6 +48,7 @@ public class RetrieveUserInfo {
             results[3] = result.getString("fullname");
             results[4] = result.getString("email");
             results[5] = result.getString("phone_number");
+            results[6] = result.getString("image_path");
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -88,23 +88,6 @@ $(document).ready(function(){
 		xhr.send(data);
 	};
 
-	//Attemp to create a me tab
-	if($("#vPillsContent").children().length == 0) {
-		var data = {};
-		data["cookie"] = cookie;
-		data["groupname"] = "Me";
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
-			function(result) { //success
-				console.log("Successfully created me group");
-			},
-			function(result) { //fail
-				console.log("Failed to created me group");
-			});
-	}
-
-
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
@@ -193,6 +176,66 @@ $(document).ready(function(){
 				},
 				function(result) { //fail
 					alert("Failed to decline group invite");
+				});
+		});
+
+		$(".groupEventGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "going";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventMaybeGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "maybeGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
+				});
+		});
+
+		$(".groupEventNotGoingButton").click(function(event) {
+			var data = {};
+			data["cookie"] = cookie;
+			data["notification"] = {};
+			data["notification"]["id"] = $(event.target).parent().attr("notifID");
+			data["notification"]["type"] = "event.invite";
+			data["response"] = {};
+			data["response"]["status"] = "notGoing";
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
+				function(result) { //success
+					console.log("Successfully responded to event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to respond to event");
 				});
 		});
 	};
@@ -298,6 +341,28 @@ $(document).ready(function(){
 							`;
 
 						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "eventReminder") {
+						var id = notification["id"];
+						var name = notification["name"];
+
+						var html = `
+							<!-- event reminder -->
+							<div class="card">
+								<div class="card-header">
+									Upcoming event
+								</div>
+								<div class="card-body">
+									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
+									<p class="card-text">` + name + ` in one day</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+									</div>
+								</div>
+							</div>
+							`;
 					}
 
 					assignNotificationFunctionality();
@@ -418,6 +483,25 @@ $(document).ready(function(){
 				console.log("Successfully retrieved groups");
 
 				var json = JSON.parse(result);
+
+				//Create a me tab if there are no groups
+				if(json.length == 0) {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupname"] = "Me";
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/create", data,
+						function(result) { //success
+							console.log("Successfully created me group");
+							updateGroups();
+						},
+						function(result) { //fail
+							console.log("Failed to created me group");
+						});
+
+					return;
+				}
 
 				var l = $("#vPillsTab").children().length;
 				for(var i = 0; i < l; i++) {
@@ -566,18 +650,19 @@ $(document).ready(function(){
 
 					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getId", data,
 						function(result) { //success
-							var userID = parseInt(result);
-							console.log(userID);
+							var userID = result.substring(1);
+							userID = userID.substring(0, userID.length - 1);
+							userID = parseInt(userID);
 
-							var messageSend = $(id + " .chatbotTextField").val();
-
-							console.log(messageSend);
+							var messageSend = $("#group" + activeGroupID + "Content .chatbotTextField").val();
 
 							var data = {};
 							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
 							data = JSON.stringify(data);
 
-							accessServer("POST", "http://willjohnston.pythonanywhere.com/api/chatterbot", data,
+							console.log(data);
+
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
@@ -695,6 +780,40 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				alert("Failed to leave group");
+			});
+	});
+
+	$("#groupSettingsModalMuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "true";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully muted group");
+				alert("Successfully muted group");
+			},
+			function(result) { //fail
+				alert("Failed to mute group");
+			});
+	});
+
+	$("#groupSettingsModalUnmuteGroup").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["mute"] = "false";
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/mute", data,
+			function(result) { //success
+				console.log("Successfully unmuted group");
+				alert("Successfully unmuted group");
+			},
+			function(result) { //fail
+				alert("Failed to unmuted group");
 			});
 	});
 
@@ -876,7 +995,7 @@ $(document).ready(function(){
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
-				console.log("Successfully retrieved chat messages");
+				//console.log("Successfully retrieved chat messages");
 
 				//parse messages
 				var json = JSON.parse(result);
@@ -901,7 +1020,7 @@ $(document).ready(function(){
 			},
 			function(result) { //fail
 				//alert("Failed to retrieve chat messages");
-				Console.log("Failed to retrieve chat messages");
+				console.log("Failed to retrieve chat messages");
 			});
 	}
 

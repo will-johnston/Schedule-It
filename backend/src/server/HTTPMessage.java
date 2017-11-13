@@ -75,8 +75,8 @@ public class HTTPMessage {
     }
     public HTTPMessage(String headers, String body) throws Exception {
         //do it ourselves
-        System.out.println("Recieved headers: " + headers);
-        System.out.println("Recieved body: " + body);
+        //System.out.println("Recieved headers: " + headers);
+        //System.out.println("Recieved body: " + body);
         //Parse HTTP type, method, and HTTP version
         this.body = body;
         String[] lines = headers.split("\n");
@@ -204,6 +204,7 @@ public class HTTPMessage {
 		textPlain,
 		imageJpeg,
 		imagePng,
+        imageGif,
 		Unknown
 	}
     public static int getHTTPStatusCode(HTTPStatus status) {
@@ -273,6 +274,8 @@ public class HTTPMessage {
                 return "text/plain";
             case imagePng:
 				return "image/png";
+            case imageGif:
+                return "image/gif";
 			case Unknown:
 			default:
 				//Return 
@@ -291,7 +294,7 @@ public class HTTPMessage {
 	    if (mime.equals("application/json")) {
 	        return MimeType.appJson;
         }
-        if (mime.equals("image/jped")) {
+        if (mime.equals("image/jpeg")) {
 	        return MimeType.imageJpeg;
         }
         if (mime.equals("text/plain")) {
@@ -300,7 +303,28 @@ public class HTTPMessage {
         if (mime.equals("image/png")) {
 	        return MimeType.imagePng;
         }
+        if (mime.equals("image/gif")) {
+	        return MimeType.imageGif;
+        }
         return MimeType.Unknown;
+    }
+    public static String getMimeExtension(MimeType type) {
+        switch (type) {
+            case appJson:
+                return "json";
+            case imageJpeg:
+                return "jpg";
+            case textPlain:
+                return "txt";
+            case imagePng:
+                return "png";
+            case imageGif:
+                return "gif";
+            case Unknown:
+            default:
+                //Return
+                return null;
+        }
     }
 
     //Getters and Setters because Java is dumb
