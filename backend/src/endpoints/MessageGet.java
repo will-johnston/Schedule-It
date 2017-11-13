@@ -116,6 +116,7 @@ public class MessageGet implements IAPIRoute {
                 padded[i] = ' ';
             }
         }
+        System.out.println(String.format("Original length: %d, new length: %d", origArr.length, padded.length));
         return new String(padded);
     }
 }
