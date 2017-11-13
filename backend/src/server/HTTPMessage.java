@@ -154,6 +154,7 @@ public class HTTPMessage {
         response.append("Access-Control-Allow-Origin: *\n\n");
         response.append(message);
         response.append('\n');
+        System.out.println("Length" + message.length());
         return response.toString();
     }
 	public static String makeResponse(String message, HTTPStatus status) {
