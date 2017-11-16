@@ -44,7 +44,6 @@ public class Scheduler {
         //get the proper range
         q1Index = Math.ceil(q1Index);
         q3Index = Math.floor(q3Index);
-
         return new Object[] {q1Index, q3Index};
     }
 
@@ -117,7 +116,19 @@ public class Scheduler {
         long lowerThreshold = (long) (q1 - (iqr * 1.5));
         long upperThreshold = (long) (q3 + (iqr * 1.5));
         //TODO: use binary search tree to find indices for new range - outliers
-        times = times.subList(((Double) range[0]).intValue(), ((Double) range[1]).intValue() + 1);
+        int lowerpost = Collections.binarySearch(times, lowerThreshold);  //find rank
+        int upperpost = Collections.binarySearch(times, upperThreshold);  //find rank
+        if (lowerpost < 0) {
+            lowerpost = (lowerpost + 1) * -1;  //if threshold is not found
+        }
+        if (upperpost < 0) {
+            upperpost = (upperpost + 1) * -1;  //if threshold is not found
+        }
+        if (lowerpost != upperpost) {
+            //makes sure the size is not 1
+            times = times.subList(lowerpost, upperpost);
+        }
+
         //find most frequent index, if frequent enough, mf will be the best event time.
         Long mf = checkMostFrequent((double) range[0], (double) range[1]);
         if (mf == null) {
