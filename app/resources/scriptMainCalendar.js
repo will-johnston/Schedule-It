@@ -84,6 +84,7 @@ $(document).ready(function(){
 				cell.getElementsByClassName("day")[0].classList.add("text-muted");
 				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
+				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
 			}
 		}
 
@@ -93,6 +94,7 @@ $(document).ready(function(){
 			cell.getElementsByClassName("day")[0].classList.remove("text-muted");
 			cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 			cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
+				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
 
 			if(++col == 7) {
 				row++;
@@ -109,6 +111,7 @@ $(document).ready(function(){
 				cell.getElementsByClassName("day")[0].classList.add("text-muted");
 				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
+				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
 			}
 		}
 
