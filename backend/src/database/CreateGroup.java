@@ -53,6 +53,10 @@ public class CreateGroup {
             statement = connection.createStatement();
             statement.executeUpdate(updateJT);
 
+            //add creator to group admins (cols: adminID, groupID, userID)
+            String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + creatorID + ")";
+            statement = connection.createStatement();
+            statement.executeUpdate(addAdmin);
 
         } catch (SQLException e) {
             e.printStackTrace();
