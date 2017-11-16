@@ -80,19 +80,19 @@ $(document).ready(function(){
 
 			for(var i = lastDayOfPrevMonth; i >= 0; i--) {
 				var cell = $("#group" + groupID + "Content .cal")[0].rows[1].cells[i];
-				//cell.innerHTML = prevMonthIndex--;
 				cell.getElementsByClassName("day")[0].innerHTML = prevMonthIndex--;
-				cell.classList.add("text-muted");
-				cell.style.backgroundColor = "";
+				cell.getElementsByClassName("day")[0].classList.add("text-muted");
+				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
+				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
 			}
 		}
 
 		for(var i = 1; i < endDate + 1 && row < 6; i++) {
 			var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
-			//cell.innerHTML = i;
 			cell.getElementsByClassName("day")[0].innerHTML = i;
-			cell.classList.remove("text-muted");
-			cell.style.backgroundColor = "";
+			cell.getElementsByClassName("day")[0].classList.remove("text-muted");
+			cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
+			cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
 
 			if(++col == 7) {
 				row++;
@@ -105,10 +105,10 @@ $(document).ready(function(){
 
 			for(var i = col; i < 7; i++) {
 				var cell = $("#group" + groupID + "Content .cal")[0].rows[5].cells[col++];
-				//cell.innerHTML = index++;
 				cell.getElementsByClassName("day")[0].innerHTML = index++;
-				cell.classList.add("text-muted");
-				cell.style.backgroundColor = "";
+				cell.getElementsByClassName("day")[0].classList.add("text-muted");
+				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
+				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
 			}
 		}
 
@@ -143,14 +143,25 @@ $(document).ready(function(){
 						var row = Math.floor((eventDay + startDay - 1) / 7) + 1;
 
 						var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
-						cell.style.backgroundColor = "LightGreen";
+						cell.getElementsByClassName("dropdown")[0].classList.remove("invisible");
+						cell.getElementsByClassName("eventCount")[0].innerHTML++;
 
+						var eventHTML = `
+							<div class="card">
+								<div class="card-header">
+									` + event["name"] + `
+								</div>
+								<div class="card-body">
+									<img class="float-left" style="margin-right: 10px" src="resources/groupDefaultPhoto.jpg" alt="Default event photo" class="img-thumbnail" width="100">
+									<p>` + event["description"] + `</p>
+								</div>
+								<div class="card-footer">
+									` + event["time"] + `
+									<button type="button" class="btn btn-sm btn-secondary float-right">Edit</button>
+								</div>
+							</div>`;
 
-						var dropDownHTML
-
-						cell.onclick = function() {
-							alert("Event info:\n" + "Name: " + event["name"] + "\n" + "Description: " + event["description"] + "\n" + "Time: " + event["time"] + "\n");
-						}
+						cell.getElementsByClassName("dropdown-menu")[0].innerHTML += eventHTML;
 					}
 				}
 			},
