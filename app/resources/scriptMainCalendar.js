@@ -80,7 +80,8 @@ $(document).ready(function(){
 
 			for(var i = lastDayOfPrevMonth; i >= 0; i--) {
 				var cell = $("#group" + groupID + "Content .cal")[0].rows[1].cells[i];
-				cell.innerHTML = prevMonthIndex--;
+				//cell.innerHTML = prevMonthIndex--;
+				cell.getElementsByClassName("day")[0].innerHTML = prevMonthIndex--;
 				cell.classList.add("text-muted");
 				cell.style.backgroundColor = "";
 			}
@@ -88,7 +89,8 @@ $(document).ready(function(){
 
 		for(var i = 1; i < endDate + 1 && row < 6; i++) {
 			var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
-			cell.innerHTML = i;
+			//cell.innerHTML = i;
+			cell.getElementsByClassName("day")[0].innerHTML = i;
 			cell.classList.remove("text-muted");
 			cell.style.backgroundColor = "";
 
@@ -103,7 +105,8 @@ $(document).ready(function(){
 
 			for(var i = col; i < 7; i++) {
 				var cell = $("#group" + groupID + "Content .cal")[0].rows[5].cells[col++];
-				cell.innerHTML = index++;
+				//cell.innerHTML = index++;
+				cell.getElementsByClassName("day")[0].innerHTML = index++;
 				cell.classList.add("text-muted");
 				cell.style.backgroundColor = "";
 			}
@@ -141,6 +144,9 @@ $(document).ready(function(){
 
 						var cell = $("#group" + groupID + "Content .cal")[0].rows[row].cells[col];
 						cell.style.backgroundColor = "LightGreen";
+
+
+						var dropDownHTML
 
 						cell.onclick = function() {
 							alert("Event info:\n" + "Name: " + event["name"] + "\n" + "Description: " + event["description"] + "\n" + "Time: " + event["time"] + "\n");
