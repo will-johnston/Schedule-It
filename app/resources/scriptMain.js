@@ -280,7 +280,7 @@ $(document).ready(function(){
 								</div>
 								<div class="card-footer">
 									<div class="float-right" notifID="` + notifID + `">
-										<button type="button" class="btn btn-primary btn-sm friendRequestAcceptButton">Accept</button>
+										<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
 										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
 									</div>
 								</div>
@@ -307,7 +307,7 @@ $(document).ready(function(){
 								</div>
 								<div class="card-footer">
 									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-primary btn-sm groupInviteAcceptButton">Accept</button>
+										<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
 										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
 									</div>
 								</div>
@@ -332,7 +332,7 @@ $(document).ready(function(){
 								</div>
 								<div class="card-footer">
 									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-primary btn-sm groupEventGoingButton">Going</button>
+										<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
 										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
 										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
 									</div>

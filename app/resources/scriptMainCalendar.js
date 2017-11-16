@@ -85,6 +85,7 @@ $(document).ready(function(){
 				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
 				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
+				cell.style.backgroundColor = "";
 			}
 		}
 
@@ -94,11 +95,17 @@ $(document).ready(function(){
 			cell.getElementsByClassName("day")[0].classList.remove("text-muted");
 			cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 			cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
-				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
+			cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
+			cell.style.backgroundColor = "";
 
 			if(++col == 7) {
 				row++;
 				col = 0;
+			}
+
+			var today = new Date();
+			if(year == today.getFullYear() && month == today.getMonth() && i == today.getDay()) {
+				cell.style.backgroundColor = "lightGrey";
 			}
 		}
 
@@ -112,6 +119,7 @@ $(document).ready(function(){
 				cell.getElementsByClassName("dropdown")[0].classList.add("invisible");
 				cell.getElementsByClassName("eventCount")[0].innerHTML = 0;
 				cell.getElementsByClassName("dropdown-menu")[0].innerHTML = "";
+				cell.style.backgroundColor = "";
 			}
 		}
 
@@ -151,22 +159,41 @@ $(document).ready(function(){
 
 						var eventHTML = `
 							<div class="card">
-								<div class="card-header">
-									` + event["name"] + `
-								</div>
+								<div class="card-header">` + event["name"] + 
+								`</div>
 								<div class="card-body">
 									<img class="float-left" style="margin-right: 10px" src="resources/groupDefaultPhoto.jpg" alt="Default event photo" class="img-thumbnail" width="100">
 									<p>` + event["description"] + `</p>
 								</div>
 								<div class="card-footer">
-									` + event["time"] + `
-									<button type="button" class="btn btn-sm btn-secondary float-right">Edit</button>
+									<button type="button" class="btn btn-sm btn-secondary float-right editEventButton">Edit</button>
+									<div class="eventTime">` + event["time"] + `</div>
 								</div>
 							</div>`;
 
 						cell.getElementsByClassName("dropdown-menu")[0].innerHTML += eventHTML;
 					}
 				}
+
+				$(".editEventButton").click(function() {
+					var parent = $(this).parent().parent();
+					var name = parent.find(".card-header").html();
+					var info = parent.find(".card-body p").html();
+
+					var dateFull = parent.find(".eventTime").html().split(" ")[0].split("-");
+					var date = dateFull[1] + "/" + dateFull[2] + "/" + dateFull[0];
+
+					var timeFull = parent.find(".eventTime").html().split(" ")[1].split(".")[0].split(":");
+					var time = timeFull[0] + ":" + timeFull[2] + " am"; //there is no way for me to know if it is am or pm right now
+
+
+					$("#editEventModalName").val(name);
+					$("#editEventModalInfo").val(info);
+					$("#editEventModalDate").val(date);
+					$("#editEventModalTime").val(time);
+
+					$("#editEventModal").modal("show");
+				});
 			},
 			function(result) { //fail
 				alert("Failed to retrieve event");
