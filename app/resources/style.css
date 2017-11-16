@@ -117,3 +117,14 @@ body {
 .cal-body tr {
 	height: 60px;
 }
+
+.event-dropdown {
+	padding: 10px 10px 0px 10px;
+	width: 400px;
+	height: 300px;
+	overflow-y: scroll;
+}
+
+.event-dropdown .card {
+	margin-bottom: 10px;
+}
