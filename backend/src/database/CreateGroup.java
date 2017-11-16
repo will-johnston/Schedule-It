@@ -1,4 +1,4 @@
-package database;
+//package database;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import java.sql.Statement;
  * Created by williamjohnston on 10/2/17.
  */
 public class CreateGroup {
-
+    
     public static int  createGroup(String name, int creatorID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
@@ -26,10 +26,23 @@ public class CreateGroup {
             }
             connection = ds.getConnection(); //acquire datasource object
 
+            //add creator to group admins (cols: adminID, groupID, userID)
+            String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + creatorID + ")";
+            statement = connection.createStatement();
+            statement.executeUpdate(addAdmin);
+
+            //get adminID
+            int adminID = -1;
+            String getAdmin = "SELECT adminID from groupAdmins WHERE groupID=" + groupID + " AND userID=" + creatorID;
+            statement = connection.createStatement();
+            result = statement.executeQuery(getAdmin);
+            if (result.next()) {
+                adminID = result.getInt(1);
+            }
+
+
             //if userID already has a group with same name, reject.
-            //String query = "SELECT groupid FROM groups WHERE name='" + name + "' AND creatorID=" + creatorID;
             String query = String.format("SELECT * FROM groups WHERE name='%s' AND creatorID='%s';", name, creatorID);
-            System.out.println(query);
             statement = connection.createStatement();
             result = statement.executeQuery(query);
             if (result.isBeforeFirst()) {
@@ -38,26 +51,29 @@ public class CreateGroup {
                 groupID = -1;
                 return -1;
             }
+            //make sure admin id was found
+            if (adminID < 0) {
+                System.out.println("ERROR: COULD NOT ADD CREATOR TO ADMIN LIST");
+                return -1;
+            } else {
+                //create group
+                String update = "INSERT INTO groups (name, adminsID, creatorID) VALUES('" + name + "'," + adminID + ", " + creatorID + ")";
+                statement = connection.createStatement();
+                statement.executeUpdate(update);
 
-            //create group
-            String update = "INSERT INTO groups (name, creatorID) VALUES('" + name + "'," + creatorID + ")";
-            statement = connection.createStatement();
-            statement.executeUpdate(update);
+                //get group id
+                groupID = getGroupId(name, creatorID, connection);
 
-            //get group id
-            groupID = getGroupId(name, creatorID, connection);
+                //add groupID to groupAdmins
+                String addGID = "update groupAdmins set groupID=" + groupID + " where adminID=" + adminID + " AND userID=" + creatorID;
+                statement = connection.createStatement();
+                statement.executeUpdate(addGID);
 
-
-            //add user to group_user_junction with userID and groupID
-            String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + creatorID + ", " + groupID + ")";
-            statement = connection.createStatement();
-            statement.executeUpdate(updateJT);
-
-            //add creator to group admins (cols: adminID, groupID, userID)
-            String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + creatorID + ")";
-            statement = connection.createStatement();
-            statement.executeUpdate(addAdmin);
-
+                //add user to group_user_junction with userID and groupID
+                String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + creatorID + ", " + groupID + ")";
+                statement = connection.createStatement();
+                statement.executeUpdate(updateJT);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             groupID = -1;
