@@ -10,7 +10,7 @@ import java.sql.Statement;
  */
 public class DeleteGroup {
 	public static void main(String[] args) {
-		boolean bool = DeleteGroup.deleteGroup(16, 16);
+		boolean bool = DeleteGroup.deleteGroup(176,65);
 		System.out.println(bool);
 	}
 
@@ -51,10 +51,16 @@ public class DeleteGroup {
                 }
             }
 
+
             //delete group
             String removeGroup = "DELETE FROM groups where groupid=" + groupID;
             statement = connection.createStatement();
             statement.executeUpdate(removeGroup);
+
+            //remove admins from group
+            String removeAdmins = "DELETE FROM groupAdmins where groupID=" + groupID;
+            statement = connection.createStatement();
+            statement.executeUpdate(removeAdmins);
 
         } catch (SQLException e) {
             ret = false;
