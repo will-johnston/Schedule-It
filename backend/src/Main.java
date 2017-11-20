@@ -45,6 +45,7 @@ public class Main {
             router.add("/user/groups/mute", new GroupMute(tracker));
             router.add("/test/user/delete", new UserDelete());
 	    router.add("/user/getId", new UserGetId(tracker));
+	    router.add("/user/groups/admin/add", new GroupAddAdmin(tracker, handler));
 	    return router;
         }
         catch (Exception e) {
