@@ -1,4 +1,4 @@
-//  package database;
+package database;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
