@@ -142,4 +142,8 @@ public class Group {
     public ArrayList<String> getAdmins() {
         return admins;
     }
+
+    public User getOwner() {
+        return owner;
+    }
 }

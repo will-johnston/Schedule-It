@@ -9,6 +9,7 @@ import server.*;
 import management.*;
 
 import javax.naming.event.ObjectChangeListener;
+import java.util.ArrayList;
 
 /**
  * Created by williamjohnston on 11/20/17.
@@ -53,6 +54,13 @@ public class GroupAddAdmin implements IAPIRoute {
         Group group = user.getGroupById(groupid, tracker);
         if (group == null) {
             String response = "{\"error\":\"Couldn't get group\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
+
+        ArrayList<String> current_admins = group.getAdmins();
+        if (!current_admins.contains(user.getUsername())) {
+            String response = "{\"error\":\"User does not have privileges to promote other group members\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
