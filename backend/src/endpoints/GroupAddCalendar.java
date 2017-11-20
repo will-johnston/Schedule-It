@@ -6,6 +6,8 @@ import server.SSocket;
 import server.Socketeer;
 import management.*;
 import com.google.gson.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -68,31 +70,50 @@ public class GroupAddCalendar implements IAPIRoute {
             return;
         }
         try {
+            //to remove tracker bug
+            Group[] groups = user.getGroups(tracker);
+            if (groups == null) {
+                String response = "{\"error\":\"Couldn't get groups\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            
+            //now get group
             Group group = user.getGroupById(groupid);
-            //int eventID, String name, String type, String description, String image
-            Event event = new Event(0,name, type, description, null);
-            event.setTime(date);
-            event.setGroupID(group.getId());
-            if (group.addEvent(event)) {
-                //send notifications
-                try {
-                    //groupid, eventid
-                    String params = String.format("%d,%d",  group.getId(), event.getEventID());
-                    Notification notification = new Notification(-1,-1,"invite.event", params, event.getTime());
-                    group.notifyMembers(notification, tracker);
-                    Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-                    return;
-                }
-                catch (Exception e) {
-                    String response = "{\"error\":\"Couldn't add notification\"}";
+            //make sure user is admin in group
+            ArrayList<String> admins = group.getAdmins();
+            System.out.println("admins: " + admins);
+            String username = user.getUsername();
+            if (!admins.contains(username)) {
+                //if user is not an admin, create error message
+                String invAdmin = "{\"error\":\"User is not an admin in the group\"}";
+                Socketeer.send(HTTPMessage.makeResponse(invAdmin, HTTPMessage.HTTPStatus.BadRequest), sock);
+            } else {
+                System.out.println("User is an admin");
+                System.out.printf("%s, %s, %s\n", name, type, description);
+                //int eventID, String name, String type, String description, String image
+                Event event = new Event(0, name, type, description, null);
+                event.setTime(date);
+                event.setGroupID(group.getId());
+                if (group.addEvent(event)) {
+                    //send notifications
+                    try {
+                        //groupid, eventid
+                        String params = String.format("%d,%d", group.getId(), event.getEventID());
+                        Notification notification = new Notification(-1, -1, "invite.event", params, event.getTime());
+                        group.notifyMembers(notification, tracker);
+                        Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                        return;
+                    } catch (Exception e) {
+                        String response = "{\"error\":\"Couldn't add notification\"}";
+                        Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                        return;
+                    }
+                } else {
+                    String response = "{\"error\":\"Couldn't add event\"}";
                     Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                     return;
                 }
-            }
-            else {
-                String response = "{\"error\":\"Couldn't add event\"}";
-                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-                return;
             }
         }
         catch (Exception e) {

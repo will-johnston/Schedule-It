@@ -14,13 +14,16 @@ import java.util.List;
  */
 
 public class TimeInputBestTime {
+    public static void main(String[] args) {
+	boolean bool = TimeInputBestTime.findBestTime(104, 104);
+	System.out.println(bool);
+    }
     public static boolean findBestTime(int groupID, int eventID) {
         MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
         Connection connection = null;
         Statement statement = null;
         boolean ret = true;
         try {
-
             //Call DataSourceFactory
             ds = DataSourceFactory.getDataSource();
             //Check for potential failed connection
@@ -30,10 +33,11 @@ public class TimeInputBestTime {
             //Acquire datasource object
             connection = ds.getConnection();
             List<Long> times = new ArrayList<Long>();
-            //get all times, convert to longs
+            //get all times, convert to integers
+            //SELECT UNIX_TIMESTAMP(yourfield) FROM yourtable;
 
 
-	          statement = connection.createStatement();
+	    statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select UNIX_TIMESTAMP(time_preference) from time_inputs where groupID=" + groupID + " and eventID=" + eventID);
             long input;
             if(rs != null) {
@@ -51,11 +55,13 @@ public class TimeInputBestTime {
                 java.sql.Timestamp ts = new java.sql.Timestamp(new java.util.Date().getTime());
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(ts);
-                cal.add(Calendar.DAY_OF_WEEK, 1); //add one day
+                cal.add(Calendar.DAY_OF_WEEK, 1);  //add one day
                 ts.setTime(cal.getTime().getTime()); 
                 ts = new Timestamp(cal.getTime().getTime());
 
                 String time = ts.toString();
+                //System.out.println(time);
+
                 //add "time" to event table, converting back to datetime
                 String addPreset = "UPDATE events SET time='" + time + "' where eventID=" + eventID;
                 statement = connection.createStatement();
@@ -81,12 +87,10 @@ public class TimeInputBestTime {
             statement = connection.createStatement();
             statement.executeUpdate(clearTimeInputs);
 
-
         } catch (SQLException e) {
             e.printStackTrace();
             ret = false;
             try {
-
                 if (statement != null) statement.close();
                 if (connection != null) connection.close();
             } catch (SQLException etwo) {
@@ -96,7 +100,6 @@ public class TimeInputBestTime {
             return ret;
         }
         try {
-
             if (statement != null) statement.close();
             if (connection != null) connection.close();
 

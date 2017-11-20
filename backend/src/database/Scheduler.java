@@ -1,5 +1,4 @@
 package database;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +21,8 @@ public class Scheduler {
 
     //Get Q1 and Q3 for interquartile range
     public Object[] calculateQ1Q3Indices() {
-
         double q1Index;
         double q3Index;
-
         double medianIndex = calculateMedianIndex(0, times.size() - 1);
         //edge case -> list of size 1
         if (medianIndex == 0) {
@@ -59,12 +56,10 @@ public class Scheduler {
         if (end > this.times.size() - 1) {
             return -1;
         }
-
         //only 1 entry edge case
         if (end - start == 0) {
             return end;
         }
-
         double index;
         if ((end - start) % 2 != 0) {
             index = start + ((end - start) / 2) + 0.5;
@@ -74,7 +69,6 @@ public class Scheduler {
 
         return index;
     }
-
 
     public Long checkMostFrequent(double start, double end) {
         //find most frequent
@@ -106,7 +100,6 @@ public class Scheduler {
         if (times == null) {
             return null;
         }
-
         Object[] range = calculateQ1Q3Indices();
         //get IQR (increment upper bound by 1 to handle exclusive domain)
         //apply 1.5 IQR rule
@@ -128,7 +121,6 @@ public class Scheduler {
             //makes sure the size is not 1
             times = times.subList(lowerpost, upperpost);
         }
-
         //find most frequent index, if frequent enough, mf will be the best event time.
         Long mf = checkMostFrequent((double) range[0], (double) range[1]);
         if (mf == null) {
@@ -141,6 +133,5 @@ public class Scheduler {
             //most frequent is best choice
             return mf;
         }
-
     }
 }
