@@ -9,7 +9,7 @@ public class Group {
     User owner;       //username
     String imagePath;
     ArrayList<String> users;
-    ArrayList<String> admins;             //not implemented
+    ArrayList<String> admins;  //contains userID of all admins
     SCalendar calendar;
     boolean gotUsers = false;
 
@@ -36,12 +36,17 @@ public class Group {
         }
         System.out.println("Creating the new group");
         Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
+        //add users
         ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
         for (String member : members) {
             if (!group.users.contains(member)) {
                 group.users.add(member);
             }
         }
+        //add admins
+        ArrayList<Integer> adminBuf = GetGroupAdmins.getGroupAdmins(groupid);
+        group.admins = getUsernameFromIdList.getUsernames(adminBuf);
+        //add group to tracker
         tracker.addGroup(group);
         group.updateUsers(tracker);
         return group;
@@ -128,12 +133,13 @@ public class Group {
 	private void lprint(String message) {
 		System.out.println(message);
 	}
-
     public String getImagePath() {
         return imagePath;
     }
-
     public String getName() {
         return name;
+    }
+    public ArrayList<String> getAdmins() {
+        return admins;
     }
 }
