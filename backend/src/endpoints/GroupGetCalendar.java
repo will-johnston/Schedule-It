@@ -77,7 +77,7 @@ public class GroupGetCalendar implements IAPIRoute {
                     continue;
                 }
                 try {
-                    //id, name, time, description, address, type
+                    //id, name, time, description, address, type, is_open_ended
                     JsonObject item = new JsonObject();
                     item.addProperty("id", event.getEventID());
                     item.addProperty("name", event.getEvent_name());
@@ -85,6 +85,7 @@ public class GroupGetCalendar implements IAPIRoute {
                     item.addProperty("description", event.getDescription());
                     item.addProperty("address", event.getAddress());
                     item.addProperty("type", event.getType());
+                    item.addProperty("is_open_ended", event.getIs_open_ended());
                     jobj.add("event", item);
                 }
                 catch (Exception e) {
