@@ -50,7 +50,7 @@ public class GroupAddCalendar implements IAPIRoute {
         }
         String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3], type = (String)args[5];
 
-        String rawExpDate = (String)args[5];  //expiration date if event is open-ended
+        String rawExpDate = (String)args[6];  //expiration date if event is open-ended
         boolean is_open_ended = false;  //determines if event is open-ended
 
         /**
@@ -73,13 +73,17 @@ public class GroupAddCalendar implements IAPIRoute {
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date newdate;
 
+            System.out.println("rd: " + rawDate);
+            System.out.println("red: " + rawExpDate);
             //Expiration time will be the event time if the event is open-ended.
-            if (rawDate != "None") {
+            if (!rawDate.equals("None")) {
                 //then the event is NOT open-ended
+                System.out.println("raw Date");
                 is_open_ended = false;
                 newdate = utcFormat.parse(rawDate);
-            } else if (rawExpDate != "None") {
+            } else if (!rawExpDate.equals("None")) {
                 //then the event is open-ended, event_time is expiration date in order to show on calendar
+                System.out.println("raw expiration date");
                 is_open_ended = true;
                 newdate = utcFormat.parse(rawExpDate);
             } else {
