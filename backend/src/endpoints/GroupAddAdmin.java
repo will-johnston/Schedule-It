@@ -66,13 +66,13 @@ public class GroupAddAdmin implements IAPIRoute {
         }
 
         User groupmember = tracker.getUserByName((String) args[1]);
-        int memberid = groupmember.getId();  //get id of group member
 
         if (groupmember == null) {
             String response = "{\"error\":\"Group member error. User to add as admin doesn't exist\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        int memberid = groupmember.getId();  //get id of group member
 
         Group[] groups = groupmember.getGroups(tracker);
         if (groups == null) {
