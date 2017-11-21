@@ -12,18 +12,20 @@ public class Event {
     Timestamp time;     //Actually a datetime in the database, but java.sql represents both with the same object
     Timestamp created;
     String description;
+    boolean is_open_ended;  //determines whether an event is open-ended or set ('is_polling_users' field in database)
     //CSVs of users that have responded
     int[] accept;   //String in database
     int[] decline;  //String in database
     int[] maybe;    //String in database
 
-    public Event(int eventID, String name, String type, String description, String image) {
+    public Event(int eventID, String name, String type, String description, String image, boolean is_open_ended) {
         //fill in the basics for now
         this.eventID = eventID;
         this.event_name = name;
         this.type = type;
         this.description = description;
         this.image_path = image;
+        this.is_open_ended = is_open_ended;
     }
     public static Event fromDatabase(int id) {
         if (id <= 0) {
@@ -60,6 +62,13 @@ public class Event {
             }
         }
     }
+
+    public void setIs_open_ended(boolean is_open_ended) {
+        this.is_open_ended = is_open_ended;
+    }
+
+
+
     public void setDecline(String decline) {
         if (decline == null) return;
         if (decline.contains(",")) {
@@ -151,6 +160,11 @@ public class Event {
     }
     public int getGroupID() {
         return groupID;
+    }
+
+
+    public boolean getIs_open_ended() {
+        return this.is_open_ended;
     }
 
     public Timestamp getCreated() {

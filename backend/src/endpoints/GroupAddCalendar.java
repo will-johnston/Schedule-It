@@ -49,21 +49,58 @@ public class GroupAddCalendar implements IAPIRoute {
             return;
         }
         String name = (String)args[1], description = (String)args[2], rawDate = (String)args[3], type = (String)args[5];
+
+        String rawExpDate = (String)args[6];  //expiration date if event is open-ended
+        boolean is_open_ended = false;  //determines if event is open-ended
+
+        /**
+          if rawDate == "null"
+            then must be open ended
+            rawExpDate != "null"
+            find timestamp for rawExpDate
+            create event with time = expiration_date, is_open_ended = true
+         else if rawExpDate == "null"
+            then must be set
+            is_open_ended = false;
+            find timestamp for rawDate
+         **/
+
+
         Timestamp date;
         try {
             //Tue, 31 Oct 2017 17:11:25 EST
             DateFormat utcFormat = new SimpleDateFormat("EEE, d MMM yyyy kk:mm:ss zzz");
             utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date newdate = utcFormat.parse(rawDate);
+            Date newdate;
 
+            System.out.println("rd: " + rawDate);
+            System.out.println("red: " + rawExpDate);
+            //Expiration time will be the event time if the event is open-ended.
+            if (!rawDate.equals("None")) {
+                //then the event is NOT open-ended
+                System.out.println("raw Date");
+                is_open_ended = false;
+                newdate = utcFormat.parse(rawDate);
+            } else if (!rawExpDate.equals("None")) {
+                //then the event is open-ended, event_time is expiration date in order to show on calendar
+                System.out.println("raw expiration date");
+                is_open_ended = true;
+                newdate = utcFormat.parse(rawExpDate);
+            } else {
+                //both are "None", throw error
+                String response = "{\"error\":\"No date or expiration_date\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
             date = new Timestamp(newdate.getTime());
             System.out.println("Timestamp: " + date.toString() + " || parsed time: " + newdate.toString());
-        }
-        catch (Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Couldn't convert to date object");
             date = null;
         }
+
         if (date == null) {
             String response = "{\"error\":\"Invalid date\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -80,6 +117,7 @@ public class GroupAddCalendar implements IAPIRoute {
             
             //now get group
             Group group = user.getGroupById(groupid);
+
             //make sure user is admin in group
             ArrayList<String> admins = group.getAdmins();
             System.out.println("admins: " + admins);
@@ -91,8 +129,9 @@ public class GroupAddCalendar implements IAPIRoute {
             } else {
                 System.out.println("User is an admin");
                 System.out.printf("%s, %s, %s\n", name, type, description);
-                //int eventID, String name, String type, String description, String image
-                Event event = new Event(0, name, type, description, null);
+
+                //int eventID, String name, String type, String description, String image, is_open_ended
+                Event event = new Event(0, name, type, description, null, is_open_ended);
                 event.setTime(date);
                 event.setGroupID(group.getId());
                 if (group.addEvent(event)) {
@@ -146,12 +185,19 @@ public class GroupAddCalendar implements IAPIRoute {
             if (!jobj.has("groupid")) {
                 return null;
             }
+            if (!jobj.has("expiration_time")) {
+                return null;
+            }
+
+
+
             return new Object[] { jobj.get("cookie").getAsInt(),
                     jobj.get("name").getAsString(),
                     jobj.get("description").getAsString(),
                     jobj.get("date").getAsString(),
                     jobj.get("groupid").getAsInt(),
-                    jobj.get("type").getAsString()};
+                    jobj.get("type").getAsString(),
+                    jobj.get("expiration_time").getAsString()};
         }
         catch (Exception e) {
             System.out.print("Invalid arguments");
