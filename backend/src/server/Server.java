@@ -1,19 +1,15 @@
-package server; /**
+package server;
+/**
  * Created by Ryan on 9/20/2017.
  */
 
 import endpoints.IAPIRoute;
-import server.HTTPMessage;
-import server.Router;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.net.ssl.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.Stack;
 
 public class Server {
     private Boolean isSSL;
@@ -139,17 +135,17 @@ public class Server {
                 HTTPMessage mess;*/
                 HTTPMessage mess;
                 try {
-                     mess = getRequest(in);
-                     if (mess == null) {
-                         //timed out
-                         System.out.println("Failed to parse HTTP Message, TIMED OUT");
-                         String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
-                         out.write(response.getBytes(Charset.forName("UTF-8")));
-                         out.flush();
-                         sock.close();
-                         return;
-                     }
-			        System.out.println("Server recieved " + mess.method);
+                    mess = getRequest(in);
+                    if (mess == null) {
+                        //timed out
+                        System.out.println("Failed to parse HTTP Message, TIMED OUT");
+                        String response = HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.GatewayTimeout);
+                        out.write(response.getBytes(Charset.forName("UTF-8")));
+                        out.flush();
+                        sock.close();
+                        return;
+                    }
+                    //System.out.println("Server recieved " + mess.method);
                     //mess.printDebugString();
                 } catch (Exception e) {
                     System.out.println("Failed to parse HTTP Message");
@@ -182,12 +178,14 @@ public class Server {
             }
         }
         public HTTPMessage getRequest(InputStream in) throws Exception {
-            byte[] buffer = new byte[8192];     //8KB
+            byte[] buffer = new byte[20480];     //was 8KB, now 20KB
             StringBuilder head = new StringBuilder();
             StringBuilder body = new StringBuilder();
             Timer timer = new Timer(30);        //30 second timeout
             boolean inBody = false;
             int length = -1;
+            Stack<Character> jsonStack = new Stack<>();
+            boolean hasPushed = false;
             while (!timer.hasExpired()) {
                 //read what there is, find content-length and verify that the data has been recieved
                 if (in.available() > 0) {
@@ -195,18 +193,32 @@ public class Server {
                     String readstr = new String(buffer, 0, read);
                     String[] lines = readstr.split("\n");
                     for (int i = 0; i < lines.length; i++) {
-                        System.out.println(lines[i]);
+                        //System.out.println(lines[i]);
                         if (inBody) {
                             if (length == 0) {
+                                //GET requests and other requests without bodies
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             //add body data
+                            char[] chars = lines[i].toCharArray();
+                            for (int j = 0; j < chars.length; j++) {
+                                if (chars[j] == '{') {
+                                    jsonStack.push('{');
+                                    hasPushed = true;
+                                }
+                                else if (chars[j] == '}') {
+                                    jsonStack.pop();
+                                }
+                            }
                             body.append(lines[i] + '\n');
-                            if ((body.length() - 1) == length ) {
+                            /*if ((body.length() - 1) == length || body.length() == length) {
                                 return new HTTPMessage(head.toString(), body.toString());
                             }
                             else {
-                                System.out.println(String.format("Builder length is %d, content length is %d", body.length(), length));
+                                System.out.println(String.format("Builder length is %d, -1 is %d, content length is %d", body.length(), body.length() - 1, length));
+                            }*/
+                            if (jsonStack.empty() && hasPushed) {
+                                return new HTTPMessage(head.toString(), body.toString());
                             }
                         }
                         else {
@@ -217,7 +229,7 @@ public class Server {
                                 String[] keyvalue = lines[i].split(":");
                                 if (keyvalue.length < 2) {
                                     System.out.println("Content-Length is improperly formatted");
-                                    System.out.println("Was: " + lines[i]);
+                                    //System.out.println("Was: " + lines[i]);
                                     return null;
                                 }
                                 try {
@@ -225,7 +237,7 @@ public class Server {
                                 }
                                 catch (Exception e) {
                                     System.out.println("Couldn't parse Content-Length value");
-                                    System.out.println("Was: " + lines[i]);
+                                    //System.out.println("Was: " + lines[i]);
                                     return null;
                                 }
                             }
@@ -264,4 +276,3 @@ public class Server {
     }
 
 }
-
