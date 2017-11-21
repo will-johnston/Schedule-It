@@ -1,7 +1,5 @@
 package database;
 
-
-
 import java.util.*;
 import management.SCalendar;
 import management.Tracker;
@@ -114,7 +112,9 @@ public class Group {
     public Event getEvent(int id) {
         return calendar.getEvent(id);
     }
-
+    public boolean removeEvent(int eventid) {
+        return calendar.removeEvent(eventid);
+    }
     public int getId() {
         return id;
     }

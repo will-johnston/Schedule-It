@@ -249,6 +249,10 @@ public class SCalendar {
         }
         return null;
     }
+    public boolean removeEvent(int id) {
+
+        return false;
+    }
     class YearCalendar {
         //jan, feb, mar, apri, may, june, july, august, sept, oct, nov, dec
         HashMap<Integer, Event> january;   //1
