@@ -129,9 +129,6 @@ public class Group {
     }
     public Event[] getEvents(int year, int month) {
         Event events[] =  calendar.getEvents(this.id, year, month);
-    	for (Event e: events) {
-		System.out.println("Groups: "  + e.getEvent_name());
-	}
 	return events;
     }
 	private void lprint(String message) {
