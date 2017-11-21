@@ -128,7 +128,11 @@ public class Group {
         return calendar.add(event);
     }
     public Event[] getEvents(int year, int month) {
-        return calendar.getEvents(this.id, year, month);
+        Event events[] =  calendar.getEvents(this.id, year, month);
+    	for (Event e: events) {
+		System.out.println("Groups: "  + e.getEvent_name());
+	}
+	return events;
     }
 	private void lprint(String message) {
 		System.out.println(message);

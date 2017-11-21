@@ -522,7 +522,7 @@ public class GetFromDb {
             if (result.next()) {
                 //name, type, desc, image
                 String name = result.getString("event_name");
-                String type = result.getString("type");
+		String type = result.getString("type");
                 String desc = result.getString("description");
                 String image = result.getString("image_path");
 		int is_polling_users = result.getInt(6); //finds the is_polling users field

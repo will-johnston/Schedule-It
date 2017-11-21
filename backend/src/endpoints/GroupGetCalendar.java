@@ -7,6 +7,8 @@ import server.*;
 import management.*;
 import com.google.gson.*;
 
+import java.util.Arrays;
+
 //Gets the User's calendar
 public class GroupGetCalendar implements IAPIRoute {
     Tracker tracker;
@@ -56,7 +58,12 @@ public class GroupGetCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse("{}", HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
+
         String json = toJson(events);
+        //JsonArray j = new JsonArray().addAll(Arrays.asList(events));
+        //String json = j.toString();
+
+        System.out.println(json);
         if (json == null) {
             String response = "{\"error\":\"Couldn't serialize calendar\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -71,6 +78,7 @@ public class GroupGetCalendar implements IAPIRoute {
         try {
             JsonObject jobj = new JsonObject();
             System.out.println("Adding events");
+            int counter = 0;
             for (Event event : events) {
                 if (event == null) {
                     System.out.println("Tried to serialize null event");
@@ -86,12 +94,14 @@ public class GroupGetCalendar implements IAPIRoute {
                     item.addProperty("address", event.getAddress());
                     item.addProperty("type", event.getType());
                     item.addProperty("is_open_ended", event.getIs_open_ended());
-                    jobj.add("event", item);
+                    jobj.add("event" + counter, item);
                 }
                 catch (Exception e) {
                     System.out.println("Couldn't serialize event");
                     e.printStackTrace();
                 }
+                counter++;
+
             }
             System.out.println("Serializing to json");
             Gson gson = new Gson();
