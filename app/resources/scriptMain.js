@@ -458,6 +458,8 @@ $(document).ready(function(){
 
 		data = JSON.stringify(data);
 
+		console.log(data);
+
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
 			function(result) { //success
 				console.log("Successfully saved user account settings");
