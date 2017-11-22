@@ -374,8 +374,9 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	setInterval(updateNotifications, 30000);
-	updateNotifications();
+	//temporary
+	//setInterval(updateNotifications, 30000);
+	//updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -383,6 +384,7 @@ $(document).ready(function(){
 	var username;
 	var email;
 	var phoneNumber;
+	//var image;
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
 
@@ -399,16 +401,20 @@ $(document).ready(function(){
 
 				fullName = json.fullname;
 				username = json.username;
-				email = json.email
+				email = json.email;
 				phoneNumber = json.phone;
+				path = json.image;
 
 				$("#settingsModalFullNameField").val(fullName);
 				$("#settingsModalUsernameField").val(username);
 				$("#settingsModalEmailField").val(email);
 				$("#settingsModalPhoneNumberField").val(phoneNumber);
+				if(path != "") {
+					$("#settingsModalProfilePicture").attr("src", path);
+				}
 				$("#settingsModalChangePasswordField").val("");
 				$("#settingsModalConfirmPasswordField").val("");
-				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
+				$("#settingsModalChooseFileButton").val("");
 			},
 			function(result) { //fail
 				alert("Failed to obtain account settings");
@@ -421,7 +427,6 @@ $(document).ready(function(){
 		var phoneNumberChanged = $("#settingsModalPhoneNumberField").val();
 		var passwordChanged = $("#settingsModalChangePasswordField").val();
 		var confirmPasswordChanged = $("#settingsModalConfirmPasswordField").val();
-		//var picURL = ...
 
 		var data = {};
 		data["username"] = username;
@@ -449,6 +454,8 @@ $(document).ready(function(){
 			}
 		}
 
+		data["image"] = path;
+
 		data = JSON.stringify(data);
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
@@ -464,6 +471,28 @@ $(document).ready(function(){
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
+	});
+
+	$("#settingsModalUploadButton").click(function() {
+		//check that file element has value
+		var file = $("#settingsModalChooseFileButton").val();
+
+		if(file == null || file == "") {
+			$("#settingsModalChooseFileButton").parent().addClass("is-invalid");
+			return;
+		}
+
+		$("#settingsModalChooseFileButton").parent().removeClass("is-invalid");
+
+		upload(document.getElementById("settingsModalChooseFileButton"),
+			cookie,
+			function() {
+				$("#settingsModalProfilePicture").attr("src", path);
+				console.log("Successfully uploaded profile picture, path: " + path);
+			},
+			function() {
+				console.log("Failed to upload profile picture");
+			});
 	});
 
 	//LOGOUT BUTTON
