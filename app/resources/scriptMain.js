@@ -275,7 +275,6 @@ $(document).ready(function(){
 									Friend request
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
 								</div>
 								<div class="card-footer">
@@ -302,7 +301,6 @@ $(document).ready(function(){
 									Group invite
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">You have been invited to join ` + name + `</p>
 								</div>
 								<div class="card-footer">
@@ -327,7 +325,6 @@ $(document).ready(function(){
 									Event added
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">An event has been created: ` + name + `</p>
 								</div>
 								<div class="card-footer">
@@ -353,7 +350,6 @@ $(document).ready(function(){
 									Upcoming event
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">` + name + ` in one day</p>
 								</div>
 								<div class="card-footer">
@@ -374,8 +370,9 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	setInterval(updateNotifications, 30000);
-	updateNotifications();
+	//temporary
+	//setInterval(updateNotifications, 30000);
+	//updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -383,6 +380,7 @@ $(document).ready(function(){
 	var username;
 	var email;
 	var phoneNumber;
+	//var image;
 	$("#accountSettingsButton").click(function() {
 		//populate the account settings modal fields
 
@@ -399,16 +397,20 @@ $(document).ready(function(){
 
 				fullName = json.fullname;
 				username = json.username;
-				email = json.email
+				email = json.email;
 				phoneNumber = json.phone;
+				path = json.image;
 
 				$("#settingsModalFullNameField").val(fullName);
 				$("#settingsModalUsernameField").val(username);
 				$("#settingsModalEmailField").val(email);
 				$("#settingsModalPhoneNumberField").val(phoneNumber);
+				if(path != "") {
+					$("#settingsModalProfilePicture").attr("src", path);
+				}
 				$("#settingsModalChangePasswordField").val("");
 				$("#settingsModalConfirmPasswordField").val("");
-				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
+				$("#settingsModalChooseFileButton").val("");
 			},
 			function(result) { //fail
 				alert("Failed to obtain account settings");
@@ -421,7 +423,6 @@ $(document).ready(function(){
 		var phoneNumberChanged = $("#settingsModalPhoneNumberField").val();
 		var passwordChanged = $("#settingsModalChangePasswordField").val();
 		var confirmPasswordChanged = $("#settingsModalConfirmPasswordField").val();
-		//var picURL = ...
 
 		var data = {};
 		data["username"] = username;
@@ -449,7 +450,11 @@ $(document).ready(function(){
 			}
 		}
 
+		data["image"] = path;
+
 		data = JSON.stringify(data);
+
+		console.log(data);
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
 			function(result) { //success
@@ -464,6 +469,28 @@ $(document).ready(function(){
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
+	});
+
+	$("#settingsModalUploadButton").click(function() {
+		//check that file element has value
+		var file = $("#settingsModalChooseFileButton").val();
+
+		if(file == null || file == "") {
+			$("#settingsModalChooseFileButton").parent().addClass("is-invalid");
+			return;
+		}
+
+		$("#settingsModalChooseFileButton").parent().removeClass("is-invalid");
+
+		upload(document.getElementById("settingsModalChooseFileButton"),
+			cookie,
+			function() {
+				$("#settingsModalProfilePicture").attr("src", path);
+				console.log("Successfully uploaded profile picture, path: " + path);
+			},
+			function() {
+				console.log("Failed to upload profile picture");
+			});
 	});
 
 	//LOGOUT BUTTON
@@ -522,7 +549,6 @@ $(document).ready(function(){
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
-										<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 										<h3>` + name + `</h3>
 										<p>` + info + `</p>`;
 
