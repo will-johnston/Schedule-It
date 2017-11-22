@@ -64,7 +64,7 @@ $(document).ready(function(){
 						var json = JSON.parse(recieved);
 						storeLoginCookie(json.cookie);
 
-						window.location.href = "https://scheduleit.duckdns.org/pictureUpload.html";
+						window.location.href = "https://scheduleit.duckdns.org/pictureUpload.html?" + userName;
 					} else { //Invalid registration, stop
 						window.alert("Failed to create account.");
 						document.getElementById("userName").value = "";
@@ -206,10 +206,53 @@ $(document).ready(function(){
 	/**
 	 * Upload selected photo from user's computer (when creating account)
 	 */
+	var accessServer = function(method, url, data, onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				onSuccess(xhr.response);
+			}
+			else {
+				console.log("FAILED TO ACCESS SERVER");
+				console.log("DATA: " + data);
+				console.log("RESULT: " + xhr.response);
+				onFail(xhr.response);
+			}
+		};
+
+		xhr.send(data);
+	};
+
 	$("#uploadPhoto").click(function() {
-		//TODO: get filename from choose file button
-		//TODO: upload file to DB
-		window.location.href = "http://scheduleit.duckdns.org/main.html";		
+		if($("#my-file-selector").val() == "") {
+			alert("No image chosen");
+			return;
+		}
+
+		upload(document.getElementById("my-file-selector"),
+			document.cookie.split("=")[1],
+			function() {
+				console.log("Successfully uploaded profile picture, path: " + path);
+
+				var data = {};
+				data["cookie"] = document.cookie.split("=")[1];
+				data["username"] = window.location.href.split("?")[1];
+				data["image"] = path;
+				data = JSON.stringify(data);
+
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/edit", data,
+					function(result) { //success
+						console.log("Successfully saved user account settings");
+						window.location.href = "https://scheduleit.duckdns.org/main.html";
+					},
+					function(result) { //fail
+						alert("Failed to save user account settings");
+					});
+			},
+			function() {
+				console.log("Failed to upload profile picture");
+			});
 	});
 
 	//THIS IS THE CODE FOR THE INDEXTEMPLATE
