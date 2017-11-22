@@ -162,7 +162,6 @@ $(document).ready(function(){
 								<div class="card-header">` + event["name"] + 
 								`</div>
 								<div class="card-body">
-									<img class="float-left" style="margin-right: 10px" src="resources/groupDefaultPhoto.jpg" alt="Default event photo" class="img-thumbnail" width="100">
 									<p>` + event["description"] + `</p>
 								</div>
 								<div class="card-footer">
