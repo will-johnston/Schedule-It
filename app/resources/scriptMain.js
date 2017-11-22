@@ -275,7 +275,6 @@ $(document).ready(function(){
 									Friend request
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/profileDefaultPhoto.png" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
 								</div>
 								<div class="card-footer">
@@ -302,7 +301,6 @@ $(document).ready(function(){
 									Group invite
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">You have been invited to join ` + name + `</p>
 								</div>
 								<div class="card-footer">
@@ -327,7 +325,6 @@ $(document).ready(function(){
 									Event added
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">An event has been created: ` + name + `</p>
 								</div>
 								<div class="card-footer">
@@ -353,7 +350,6 @@ $(document).ready(function(){
 									Upcoming event
 								</div>
 								<div class="card-body">
-									<img class="float-left" src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" width="80" class="img-thumbnail">
 									<p class="card-text">` + name + ` in one day</p>
 								</div>
 								<div class="card-footer">
@@ -553,7 +549,6 @@ $(document).ready(function(){
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
-										<img src="resources/groupDefaultPhoto.jpg" alt="Default Group Photo" class="img-thumbnail" width="100">
 										<h3>` + name + `</h3>
 										<p>` + info + `</p>`;
 
