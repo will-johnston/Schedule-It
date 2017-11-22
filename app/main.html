@@ -213,16 +213,31 @@
 							<textarea class="form-control" rows="3" id="createEventModalInformation"></textarea>
 						</div>
 					</div>
+					<div class="form-group row" id="createEventModalRadioRow">
+						<label class="col-4 col-form-label">Type</label>
+						<div class="col-8">
+							<label class="custom-control custom-radio">
+								<input id="createEventModalStaticRadio" name="radio" type="radio" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description">Static</span>
+							</label>
+							<label class="custom-control custom-radio">
+								<input id="createEventModalBestFitRadio" name="radio" type="radio" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description">Best fit</span>
+							</label>
+						</div>
+					</div>
 					<div class="form-group row">
-						<label class="col-4 col-form-label">Date</label>
+						<label class="col-4 col-form-label" id="createEventModalDateLabel">Date</label>
 						<div class="col-8">
 							<input class="form-control" type="text" id="createEventModalDate" placeholder="mm/dd/yyyy">
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-4 col-form-label">Time</label>
+						<label class="col-4 col-form-label" id="createEventModalTimeLabel">Time</label>
 						<div class="col-8">
-							<input class="form-control" type="text" id="createEventModalTime" placeholder="2:30 pm">
+							<input class="form-control" type="text" id="createEventModalTime" placeholder="hh:mm am/pm">
 						</div>
 					</div>
 				</div>

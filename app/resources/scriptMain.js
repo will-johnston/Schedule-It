@@ -370,9 +370,8 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	//temporary
-	//setInterval(updateNotifications, 30000);
-	//updateNotifications();
+	setInterval(updateNotifications, 30000);
+	updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -885,9 +884,22 @@ $(document).ready(function(){
 			$("#createEventModalName").removeClass("is-invalid");
 		}
 
-		var dateArr = date.split("/");
+		//must specify event type
+		var staticEvent;
+		if(!$("#createEventModalStaticRadio").prop("checked") && !$("#createEventModalBestFitRadio").prop("checked")) {
+			$("#createEventModalStaticRadio").parent().addClass("is-invalid");
+			$("#createEventModalBestFitRadio").parent().addClass("is-invalid");
+			return;
+		}
+		else {
+			$("#createEventModalStaticRadio").parent().removeClass("is-invalid");
+			$("#createEventModalBestFitRadio").parent().removeClass("is-invalid");
+
+			staticEvent = $("#createEventModalStaticRadio").prop("checked") ? true : false;
+		}
 
 		//date must have day, month and year
+		var dateArr = date.split("/");
 		if(dateArr.length != 3) {
 			$("#createEventModalDate").addClass("is-invalid");
 			return;
@@ -952,9 +964,19 @@ $(document).ready(function(){
 		data["cookie"] = cookie;
 		data["name"] = name;
 		data["description"] = info;
-		data["type"] = "group.event";
-		data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
 		data["groupid"] = activeGroupID;
+
+		if(staticEvent) {
+			data["type"] = "group.event";
+			data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+			data["expiration_time"] = "None";
+		}
+		else {
+			data["type"] = "Generic";
+			data["date"] = "None";
+			data["expiration_time"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+		}
+
 		data = JSON.stringify(data);
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/add", data,
@@ -967,7 +989,18 @@ $(document).ready(function(){
 				alert("Failed to create event");
 			});
 	});
-    
+
+	$("#createEventModalRadioRow").click(function() {
+		if($("#createEventModalStaticRadio").prop("checked")) {
+			$("#createEventModalDateLabel").html("Date");
+			$("#createEventModalTimeLabel").html("Time");
+		}
+		else if($("#createEventModalBestFitRadio").prop("checked")) {
+			$("#createEventModalDateLabel").html("Expiration date");
+			$("#createEventModalTimeLabel").html("Expiration time");
+		}
+	});
+
    //getting messages
 	var messages = [];
 
