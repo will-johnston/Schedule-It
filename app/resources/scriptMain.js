@@ -374,8 +374,9 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	setInterval(updateNotifications, 30000);
-	updateNotifications();
+	//temporary
+	//setInterval(updateNotifications, 30000);
+	//updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -409,6 +410,7 @@ $(document).ready(function(){
 				$("#settingsModalChangePasswordField").val("");
 				$("#settingsModalConfirmPasswordField").val("");
 				$("#settingsModalPicture").attr("src", "resources/profileDefaultPhoto.png");
+				$("#settingsModalChooseFileButton").val("");
 			},
 			function(result) { //fail
 				alert("Failed to obtain account settings");
@@ -464,6 +466,30 @@ $(document).ready(function(){
 	});
 	$("#accountSettingsModalDeleteAccountButton").click(function() {
 		
+	});
+
+	$("#settingsModalUploadButton").click(function() {
+		//check that file element has value
+		var file = $("#settingsModalChooseFileButton").val();
+		console.log(file);
+
+		if(file == null || file == "") {
+			$("#settingsModalChooseFileButton").parent().addClass("is-invalid");
+			return;
+		}
+
+		$("#settingsModalChooseFileButton").parent().removeClass("is-invalid");
+
+		upload(document.getElementById("settingsModalChooseFileButton"),
+			cookie,
+			function() {
+				console.log(path);
+				$("#settingsModalProfilePicture").attr("src", path);
+				console.log("Successfully uploaded profile picture");
+			},
+			function() {
+				console.log("Failed to upload profile picture");
+			});
 	});
 
 	//LOGOUT BUTTON
