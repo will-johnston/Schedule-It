@@ -1,5 +1,6 @@
 package endpoints;
 
+import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
 import database.Group;
 import database.User;
 import com.google.gson.Gson;
@@ -54,6 +55,7 @@ public class GetMembers implements IAPIRoute {
         }
         JsonObject response = new JsonObject();
         for (int i = 0; i < usernames.length; i++) {
+            System.out.println(String.format("i: %d length: %d", i, usernames.length));
             User member = tracker.getUserByName(usernames[i]);
             if (member == null) {
                 System.out.println("Couldn't add Member with name: " + usernames[i]);
