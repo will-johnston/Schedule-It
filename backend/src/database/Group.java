@@ -51,6 +51,7 @@ public class Group {
         group.updateUsers(tracker);
         //check for calerence
         if (!group.containsUsername(tracker.getClarence().getUsername())) {
+            System.out.println("Adding clarence to group");
             //add clarence
             if (group.addUserInDb(tracker.getClarence().id)) {
                 group.addUser(tracker.getClarence());
