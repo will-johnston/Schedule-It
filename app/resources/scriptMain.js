@@ -552,7 +552,8 @@ $(document).ready(function(){
 										<p>` + info + `</p>`;
 
 										if(name != "Me") {
-											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>';
+											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" style="margin-right: 10px">Group settings</button>';
+											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
 						
 					contentHTML += `
@@ -614,14 +615,61 @@ $(document).ready(function(){
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
-					console.log("clicked");
 					//populate the group settings modal with group information
 					var parent = $(event.target).parent().parent().parent().parent();
 
 					$(".groupFriendsList").attr("groupID", parent.attr("groupID"));
 
 					$("#groupSettingsModalName").val(parent.attr("groupName"));
-					//info & pic...
+					//info...
+
+					//if the user is not an admin, restrict access
+					var data = {};
+					data["cookie"] = cookie;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+						function(result) { //success
+							var data = {};
+							data["cookie"] = cookie;
+							data["groupid"] = activeGroupID;
+							data["groupmember"] = JSON.parse(result)["username"];
+							data = JSON.stringify(data);
+
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+								function(result) { //success
+									console.log("User is admin of active group");
+									$("#groupSettingsModal").modal("show");
+								},
+								function(result) { //fail
+									console.log("User is not admin of active group");
+									alert("You are not an admin of this group");
+									setTimeout(function() {
+										$("#groupSettingsModal").modal("hide");
+									}, 500);
+								});
+							
+						},
+						function(result) { //fail
+							console.log("Failed to get user settings");
+						});
+				});
+
+				$(".leaveGroupButton").click(function() {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupid"] = activeGroupID;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/leave", data,
+						function(result) { //success
+							console.log("Successfully left group");
+
+							updateGroups();
+						},
+						function(result) { //fail
+							alert("Failed to leave group");
+						});
 				});
 
 				$(".chatbotButton").off();
@@ -742,28 +790,40 @@ $(document).ready(function(){
 		$("#newGroupModalName").removeClass("is-invalid");
 	});
 
+	$("#groupSettingsModal").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+			function(result) { //success
+				var data = {};
+				data["cookie"] = cookie;
+				data["groupid"] = activeGroupID;
+				data["groupmember"] = JSON.parse(result)["username"];
+				data = JSON.stringify(data);
+
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+					function(result) { //success
+						console.log("User is admin")
+					},
+					function(result) { //fail
+						console.log("User is not admin");
+						$("#groupSettingsModal").modal("hide");
+						alert("You are not an admin of this group");
+					});
+				
+			},
+			function(result) { //fail
+				console.log("Failed to get user settings");
+			});
+	});
+
 	$("#groupSettingsSaveButton").click(function() {
 		//Write the changed values to the database
 
 
 		$("#groupSettingsModal").modal("hide");
-	});
-
-	$("#groupSettingsLeaveGroupButton").click(function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data["groupid"] = activeGroupID;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/leave", data,
-			function(result) { //success
-				console.log("Successfully left group");
-
-				updateGroups();
-			},
-			function(result) { //fail
-				alert("Failed to leave group");
-			});
 	});
 
 	$("#groupSettingsModalMuteGroup").click(function() {
