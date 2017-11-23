@@ -1,9 +1,9 @@
 /**
  * Created by williamjohnston on 11/11/17.
  */
-import com.sun.tools.javac.util.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
+import database.*;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;

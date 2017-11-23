@@ -1,6 +1,7 @@
 import endpoints.*;
 import server.*;
 import management.*;
+
 public class Main {
 
     //server.Router initialization should be done here
@@ -38,29 +39,30 @@ public class Main {
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
-	    router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
-	    router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
-	    router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
+            router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
+            router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
+            router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/mute", new GroupMute(tracker));
+            router.add("/user/groups/members", new GetMembers(tracker));
             router.add("/test/user/delete", new UserDelete());
-	    router.add("/user/getId", new UserGetId(tracker));
-	    router.add("/user/groups/admin/add", new GroupAddAdmin(tracker, handler));
-	    router.add("/user/groups/admin/remove", new GroupRemoveAdmin(tracker, handler));
-	    return router;
-        }
-        catch (Exception e) {
+            router.add("/user/getId", new UserGetId(tracker));
+            router.add("/user/groups/admin/add", new GroupAddAdmin(tracker, handler));
+            router.add("/user/groups/admin/remove", new GroupRemoveAdmin(tracker, handler));
+            router.add("/user/groups/admin/check", new CheckIfAdmin(tracker));
+            return router;
+        } catch (Exception e) {
             System.out.println("Init server.Router encountered an error!");
             System.out.println(String.format("Error Message: %s", e.getMessage()));
             e.printStackTrace();
             return null;
         }
     }
+
     public static void main(String[] args) throws Exception {
-	// write your code here
-        Server server = new Server(8181,8282);
+        // write your code here
+        Server server = new Server(8181, 8282);
         Router router = initRouter();
-        Tracker tracker = new Tracker();
         if (router == null) {
             //An error occured, can't start server
             System.out.println("Failed in initailze the router, shutting down the server");
