@@ -128,3 +128,7 @@ body {
 .event-dropdown .card {
 	margin-bottom: 10px;
 }
+
+#settingsModalFileLabel {
+	margin-bottom: 10px;
+}

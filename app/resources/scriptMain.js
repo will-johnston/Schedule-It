@@ -88,6 +88,12 @@ $(document).ready(function(){
 		xhr.send(data);
 	};
 
+	$("#settingsModalChooseFileButton").change(function() {
+		var button = $("#settingsModalChooseFileButton");
+		var dirArr = button.val().split("\\");
+		$("#settingsModalFileLabel").html(dirArr[dirArr.length - 1]);
+	});
+
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
