@@ -65,7 +65,7 @@ public class GetMembers implements IAPIRoute {
                 memberObj.addProperty("username", member.getUsername());
                 memberObj.addProperty("name", member.getName());
                 memberObj.addProperty("image", member.getImageUrl());
-                response.add("member", memberObj);
+                response.add("member" + i, memberObj);
             }
         }
         Socketeer.send(HTTPMessage.makeResponse(response.toString(), HTTPMessage.HTTPStatus.OK), sock);
