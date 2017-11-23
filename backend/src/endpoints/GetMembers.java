@@ -1,6 +1,5 @@
 package endpoints;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
 import database.Group;
 import database.User;
 import com.google.gson.Gson;
@@ -40,7 +39,7 @@ public class GetMembers implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        int groupid = (int) args[2];
+        int groupid = (int) args[1];
         Group group = user.getGroupById(groupid, tracker);
         if (group == null) {
             String response = "{\"error\":\"Couldn't get group\"}";
