@@ -51,7 +51,7 @@ public class CheckIfAdmin implements IAPIRoute {
         for (int i = 0; i < current_admins.size(); i++) {
             System.out.println(String.format("%d: %s", i, current_admins.get(i)));
         }
-        if (!current_admins.contains(user.getUsername())) {
+        if (!contains((String)args[1], current_admins)) {
             String response = "{\"value\":\"false\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
             return;
@@ -61,6 +61,14 @@ public class CheckIfAdmin implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
+    }
+    private boolean contains(String key, ArrayList<String> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).toLowerCase().equals(key.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
     Object[] parseArgs(String message) {
         try {
