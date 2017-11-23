@@ -70,6 +70,7 @@ public class Group {
             gotUsers = true;
             return;
         }
+        System.out.println("Updating users with member count of " + members.size());
         for (String member : members) {
             User user = User.fromDatabase(member);
             if (user == null) {
