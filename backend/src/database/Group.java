@@ -36,19 +36,12 @@ public class Group {
         }
         System.out.println("Creating the new group");
         Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
-        //add users
-        ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
-        for (String member : members) {
-            if (!group.users.contains(member)) {
-                group.users.add(member);
-            }
-        }
+        group.updateUsers(tracker);
         //add admins
         ArrayList<Integer> adminBuf = GetGroupAdmins.getGroupAdmins(groupid);
         group.admins = getUsernameFromIdList.getUsernames(adminBuf);
         //add group to tracker
         tracker.addGroup(group);
-        group.updateUsers(tracker);
         //check for calerence
         if (!group.containsUsername(tracker.getClarence().getUsername())) {
             System.out.println("Adding clarence to group");
