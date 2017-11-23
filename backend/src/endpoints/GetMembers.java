@@ -52,7 +52,7 @@ public class GetMembers implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        JsonObject response = new JsonObject();
+        ArrayList<JsonObject> memberList = new ArrayList<>(usernames.length);
         for (int i = 0; i < usernames.length; i++) {
             System.out.println(String.format("i: %d length: %d", i, usernames.length));
             User member = tracker.getUserByName(usernames[i]);
@@ -65,10 +65,11 @@ public class GetMembers implements IAPIRoute {
                 memberObj.addProperty("username", member.getUsername());
                 memberObj.addProperty("name", member.getName());
                 memberObj.addProperty("image", member.getImageUrl());
-                response.add("member" + i, memberObj);
+                memberList.add(memberObj);
             }
         }
-        Socketeer.send(HTTPMessage.makeResponse(response.toString(), HTTPMessage.HTTPStatus.OK), sock);
+        Gson gson = new Gson();
+        Socketeer.send(HTTPMessage.makeResponse(gson.toJson(memberList), HTTPMessage.HTTPStatus.OK), sock);
     }
     //returns cookie, groupid
     int[] parseArgs(String message) {
