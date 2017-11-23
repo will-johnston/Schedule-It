@@ -73,6 +73,11 @@ public class Group {
         }
         gotUsers = true;
     }
+    public String[] getMembers() {
+        String[] members = new String[users.size()];
+        users.toArray(members);
+        return members;
+    }
     public void notifyMembers(Notification notification, Tracker tracker) throws Exception {
         if (notification == null || tracker == null) {
             throw new Exception("Invalid arguments");
