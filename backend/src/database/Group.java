@@ -1,6 +1,8 @@
 package database;
 
 import java.util.*;
+
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import management.SCalendar;
 import management.Tracker;
 public class Group {
@@ -49,6 +51,13 @@ public class Group {
         //add group to tracker
         tracker.addGroup(group);
         group.updateUsers(tracker);
+        //check for calerence
+        if (!group.containsUsername(tracker.getClarence().getUsername())) {
+            //add clarence
+            if (group.addUserInDb(tracker.getClarence().id)) {
+                group.addUser(tracker.getClarence());
+            }
+        }
         return group;
         //set list of users and eventually admins
     }
@@ -72,6 +81,14 @@ public class Group {
             }
         }
         gotUsers = true;
+    }
+    public boolean containsUsername(String username) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).toLowerCase().equals(username.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
     public String[] getMembers() {
         String[] members = new String[users.size()];
@@ -109,6 +126,14 @@ public class Group {
     public boolean removeUser(User user) {
         return users.remove(user);
     }
+    public boolean addUserInDb(int userid) {
+        if (ModifyGroup.addUserToGroup(id, userid)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public void addUser(User user) {
         if (!users.contains(user.getUsername())) {
             users.add(user.username);
@@ -134,7 +159,7 @@ public class Group {
     }
     public Event[] getEvents(int year, int month) {
         Event events[] =  calendar.getEvents(this.id, year, month);
-	return events;
+	    return events;
     }
 	private void lprint(String message) {
 		System.out.println(message);

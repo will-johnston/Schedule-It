@@ -48,6 +48,9 @@ public class CheckIfAdmin implements IAPIRoute {
         }
 
         ArrayList<String> current_admins = group.getAdmins();
+        for (int i = 0; i < current_admins.size(); i++) {
+            System.out.println(String.format("%d: %s", i, current_admins.get(i)));
+        }
         if (!current_admins.contains(user.getUsername())) {
             String response = "{\"value\":\"false\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
