@@ -84,7 +84,7 @@ public class GroupAddCalendar implements IAPIRoute {
             //ArrayList<String> admins = group.getAdmins();
             //System.out.println("admins: " + admins);
             //String username = user.getUsername();
-            if (group.isAdmin(user.getUsername())) {
+            if (!group.isAdmin(user.getUsername())) {
                 //if user is not an admin, create error message
                 String invAdmin = "{\"error\":\"User is not an admin in the group\"}";
                 Socketeer.send(HTTPMessage.makeResponse(invAdmin, HTTPMessage.HTTPStatus.BadRequest), sock);
