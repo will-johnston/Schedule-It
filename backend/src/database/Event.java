@@ -169,6 +169,18 @@ public class Event {
         return type;
     }
 
+    public void setName(String event_name) {
+        this.event_name = event_name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setEventID(int eventID) {
         this.eventID = eventID;
     }

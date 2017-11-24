@@ -7,7 +7,12 @@ import server.*;
 import management.*;
 import com.google.gson.*;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class GroupEditCalendar implements IAPIRoute {
     Tracker tracker;
@@ -59,9 +64,42 @@ public class GroupEditCalendar implements IAPIRoute {
         }
         String name = getName(args);
         String type = getType(args);
-        String date = getDate(args);
+        String rawDate = getDate(args);
         String description = getDescription(args);
-        //remove
+        Timestamp date = null;
+        if (rawDate != null) {
+            try {
+                //Tue, 31 Oct 2017 17:11:25 EST
+                DateFormat utcFormat = new SimpleDateFormat("EEE, d MMM yyyy kk:mm:ss zzz");
+                utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date newdate = utcFormat.parse(rawDate);
+
+                date = new Timestamp(newdate.getTime());
+                System.out.println("Timestamp: " + date.toString() + " || parsed time: " + newdate.toString());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Couldn't convert to date object");
+                date = null;
+            }
+            if (date == null) {
+                String response = "{\"error\":\"Invalid date\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+        }
+        if (name != null) {
+            event.setName(name);
+        }
+        if (type != null) {
+            event.setType(type);
+        }
+        if (date != null) {
+            event.setTime(date);
+        }
+        if (description != null) {
+            event.setDescription(description);
+        }
     }
     //returns cookie, groupid, eventid, name, description, type, date
     Object[] parseArgs(String body) {
