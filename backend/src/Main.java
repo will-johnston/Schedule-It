@@ -84,7 +84,6 @@ public class Main {
         // write your code here
         Server server = new Server(8181, 8282);
         Router router = initRouter();
-        Tracker tracker = new Tracker();
         if (router == null) {
             //An error occured, can't start server
             System.out.println("Failed in initailze the router, shutting down the server");

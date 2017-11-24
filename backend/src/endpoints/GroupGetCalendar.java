@@ -96,7 +96,7 @@ public class GroupGetCalendar implements IAPIRoute {
             }
             System.out.println("Serializing to json");
             Gson gson = new Gson();
-            return gson.toJson(objs, JsonObject.class);
+            return gson.toJson(objs, ArrayList.class);
         }
         catch (Exception e) {
             System.out.println("Couldn't serialie events");
