@@ -3,7 +3,6 @@ package management;
 import com.google.gson.*;
 
 import database.*;
-import netscape.javascript.JSObject;
 
 import java.sql.Timestamp;
 
