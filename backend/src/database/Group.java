@@ -11,9 +11,10 @@ public class Group {
     ArrayList<String> users;
     ArrayList<String> admins;  //contains userID of all admins
     SCalendar calendar;
+    boolean noAdmins = false;
     boolean gotUsers = false;
 
-    public Group(int id, User owner, String name, String imagePath) {
+    public Group(int id, User owner, String name, String imagePath, int noAdmins) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -22,10 +23,16 @@ public class Group {
 		this.admins = new ArrayList<>(1);
         users.add(owner.username);
         calendar = new SCalendar();
+        if (noAdmins == 1) {
+            this.noAdmins = true;
+        }
+        else {
+            this.noAdmins = false;
+        }
     }
     public static Group fromDatabase(Tracker tracker, int groupid) {
         System.out.println("Parsing from database");
-        Object[] result = GetFromDb.getGroupInfo(groupid);      //{ grupid, groupname, creatorid, imagePath};
+        Object[] result = GetFromDb.getGroupInfo(groupid);      //{ groupid, groupname, creatorid, imagePath, noadmins};
         if (result == null) {
             return null;
         }
@@ -35,7 +42,7 @@ public class Group {
             return null;
         }
         System.out.println("Creating the new group");
-        Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
+        Group group = new Group(groupid, owner, (String)result[1], (String)result[3], (int)(result[4]));
         //add users
         ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
         for (String member : members) {
@@ -126,7 +133,25 @@ public class Group {
 		lprint("users.length: " + users.size());
 		lprint("admins.length: " + admins.size());
 	}
-	public boolean addEvent(Event event) {
+	public boolean isAdmin(String username) {
+        if (noAdmins) {
+            return true;
+        }
+        for (String admin : admins) {
+            if (admin.equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setNoAdmins(boolean noAdmins) {
+        this.noAdmins = noAdmins;
+    }
+    public boolean isNoAdmins() {
+        return noAdmins;
+    }
+    public boolean addEvent(Event event) {
         return calendar.add(event);
     }
     public Event[] getEvents(int year, int month) {

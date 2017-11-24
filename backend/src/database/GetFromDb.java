@@ -133,7 +133,7 @@ public class GetFromDb {
         return null;
     }
 
-    //returns id, name, creator, imagePath
+    //returns id, name, creator, imagePath, noadmins
     public static Object[] getGroupInfo(int groupid) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -166,7 +166,8 @@ public class GetFromDb {
                 String groupname = result.getString("name");
                 int creatorid = result.getInt("creatorid");
                 String imagePath = result.getString("image_path");
-                return new Object[] { grupid, groupname, creatorid, imagePath};
+                int noadmins = result.getInt("noadmins");
+                return new Object[] { grupid, groupname, creatorid, imagePath, noadmins};
             }
             else {
                 return null;

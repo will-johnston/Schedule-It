@@ -9,10 +9,10 @@ import server.Socketeer;
 import java.net.Socket;
 
 //Gets user settings
-public class UserGetSettings implements IAPIRoute {
+public class UserSettings implements IAPIRoute {
 
     Tracker tracker;
-    public UserGetSettings(Tracker tracker) {
+    public UserSettings(Tracker tracker) {
         this.tracker = tracker;
     }
     @Override

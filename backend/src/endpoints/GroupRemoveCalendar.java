@@ -48,6 +48,11 @@ public class GroupRemoveCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        if (!group.isAdmin(user.getUsername())) {
+            String invAdmin = "{\"error\":\"User is not an admin in the group\"}";
+            Socketeer.send(HTTPMessage.makeResponse(invAdmin, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
         if (group.removeEvent(eventid)) {
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
         }
