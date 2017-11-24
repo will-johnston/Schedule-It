@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 	var cookie = document.cookie.split("=")[1];
 	var activeGroupID;
+	var username;
 
 	//This stops the notification menu from closing when it's clicked on
 	$("#notificationMenu").click(function(event){
@@ -87,6 +88,21 @@ $(document).ready(function(){
 
 		xhr.send(data);
 	};
+
+	//get username
+	var data = {};
+	data["cookie"] = cookie;
+	data = JSON.stringify(data);
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+		function(result) { //success
+			console.log("Successfully retrieved user settings");
+
+			username = JSON.parse(result)["username"];
+		},
+		function(result) { //fail
+			console.log("Failed to retrieve user settings");
+		});
 
 	$("#settingsModalChooseFileButton").change(function() {
 		var button = $("#settingsModalChooseFileButton");
@@ -621,6 +637,8 @@ $(document).ready(function(){
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
+					$("#groupMembersList").empty();
+
 					//populate the group settings modal with group information
 					var parent = $(event.target).parent().parent().parent().parent();
 
@@ -646,13 +664,41 @@ $(document).ready(function(){
 								function(result) { //success
 									console.log("User is admin of active group");
 									$("#groupSettingsModal").modal("show");
+
+									var data = {};
+									data["cookie"] = cookie;
+									data["groupid"] = activeGroupID;
+									data = JSON.stringify(data);
+
+									accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/members", data,
+										function(result) { //success
+											console.log("Successfully retrieved group members");
+
+											var json = JSON.parse(result);
+
+											for(var i = 0; i < json.length; i++) {
+												if(json[i]["username"] == username || json[i]["username"] == "Clarence") {
+													continue;
+												}
+
+												var memberHTML = '<li class="list-group-item">' + json[i]["username"] + '<img class="float-right removeAdminPermission" src="resources/minus.png" width="18px" /><img class="float-right giveAdminPermission" src="resources/plus.png" width="18px" style="margin-right: 10px"/></li>';
+												$("#groupMembersList").append(memberHTML);
+											}
+
+											assignGroupMemberListFunctionality();
+										},
+										function(result) { //fail
+											console.log("Failed to retrieve group members");
+										});
 								},
 								function(result) { //fail
 									console.log("User is not admin of active group");
 									alert("You are not an admin of this group");
-									setTimeout(function() {
+
+									//modal only shows if you're a admin so shouldn't need this
+									/*setTimeout(function() {
 										$("#groupSettingsModal").modal("hide");
-									}, 500);
+									}, 500);*/
 								});
 							
 						},
@@ -724,6 +770,42 @@ $(document).ready(function(){
 
 	updateGroups();
 
+	var assignGroupMemberListFunctionality = function() {
+		$("#groupMembersList .giveAdminPermission").off();
+		$("#groupMembersList .giveAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/add", data,
+				function(result) { //success
+					console.log("Successfully gave user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to give user admin permissions");
+				});
+		});
+
+		$("#groupMembersList .removeAdminPermission").off();
+		$("#groupMembersList .removeAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/remove", data,
+				function(result) { //success
+					console.log("Successfully revoked user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to revoke user admin permissions");
+				});
+		});
+	}
+
 	var assignGroupModalInviteFriendsFunctionality = function(modal) {
 		$("body").on("click", ".groupFriendsList img", function(event) {
 			var nameField = $("#groupSettingsModalName");
@@ -794,35 +876,6 @@ $(document).ready(function(){
 		$("#newGroupModalName").val("");
 		$("#newGroupModalInfo").val("");
 		$("#newGroupModalName").removeClass("is-invalid");
-	});
-
-	$("#groupSettingsModal").click(function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
-			function(result) { //success
-				var data = {};
-				data["cookie"] = cookie;
-				data["groupid"] = activeGroupID;
-				data["groupmember"] = JSON.parse(result)["username"];
-				data = JSON.stringify(data);
-
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
-					function(result) { //success
-						console.log("User is admin")
-					},
-					function(result) { //fail
-						console.log("User is not admin");
-						$("#groupSettingsModal").modal("hide");
-						alert("You are not an admin of this group");
-					});
-				
-			},
-			function(result) { //fail
-				console.log("Failed to get user settings");
-			});
 	});
 
 	$("#groupSettingsSaveButton").click(function() {
