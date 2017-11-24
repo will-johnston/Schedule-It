@@ -7,6 +7,8 @@ import server.*;
 import management.*;
 import com.google.gson.*;
 
+import java.util.ArrayList;
+
 //Gets the User's calendar
 public class GroupGetCalendar implements IAPIRoute {
     Tracker tracker;
@@ -69,7 +71,7 @@ public class GroupGetCalendar implements IAPIRoute {
     }
     public String toJson(Event[] events) {
         try {
-            JsonObject jobj = new JsonObject();
+            ArrayList<JsonObject> objs = new ArrayList<>(events.length);
             System.out.println("Adding events");
             for (Event event : events) {
                 if (event == null) {
@@ -85,7 +87,7 @@ public class GroupGetCalendar implements IAPIRoute {
                     item.addProperty("description", event.getDescription());
                     item.addProperty("address", event.getAddress());
                     item.addProperty("type", event.getType());
-                    jobj.add("event", item);
+                    objs.add(item);
                 }
                 catch (Exception e) {
                     System.out.println("Couldn't serialize event");
@@ -94,7 +96,7 @@ public class GroupGetCalendar implements IAPIRoute {
             }
             System.out.println("Serializing to json");
             Gson gson = new Gson();
-            return gson.toJson(jobj, JsonObject.class);
+            return gson.toJson(objs, JsonObject.class);
         }
         catch (Exception e) {
             System.out.println("Couldn't serialie events");

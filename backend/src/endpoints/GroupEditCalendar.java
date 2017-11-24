@@ -1,18 +1,13 @@
 package endpoints;
 
-import database.User;
-import database.Event;
-import database.Group;
+import database.*;
 import server.*;
 import management.*;
 import com.google.gson.*;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
+import java.text.*;
+import java.util.*;
 
 public class GroupEditCalendar implements IAPIRoute {
     Tracker tracker;
@@ -99,6 +94,22 @@ public class GroupEditCalendar implements IAPIRoute {
         }
         if (description != null) {
             event.setDescription(description);
+        }
+        if (group.removeEvent(event.getEventID())) {
+            if (group.addEvent(event)) {
+                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
+            else {
+                String response = "{\"error\":\"Couldn't add modified event\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+        }
+        else {
+            String response = "{\"error\":\"Couldn't remove event locally\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
         }
     }
     //returns cookie, groupid, eventid, name, description, type, date

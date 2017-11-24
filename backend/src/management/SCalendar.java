@@ -250,7 +250,12 @@ public class SCalendar {
         return null;
     }
     public boolean removeEvent(int id) {
-
+        for (YearCalendar years : calendar.values()) {
+            if (years.containsEvent(id)) {
+                //remvoe event
+                return years.remove(id);
+            }
+        }
         return false;
     }
     class YearCalendar {
@@ -519,6 +524,45 @@ public class SCalendar {
             }
             else if (december != null && december.containsKey(id)) {
                 return true;
+            }
+            return false;
+        }
+        public boolean remove(int id) {
+            if (january != null && january.containsKey(id)) {
+                return (january.remove(id) != null);
+            }
+            else if (february != null && february.containsKey(id)) {
+                return (february.remove(id) != null);
+            }
+            else if (march != null && march.containsKey(id)) {
+                return (march.remove(id) != null);
+            }
+            else if (april != null && april.containsKey(id)) {
+                return (april.remove(id) != null);
+            }
+            else if (may != null && may.containsKey(id)) {
+                return (may.remove(id) != null);
+            }
+            else if (june != null && june.containsKey(id)) {
+                return (june.remove(id) != null);
+            }
+            else if (july != null && july.containsKey(id)) {
+                return (july.remove(id) != null);
+            }
+            else if (august != null && august.containsKey(id)) {
+                return (august.remove(id) != null);
+            }
+            else if (september != null && september.containsKey(id)) {
+                return (september.remove(id) != null);
+            }
+            else if (october != null && october.containsKey(id)) {
+                return (october.remove(id) != null);
+            }
+            else if (november != null && november.containsKey(id)) {
+                return (november.remove(id) != null);
+            }
+            else if (december != null && december.containsKey(id)) {
+                return (december.remove(id) != null);
             }
             return false;
         }
