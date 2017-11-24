@@ -132,3 +132,7 @@ body {
 #settingsModalFileLabel {
 	margin-bottom: 10px;
 }
+
+#groupMembersList img {
+	cursor: pointer;
+}
