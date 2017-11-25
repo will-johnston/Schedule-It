@@ -160,7 +160,7 @@ public class Server {
                 if (router.containsMethod(mess.method)) {
                     IAPIRoute endpoint = router.get(mess.method);
                     endpoint.execute(sock, mess);
-                    if (!sock.isOutputShutdown()) {
+                    if (!sock.isClosed()) {
                         //endpoint failed, send error
                         Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.Unknown), sock);
                     }
