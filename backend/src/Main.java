@@ -59,7 +59,8 @@ public class Main {
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));
             router.add("/user/groups/calendar/add", new GroupAddCalendar(tracker));
             router.add("/user/groups/calendar/edit", new GroupEditCalendar(tracker));
-            router.add("/user/groups/calender/remove", new GroupRemoveCalendar(tracker));
+            router.add("/user/groups/calendar/remove", new GroupRemoveCalendar(tracker));
+            router.add("/user/groups/calendar/all", new GroupGetAllEvents(tracker));
 
             /*Admin Endpoints*/
             router.add("/user/groups/admin/add", new GroupAddAdmin(tracker, handler));

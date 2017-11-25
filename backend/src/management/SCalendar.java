@@ -16,6 +16,7 @@ import database.Event;
 public class SCalendar {
     //use a hash table
     HashMap<Integer, YearCalendar> calendar;
+    int eventCount = 0;
     boolean refreshed = false;
     public SCalendar() {
         calendar = new HashMap<>(2);
@@ -88,6 +89,7 @@ public class SCalendar {
                     else {
                         System.out.println("Doesn't contains event after add");
                     }
+                    eventCount++;
                     return true;
                 }
                 else {
@@ -107,6 +109,7 @@ public class SCalendar {
                     else {
                         System.out.println("Doesn't contains event after add");
                     }
+                    eventCount++;
                     return true;
                 }
                 else {
@@ -250,10 +253,28 @@ public class SCalendar {
         }
         return null;
     }
+    //gets all events in the calendar
+    public Event[] getEvents() {
+        if (eventCount == 0) {
+            return null;
+        }
+        Event[] events = new Event[eventCount];
+        int index = 0;
+        for (YearCalendar year : calendar.values()) {
+            for (int i = 1 ; i < 13; i++) {
+                HashMap<Integer, Event> monthEvents = year.getMonth(i);
+                for (Event event : monthEvents.values()) {
+                    events[index] = event;
+                    index++;
+                }
+            }
+        }
+        return events;
+    }
     public boolean removeEvent(int id) {
         for (YearCalendar years : calendar.values()) {
             if (years.containsEvent(id)) {
-                //remvoe event
+                //remove event
                 return years.remove(id);
             }
         }

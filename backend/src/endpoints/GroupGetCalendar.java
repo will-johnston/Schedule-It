@@ -77,7 +77,6 @@ public class GroupGetCalendar implements IAPIRoute {
         try {
             ArrayList<JsonObject> objs = new ArrayList<>(events.length);
             System.out.println("Adding events");
-            int counter = 0;
             for (Event event : events) {
                 if (event == null) {
                     System.out.println("Tried to serialize null event");
@@ -99,8 +98,6 @@ public class GroupGetCalendar implements IAPIRoute {
                     System.out.println("Couldn't serialize event");
                     e.printStackTrace();
                 }
-                counter++;
-
             }
             System.out.println("Serializing to json");
             Gson gson = new Gson();

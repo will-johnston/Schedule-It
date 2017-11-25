@@ -53,6 +53,7 @@ public class GroupRemoveCalendar implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(invAdmin, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        if (group.eventExists())
         if (group.removeEvent(eventid)) {
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
         }

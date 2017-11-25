@@ -182,6 +182,10 @@ public class Group {
         Event events[] =  calendar.getEvents(this.id, year, month);
 	    return events;
     }
+    //returns all events
+    public Event[] getEvents() {
+        return calendar.getEvents();
+    }
     // check for same time (hour, minute, second
     public boolean eventExists(Event e) {
         if (e == null) {
@@ -213,6 +217,9 @@ public class Group {
             }
         }
         return false;
+    }
+    public boolean eventExists(int id) {
+        return (calendar.getEvent(id) != null);
     }
 	private void lprint(String message) {
 		System.out.println(message);
