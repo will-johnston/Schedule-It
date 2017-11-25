@@ -192,6 +192,7 @@ public class SCalendar {
                     events.add(event);
                 }
         }
+	
         Event[] arr = new Event[events.size()];
         events.toArray(arr);
         return arr;*/

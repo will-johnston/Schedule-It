@@ -69,6 +69,11 @@ public class EventPutter {
 		*/
     }
     public static String format(Event event) {
+
+        int is_open_ended = -1;
+        if (event.getIs_open_ended() == true) {
+            is_open_ended = 1;
+        }
         //eventid, address, groupid, event_name, expiration_time, is_polling_users, image_path, type, time,
         // description, accept, decline, maybe, userid, created
         //                             ID    AD  ID  NM   EX  IS  IM   TP   TI   DE   AC   DC   MA  CREAT
@@ -77,7 +82,7 @@ public class EventPutter {
                 event.getGroupID(),
                 resolveNull(event.getEvent_name()),
                 "NULL",
-                -1,
+                is_open_ended,
                 resolveNull(event.getImage_path()),
                 resolveNull(event.getType()),
                 resolveNull(event.getTime().toString()),

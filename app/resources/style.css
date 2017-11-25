@@ -64,7 +64,7 @@ body {
 
 .groupOverflowList {
 	overflow-y: scroll;
-	height: 200px;
+	height: 150px;
 }
 
 #addNewGroupButton {
@@ -127,4 +127,12 @@ body {
 
 .event-dropdown .card {
 	margin-bottom: 10px;
+}
+
+#settingsModalFileLabel {
+	margin-bottom: 10px;
+}
+
+#groupMembersList img {
+	cursor: pointer;
 }

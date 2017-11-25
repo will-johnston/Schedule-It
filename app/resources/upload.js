@@ -18,7 +18,7 @@ function getChunks(buffer) {
 	}
 	arr.push(buffer.slice(CHUNK_SIZE * (iterations - 1), totalSize));
 	//console.log("Pusing from " + CHUNK_SIZE * (iterations - 1) + " to " + totalSize);'
-	console.log("Chunk count:", iterations, "with size:", CHUNK_SIZE);
+	//console.log("Chunk count:", iterations, "with size:", CHUNK_SIZE);
 	return arr;
 }
 //Generates a 16-bit checksum
@@ -32,7 +32,7 @@ function checksum(array) {
 }
 //Don't use this
 function test() {
-	console.log("Called test");
+	//console.log("Called test");
 	var fileElement = document.getElementById("filePicker");
 	if (fileElement.value == null) {
 		console.log("File Element is null");
@@ -40,7 +40,7 @@ function test() {
 	}
 	var files = fileElement.files;
 	var file = files[0];
-	console.log("File name: ", file.name, "Size: ", file.size, "mime: ", file.type);
+	//console.log("File name: ", file.name, "Size: ", file.size, "mime: ", file.type);
 	var reader = new FileReader();
 	//for readAsString()
 	/*reader.onload = (function(theFile) {
@@ -54,12 +54,12 @@ function test() {
 		//var arr = theFile.target.result;      //This only returns the ArrayBugger object (not an array)
 		var buffer = theFile.target.result;
 		var newBuf = new Uint8Array(buffer);
-		console.log(theFile.target.result);
-		console.log(theFile.target.result.byteLength);
-		console.log(newBuf);
-		console.log("newbuf length: ", newBuf.length);
+		//console.log(theFile.target.result);
+		//console.log(theFile.target.result.byteLength);
+		//console.log(newBuf);
+		//console.log("newbuf length: ", newBuf.length);
 		var chunks = getChunks(newBuf);
-		console.log("chunks[0] checksum: " + checksum(chunks[0]));
+		//console.log("chunks[0] checksum: " + checksum(chunks[0]));
 	});
 	//reader.readAsText(file);  //works great
 	//reader.readAsBinaryString(file);
@@ -67,7 +67,7 @@ function test() {
 }
 //Starts the upload process
 function requestUpload(cookie, success) {
-	console.log("requesting upload");
+	//console.log("requesting upload");
 	// {{"type": "image/jpg",
 	//   "size": 65535,
 	//   "length": 78,
@@ -75,7 +75,7 @@ function requestUpload(cookie, success) {
 	//}
 	var request = new XMLHttpRequest();
 	request.addEventListener("load", function () {
-		console.log(this.responseText);
+		//console.log(this.responseText);
 		//handle response, if success start the upload loop;
 		var parsed = JSON.parse(this.responseText);
 		/*for (var key in parsed) {
@@ -87,20 +87,20 @@ function requestUpload(cookie, success) {
 		if (this.status == 200) {
 			//OK
 			uid = parsed.uploadid;
-			console.log("Recieved id:", uid);
+			//console.log("Recieved id:", uid);
 			success();
 		}
 		else {
 			//failed
-			console.log("Error:", parsed.uploadid);
+			//console.log("Error:", parsed.uploadid);
 		}
-		console.log(parsed);
+		//console.log(parsed);
 	});
 	//request.open("POST", "scheduleit.duckdns.org/api/upload");
 	request.open("POST", url);
 	//console.log("Sending request:", JSON.stringify({ mimeType : type, size: size, length: chunks.length, cookie: cookie, uploadType: upload_type}));
 	request.send(JSON.stringify({ mimeType : type, size: size, length: chunks.length, cookie: cookie, uploadType: upload_type}));
-	console.log("sent upload request");
+	//console.log("sent upload request");
 }
 function toBase64(chunk) {
 	if (chunk == null) {
@@ -119,23 +119,23 @@ function toBase64(chunk) {
 function uploadchunk(chunk, cookie, cid, callback) {
 	var sum = checksum(chunk);
 	var len = chunk.length;
-	console.log("Uploading chunk with id:", cid, "size:", len, "and checksum:", sum);
+	//console.log("Uploading chunk with id:", cid, "size:", len, "and checksum:", sum);
 	var request = new XMLHttpRequest();
 	request.addEventListener("load", function () {
 		//console.log(this.responseText);
 		var parsed = JSON.parse(this.responseText);
 		if (this.status == 200) {
 			//OK
-			console.log("200success:", parsed.success);
+			//console.log("200success:", parsed.success);
 			if (callback != null) {
 				callback();
 			}
 		}
 		else {
 			//failed
-			console.log("ERRORsuccess:", parsed.success);
+			//console.log("ERRORsuccess:", parsed.success);
 		}
-		console.log(parsed);
+		//console.log(parsed);
 	});
 	var message = {
 		checksum : sum,
@@ -173,7 +173,7 @@ function uploadLoop(cookie, passCallback, failCallback) {
 						var json = JSON.parse(this.responseText);
 						success = json.success;
 						path = json.path;
-						console.log("Success",success,"path",path);
+						//console.log("Success",success,"path",path);
 						//setTestImage(path);
 						//var end = new Date();
 						//alert('It took ' + (end - start) + ' ms.');
@@ -185,13 +185,13 @@ function uploadLoop(cookie, passCallback, failCallback) {
 						//API error
 						var json = JSON.parse(this.responseText);
 						alert("failed to upload");
-						console.log("error", json.error);
+						//console.log("error", json.error);
 						if (failCallback != null) {
 							failCallback();
 						}
 					}
 					else {
-						console.log("statusCode", this.status);
+						//console.log("statusCode", this.status);
 						alert("super failed to upload");
 					}
 				});
@@ -212,14 +212,14 @@ function uploadLoop(cookie, passCallback, failCallback) {
 //Calls fail(null)
 function upload(fileElement,cookie,success, fail) {
 	start = new Date();
-	console.log("Called upload");
+	//console.log("Called upload");
 	//var fileElement = document.getElementById(filePickerID);
 	if (fileElement == null) {
 		consol.log("Coudln't get element");
 		return;
 	}
 	if (fileElement.value == null) {
-		console.log("File Element is null");
+		//console.log("File Element is null");
 		return;
 	}
 	var files = fileElement.files;
@@ -231,13 +231,13 @@ function upload(fileElement,cookie,success, fail) {
 	type = file.type;
 	reader.onload = (function(theFile) {
 		//var arr = theFile.target.result;      //This only returns the ArrayBuffer object (not an array)
-		console.log("Name:", name, "size:", size, "type:", type);
+		//console.log("Name:", name, "size:", size, "type:", type);
 		var buffer = theFile.target.result;
 		var newBuf = new Uint8Array(buffer);
 		//console.log(theFile.target.result);
 		//console.log(theFile.target.result.byteLength);
-		console.log(newBuf);
-		console.log("newbuf length: ", newBuf.length);
+		//console.log(newBuf);
+		//console.log("newbuf length: ", newBuf.length);
 		chunks = getChunks(newBuf);
 		//console.log("chunks[0] checksum: " + checksum(chunks[0]));
 		/*requestUpload(function() {

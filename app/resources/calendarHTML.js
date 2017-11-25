@@ -28,7 +28,7 @@ var calendarHTML = `
 		<tr>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -36,7 +36,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -44,7 +44,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -52,7 +52,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -60,7 +60,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -68,7 +68,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -76,65 +76,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -144,7 +86,7 @@ var calendarHTML = `
 		<tr>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -152,7 +94,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -160,7 +102,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -168,7 +110,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -176,7 +118,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -184,7 +126,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -192,65 +134,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
-					<div class="dropdown-menu event-dropdown">
-					</div>
-				</div>
-				<div class="day">1</div>
-			</td>
-			<td>
-				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -260,7 +144,7 @@ var calendarHTML = `
 		<tr>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -268,7 +152,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -276,7 +160,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -284,7 +168,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -292,7 +176,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -300,7 +184,7 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>
@@ -308,7 +192,123 @@ var calendarHTML = `
 			</td>
 			<td>
 				<div class="dropdown invisible">
-					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> Events </button>
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
+					<div class="dropdown-menu event-dropdown">
+					</div>
+				</div>
+				<div class="day">1</div>
+			</td>
+			<td>
+				<div class="dropdown invisible">
+					<button class="btn btn-sm btn-success dropdown-toggle float-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="eventCount">0</span> </button>
 					<div class="dropdown-menu event-dropdown">
 					</div>
 				</div>

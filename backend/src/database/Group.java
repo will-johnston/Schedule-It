@@ -42,20 +42,21 @@ public class Group {
             return null;
         }
         System.out.println("Creating the new group");
-        Group group = new Group(groupid, owner, (String)result[1], (String)result[3], (int)(result[4]));
-        //add users
-        ArrayList<String> members = GetFromDb.getGroupMembers(groupid);
-        for (String member : members) {
-            if (!group.users.contains(member)) {
-                group.users.add(member);
-            }
-        }
+        Group group = new Group(groupid, owner, (String)result[1], (String)result[3], (int)result[4]);
+        group.updateUsers(tracker);
         //add admins
         ArrayList<Integer> adminBuf = GetGroupAdmins.getGroupAdmins(groupid);
         group.admins = getUsernameFromIdList.getUsernames(adminBuf);
         //add group to tracker
         tracker.addGroup(group);
-        group.updateUsers(tracker);
+        //check for calerence
+        if (!group.containsUsername(tracker.getClarence().getUsername())) {
+            System.out.println("Adding clarence to group");
+            //add clarence
+            if (group.addUserInDb(tracker.getClarence().id)) {
+                group.addUser(tracker.getClarence());
+            }
+        }
         return group;
         //set list of users and eventually admins
     }
@@ -69,6 +70,7 @@ public class Group {
             gotUsers = true;
             return;
         }
+        System.out.println("Updating users with member count of " + members.size());
         for (String member : members) {
             User user = User.fromDatabase(member);
             if (user == null) {
@@ -79,6 +81,19 @@ public class Group {
             }
         }
         gotUsers = true;
+    }
+    public boolean containsUsername(String username) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).toLowerCase().equals(username.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public String[] getMembers() {
+        String[] members = new String[users.size()];
+        users.toArray(members);
+        return members;
     }
     public void notifyMembers(Notification notification, Tracker tracker) throws Exception {
         if (notification == null || tracker == null) {
@@ -110,6 +125,14 @@ public class Group {
     }
     public boolean removeUser(User user) {
         return users.remove(user);
+    }
+    public boolean addUserInDb(int userid) {
+        if (ModifyGroup.addUserToGroup(id, userid)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     public void addUser(User user) {
         if (!users.contains(user.getUsername())) {
@@ -155,7 +178,8 @@ public class Group {
         return calendar.add(event);
     }
     public Event[] getEvents(int year, int month) {
-        return calendar.getEvents(this.id, year, month);
+        Event events[] =  calendar.getEvents(this.id, year, month);
+	    return events;
     }
 	private void lprint(String message) {
 		System.out.println(message);
