@@ -1,5 +1,6 @@
 package database;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import management.SCalendar;
 import management.Tracker;
@@ -180,6 +181,26 @@ public class Group {
     public Event[] getEvents(int year, int month) {
         Event events[] =  calendar.getEvents(this.id, year, month);
 	    return events;
+    }
+    // check for same time (hour, minute, second
+    public boolean eventExists(Event e) {
+        LocalDateTime dateTime = e.getDate();
+        Event[] events = getEvents(dateTime.getYear(), dateTime.getMonthValue());
+        for (Event event : events) {
+            LocalDateTime compareTime = event.getDate();
+            if (compareTime.getDayOfMonth() == dateTime.getDayOfMonth()) {
+                //day is the same
+                //getHour() is 24 Hs
+                if (compareTime.getHour() == dateTime.getHour()) {
+                    //same hour
+                    if (compareTime.getMinute() == dateTime.getMinute()) {
+                        //SAME time
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 	private void lprint(String message) {
 		System.out.println(message);

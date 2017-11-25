@@ -135,6 +135,12 @@ public class GroupAddCalendar implements IAPIRoute {
                 Event event = new Event(0, name, type, description, null, is_open_ended);
                 event.setTime(date);
                 event.setGroupID(group.getId());
+                if (group.eventExists(event)) {
+                    //send error NO DUPS
+                    String response = "{\"error\":\"Event already exists at this time\"}";
+                    Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                    return;
+                }
                 if (group.addEvent(event)) {
                     //send notifications
                     try {

@@ -1,6 +1,8 @@
 package database;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Event {
     int eventID = 0;
@@ -215,7 +217,6 @@ public class Event {
         }
         return builder.toString();
     }
-
     public int[] getDecline() {
         return decline;
     }
@@ -248,5 +249,8 @@ public class Event {
             }
         }
         return builder.toString();
+    }
+    public LocalDateTime getDate() {
+        return time.toLocalDateTime();
     }
 }
