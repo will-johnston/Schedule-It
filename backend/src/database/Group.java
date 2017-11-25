@@ -184,8 +184,20 @@ public class Group {
     }
     // check for same time (hour, minute, second
     public boolean eventExists(Event e) {
+        if (e == null) {
+            System.out.println("EventExists arg is null");
+            return false;
+        }
         LocalDateTime dateTime = e.getDate();
+        if (dateTime == null) {
+            System.out.println("EventExists dateTime is null");
+            return false;
+        }
         Event[] events = getEvents(dateTime.getYear(), dateTime.getMonthValue());
+        if (events == null) {
+            System.out.println("EventExists events is null");
+            return false;
+        }
         for (Event event : events) {
             LocalDateTime compareTime = event.getDate();
             if (compareTime.getDayOfMonth() == dateTime.getDayOfMonth()) {
