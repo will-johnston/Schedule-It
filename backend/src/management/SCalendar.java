@@ -1,5 +1,7 @@
 package management;
 
+
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -14,6 +16,7 @@ import database.Event;
 public class SCalendar {
     //use a hash table
     HashMap<Integer, YearCalendar> calendar;
+    int eventCount = 0;
     boolean refreshed = false;
     public SCalendar() {
         calendar = new HashMap<>(2);
@@ -86,6 +89,7 @@ public class SCalendar {
                     else {
                         System.out.println("Doesn't contains event after add");
                     }
+                    eventCount++;
                     return true;
                 }
                 else {
@@ -105,6 +109,7 @@ public class SCalendar {
                     else {
                         System.out.println("Doesn't contains event after add");
                     }
+                    eventCount++;
                     return true;
                 }
                 else {
@@ -177,8 +182,8 @@ public class SCalendar {
             return null;
         }
         //get year, then get month
-        //refreshEvents(id);
-        Integer[] ids = GetFromDb.getEventIds(id);
+        refreshEvents(id);
+        /*Integer[] ids = GetFromDb.getEventIds(id);
         ArrayList<Event> events = new ArrayList<Event>();
         for (Integer newid : ids) {
             int value = newid.intValue();
@@ -193,9 +198,9 @@ public class SCalendar {
 	
         Event[] arr = new Event[events.size()];
         events.toArray(arr);
-        return arr;
+        return arr;*/
 
-        /*if (!calendar.containsKey(year)) {
+        if (!calendar.containsKey(year)) {
             System.out.println("Doesn't contain year");
             return null;
         }
@@ -212,7 +217,7 @@ public class SCalendar {
             events[i] = event;
             i++;
         }
-        return events;*/
+        return events;
     }
     private void refreshEvents(int id) {
         if (refreshed) {
@@ -240,13 +245,46 @@ public class SCalendar {
         }
         refreshed = true;
     }
-    public Event getEvent(int id) {
+    public Event getEvent(int id, int groupid) {
+        refreshEvents(groupid);
         for (YearCalendar years : calendar.values()) {
             if (years.containsEvent(id)) {
                 return years.getEvent(id);
             }
         }
         return null;
+    }
+    //gets all events in the calendar
+    public Event[] getEvents(int groupid) {
+        refreshEvents(groupid);
+        if (eventCount == 0) {
+            return null;
+        }
+        Event[] events = new Event[eventCount];
+        int index = 0;
+        for (YearCalendar year : calendar.values()) {
+            for (int i = 1 ; i < 13; i++) {
+                HashMap<Integer, Event> monthEvents = year.getMonth(i);
+                if (monthEvents == null) {
+                    continue;
+                }
+                for (Event event : monthEvents.values()) {
+                    System.out.println(String.format("Index: %d, eventCount: %d", index, eventCount));
+                    events[index] = event;
+                    index++;
+                }
+            }
+        }
+        return events;
+    }
+    public boolean removeEvent(int id) {
+        for (YearCalendar years : calendar.values()) {
+            if (years.containsEvent(id)) {
+                //remove event
+                return years.remove(id);
+            }
+        }
+        return false;
     }
     class YearCalendar {
         //jan, feb, mar, apri, may, june, july, august, sept, oct, nov, dec
@@ -514,6 +552,45 @@ public class SCalendar {
             }
             else if (december != null && december.containsKey(id)) {
                 return true;
+            }
+            return false;
+        }
+        public boolean remove(int id) {
+            if (january != null && january.containsKey(id)) {
+                return (january.remove(id) != null);
+            }
+            else if (february != null && february.containsKey(id)) {
+                return (february.remove(id) != null);
+            }
+            else if (march != null && march.containsKey(id)) {
+                return (march.remove(id) != null);
+            }
+            else if (april != null && april.containsKey(id)) {
+                return (april.remove(id) != null);
+            }
+            else if (may != null && may.containsKey(id)) {
+                return (may.remove(id) != null);
+            }
+            else if (june != null && june.containsKey(id)) {
+                return (june.remove(id) != null);
+            }
+            else if (july != null && july.containsKey(id)) {
+                return (july.remove(id) != null);
+            }
+            else if (august != null && august.containsKey(id)) {
+                return (august.remove(id) != null);
+            }
+            else if (september != null && september.containsKey(id)) {
+                return (september.remove(id) != null);
+            }
+            else if (october != null && october.containsKey(id)) {
+                return (october.remove(id) != null);
+            }
+            else if (november != null && november.containsKey(id)) {
+                return (november.remove(id) != null);
+            }
+            else if (december != null && december.containsKey(id)) {
+                return (december.remove(id) != null);
             }
             return false;
         }

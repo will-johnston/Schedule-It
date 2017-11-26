@@ -100,6 +100,7 @@ public class GroupGet implements IAPIRoute {
                     else {
                         jobj.addProperty("muted", "false");
                     }
+                    jobj.addProperty("noadmins", group.isNoAdmins());
                     arr[i] = jobj;
                     i++;
                 }

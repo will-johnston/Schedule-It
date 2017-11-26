@@ -73,8 +73,26 @@ public class InvitationHandler implements IHandler {
             }
         }
         else if (type.equals("invite.event")) {
-            user.clearNotification(notification);
-            return "";
+            //user.clearNotification(notification);
+            int responseType = getResponseValue(response);
+            switch (responseType) {
+                case 1:
+                    //going, add to calendar and to database
+                    user.clearNotification(notification);
+                    return "";
+                case 0:
+                    //on the fence, add to calendar and to database
+                    user.clearNotification(notification);
+                    return "";
+                case -1:
+                    //not going, don't add to calendar but add to database
+                    user.clearNotification(notification);
+                    return "";
+                case -2:
+                default:
+                    System.out.println("Response was invalid");
+                    return null;
+            }
         }
         else {
             return null;
@@ -173,6 +191,34 @@ public class InvitationHandler implements IHandler {
             }
         }
         return user;
+    }
+    //-1 not going, 0 on the fence, 1 going, -2 ERROR
+    public int getResponseValue(JsonObject response) {
+        try {
+            if (response == null || !response.has("response")) {
+                return -2;
+            }
+            JsonObject obj = response.getAsJsonObject("response");
+            if (obj == null || !response.has("accept")) {
+                return -2;
+            }
+            String value = response.get("accept").getAsString();
+            if (value.toLowerCase().equals("going")) {
+                return 1;
+            }
+            else if (value.toLowerCase().equals("on the fence")) {
+                return 0;
+            }
+            else if (value.toLowerCase().equals("not going")) {
+                return -1;
+            }
+            else {
+                return -2;
+            }
+        }
+        catch (Exception e) {
+            return -2;
+        }
     }
     //groupid, eventid
     public Event getEvent(Notification notification) throws Exception {

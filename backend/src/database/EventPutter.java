@@ -101,4 +101,110 @@ public class EventPutter {
         }
         return String.format("'%s'", value);
     }
+    public static boolean updateEvent(String name, String description, String date, String type, int eventid) {
+        if (eventid == 0) {
+            return false;
+        }
+        //gets all the event ids connected to the user
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+
+            String query = String.format("UPDATE events %s WHERE eventID=%d;", makeMods(name, description, date,
+                    type), eventid);
+            System.out.println(query);
+            int result = statement.executeUpdate(query);
+            if (result == 0) {
+                System.out.println("Didn't update anything");
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public static boolean remove(int eventid) {
+        if (eventid == 0) {
+            return false;
+        }
+        //gets all the event ids connected to the user
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+
+            String query = String.format("DELETE FROM events WHERE eventID=%d;", eventid);
+            System.out.println(query);
+            int result = statement.executeUpdate(query);
+            if (result == 0) {
+                System.out.println("Didn't update anything");
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    //name, description, time, type
+    public static String makeMods(String name, String description, String time, String type) {
+        if (name == null && description == null && time == null && type == null) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder("SET ");
+        if (name != null) {
+            builder.append(String.format("event_name='%s'", name));
+            if (description != null || time != null || type != null) {
+                builder.append(", ");
+            }
+        }
+        if (description == null) {
+            builder.append(String.format("description='%s'", description));
+            if (time != null || type != null) {
+                builder.append(", ");
+            }
+        }
+        if (time == null) {
+            builder.append(String.format("time='%s'", time));
+            if (type != null) {
+                builder.append(", ");
+            }
+        }
+        if (type == null) {
+            builder.append(String.format("type='%s'", type));
+        }
+        return builder.toString();
+    }
 }

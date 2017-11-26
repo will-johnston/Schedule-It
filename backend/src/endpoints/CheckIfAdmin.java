@@ -1,6 +1,7 @@
 package endpoints;
 
 import database.Group;
+import database.ModifyGroup;
 import database.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -48,10 +49,7 @@ public class CheckIfAdmin implements IAPIRoute {
         }
 
         ArrayList<String> current_admins = group.getAdmins();
-        for (int i = 0; i < current_admins.size(); i++) {
-            System.out.println(String.format("%d: %s", i, current_admins.get(i)));
-        }
-        if (!contains((String)args[1], current_admins)) {
+        if (!current_admins.contains(user.getUsername())) {
             String response = "{\"value\":\"false\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
             return;
@@ -61,14 +59,6 @@ public class CheckIfAdmin implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
             return;
         }
-    }
-    private boolean contains(String key, ArrayList<String> list) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).toLowerCase().equals(key.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
     }
     Object[] parseArgs(String message) {
         try {

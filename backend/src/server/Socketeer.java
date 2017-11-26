@@ -32,7 +32,7 @@ public class Socketeer {
             out.write(message.getBytes(Charset.forName("UTF-8")));
             out.flush();
             sock.close();
-            System.out.println("Sent!");
+            //System.out.println("Sent!");
         }
         catch (Exception e) {
             System.out.println("Failed to write out stream");

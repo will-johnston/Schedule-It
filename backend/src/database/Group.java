@@ -1,6 +1,9 @@
 package database;
 
+import java.time.LocalDateTime;
 import java.util.*;
+
+import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
 public class Group {
@@ -11,9 +14,10 @@ public class Group {
     ArrayList<String> users;
     ArrayList<String> admins;  //contains userID of all admins
     SCalendar calendar;
+    boolean noAdmins = false;
     boolean gotUsers = false;
 
-    public Group(int id, User owner, String name, String imagePath) {
+    public Group(int id, User owner, String name, String imagePath, int noAdmins) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -22,10 +26,16 @@ public class Group {
 		this.admins = new ArrayList<>(1);
         users.add(owner.username);
         calendar = new SCalendar();
+        if (noAdmins == 1) {
+            this.noAdmins = true;
+        }
+        else {
+            this.noAdmins = false;
+        }
     }
     public static Group fromDatabase(Tracker tracker, int groupid) {
         System.out.println("Parsing from database");
-        Object[] result = GetFromDb.getGroupInfo(groupid);      //{ grupid, groupname, creatorid, imagePath};
+        Object[] result = GetFromDb.getGroupInfo(groupid);      //{ groupid, groupname, creatorid, imagePath, noadmins};
         if (result == null) {
             return null;
         }
@@ -35,7 +45,7 @@ public class Group {
             return null;
         }
         System.out.println("Creating the new group");
-        Group group = new Group(groupid, owner, (String)result[1], (String)result[3]);
+        Group group = new Group(groupid, owner, (String)result[1], (String)result[3], (int)result[4]);
         group.updateUsers(tracker);
         //add admins
         ArrayList<Integer> adminBuf = GetGroupAdmins.getGroupAdmins(groupid);
@@ -133,9 +143,16 @@ public class Group {
         }
     }
     public Event getEvent(int id) {
-        return calendar.getEvent(id);
+        return calendar.getEvent(id, this.id);
     }
-
+    public boolean removeEvent(int eventid) {
+        if (EventPutter.remove(eventid)) {
+            return calendar.removeEvent(eventid);
+        }
+        else {
+            return false;
+        }
+    }
     public int getId() {
         return id;
     }
@@ -147,12 +164,79 @@ public class Group {
 		lprint("users.length: " + users.size());
 		lprint("admins.length: " + admins.size());
 	}
-	public boolean addEvent(Event event) {
+	public synchronized boolean isAdmin(String username) {
+        //refresh noAdmins
+        System.out.println("Noadmins: " + noAdmins);
+        if (isNoAdmins()) {
+            return true;
+        }
+        for (String admin : admins) {
+            if (admin.equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean setNoAdmins(boolean noAdmins) {
+        if (ModifyGroup.setNoAdmins(this.id, noAdmins)) {
+            this.noAdmins = noAdmins;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public boolean isNoAdmins() {
+        this.noAdmins = GetFromDb.noadmins(this.id);
+        return noAdmins;
+    }
+    public boolean addEvent(Event event) {
         return calendar.add(event);
     }
     public Event[] getEvents(int year, int month) {
         Event events[] =  calendar.getEvents(this.id, year, month);
 	    return events;
+    }
+    //returns all events
+    public Event[] getEvents() {
+        return calendar.getEvents(this.id);
+    }
+    // check for same time (hour, minute, second
+    public boolean eventExists(Event e) {
+
+        if (e == null) {
+            System.out.println("EventExists arg is null");
+            return false;
+        }
+        LocalDateTime dateTime = e.getDate();
+        if (dateTime == null) {
+            System.out.println("EventExists dateTime is null");
+            return false;
+        }
+        Event[] events = getEvents(dateTime.getYear(), dateTime.getMonthValue());
+        if (events == null) {
+            System.out.println("EventExists events is null");
+            return false;
+        }
+        for (Event event : events) {
+            LocalDateTime compareTime = event.getDate();
+            if (compareTime.getDayOfMonth() == dateTime.getDayOfMonth()) {
+                //day is the same
+                //getHour() is 24 Hs
+                if (compareTime.getHour() == dateTime.getHour()) {
+                    //same hour
+                    if (compareTime.getMinute() == dateTime.getMinute()) {
+                        //SAME time
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public boolean eventExists(int id) {
+        return (calendar.getEvent(id, this.id) != null);
     }
 	private void lprint(String message) {
 		System.out.println(message);
