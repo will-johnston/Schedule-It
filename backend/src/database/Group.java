@@ -144,7 +144,12 @@ public class Group {
         return calendar.getEvent(id);
     }
     public boolean removeEvent(int eventid) {
-        return calendar.removeEvent(eventid);
+        if (EventPutter.remove(eventid)) {
+            return calendar.removeEvent(eventid);
+        }
+        else {
+            return false;
+        }
     }
     public int getId() {
         return id;
