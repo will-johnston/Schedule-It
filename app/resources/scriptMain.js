@@ -561,7 +561,6 @@ $(document).ready(function(){
 					var realID = json[i]["id"];
 					var id = "group" + realID + "Content";
 					var name = json[i]["name"];
-					var info = "...";
 
 					var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 					var contentHTML = `
@@ -570,12 +569,15 @@ $(document).ready(function(){
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
-										<h3>` + name + `</h3>
-										<p>` + info + `</p>`;
+										<h3>` + name + `</h3>`;
 
 										if(name != "Me") {
+											contentHTML += '<br />';
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" style="margin-right: 10px">Group settings</button>';
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
+										}
+										else {
+											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
 										}
 						
 					contentHTML += `
@@ -840,10 +842,8 @@ $(document).ready(function(){
 
 	$("#newGroupModalCreateButton").click(function() {
 		var nameField = $("#newGroupModalName");
-		var infoField = $("#newGroupModalInfo");
 
 		var name = nameField.val();
-		var info = infoField.val();
 
 		if(name == "") {
 			nameField.addClass("is-invalid");
