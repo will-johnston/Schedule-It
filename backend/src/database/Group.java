@@ -166,7 +166,6 @@ public class Group {
 	}
 	public synchronized boolean isAdmin(String username) {
         //refresh noAdmins
-        noAdmins = GetFromDb.noadmins(this.id);
         System.out.println("Noadmins: " + noAdmins);
         if (noAdmins) {
             return true;
@@ -189,6 +188,7 @@ public class Group {
         }
     }
     public boolean isNoAdmins() {
+        this.noAdmins = GetFromDb.noadmins(this.id);
         return noAdmins;
     }
     public boolean addEvent(Event event) {
