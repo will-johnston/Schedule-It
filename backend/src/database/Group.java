@@ -163,7 +163,7 @@ public class Group {
 		lprint("users.length: " + users.size());
 		lprint("admins.length: " + admins.size());
 	}
-	public boolean isAdmin(String username) {
+	public synchronized boolean isAdmin(String username) {
         System.out.println("Noadmins: " + noAdmins);
         if (noAdmins) {
             return true;
@@ -176,7 +176,7 @@ public class Group {
         return false;
     }
 
-    public boolean setNoAdmins(boolean noAdmins) {
+    public synchronized boolean setNoAdmins(boolean noAdmins) {
         if (ModifyGroup.setNoAdmins(this.id, noAdmins)) {
             this.noAdmins = noAdmins;
             return true;
