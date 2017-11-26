@@ -184,7 +184,7 @@ public class Group {
     }
     //returns all events
     public Event[] getEvents() {
-        return calendar.getEvents();
+        return calendar.getEvents(this.id);
     }
     // check for same time (hour, minute, second
     public boolean eventExists(Event e) {

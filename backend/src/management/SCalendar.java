@@ -254,29 +254,17 @@ public class SCalendar {
         return null;
     }
     //gets all events in the calendar
-    public Event[] getEvents() {
+    public Event[] getEvents(int groupid) {
+        refreshEvents(groupid);
         if (eventCount == 0) {
             return null;
         }
         Event[] events = new Event[eventCount];
         int index = 0;
-        if (calendar.values() == null) {
-            System.out.println("Calendar.values is null");
-            return null;
-        }
         for (YearCalendar year : calendar.values()) {
-            if (year == null) {
-                System.out.println("Year is null");
-                continue;
-            }
             for (int i = 1 ; i < 13; i++) {
                 HashMap<Integer, Event> monthEvents = year.getMonth(i);
                 if (monthEvents == null) {
-                    System.out.println("monthEvents is null");
-                    continue;
-                }
-                if (monthEvents.values() == null) {
-                    System.out.println("monthEvents.values is null");
                     continue;
                 }
                 for (Event event : monthEvents.values()) {
