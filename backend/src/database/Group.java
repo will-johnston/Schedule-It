@@ -167,7 +167,7 @@ public class Group {
 	public synchronized boolean isAdmin(String username) {
         //refresh noAdmins
         System.out.println("Noadmins: " + noAdmins);
-        if (noAdmins) {
+        if (isNoAdmins()) {
             return true;
         }
         for (String admin : admins) {
