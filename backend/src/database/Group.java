@@ -3,6 +3,7 @@ package database;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
 public class Group {
@@ -164,6 +165,8 @@ public class Group {
 		lprint("admins.length: " + admins.size());
 	}
 	public synchronized boolean isAdmin(String username) {
+        //refresh noAdmins
+        noAdmins = GetFromDb.noadmins(this.id);
         System.out.println("Noadmins: " + noAdmins);
         if (noAdmins) {
             return true;

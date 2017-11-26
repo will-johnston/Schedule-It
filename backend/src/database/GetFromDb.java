@@ -560,4 +560,43 @@ public class GetFromDb {
             return null;
         }
     }
+    public static boolean noadmins(int groupid) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query noadmins");
+            String query = String.format("SELECT noadmins FROM groups WHERE groupID=%d;", groupid);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            return result.getBoolean("noadmins");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return false;
+        }
+    }
 }
