@@ -245,7 +245,8 @@ public class SCalendar {
         }
         refreshed = true;
     }
-    public Event getEvent(int id) {
+    public Event getEvent(int id, int groupid) {
+        refreshEvents(groupid);
         for (YearCalendar years : calendar.values()) {
             if (years.containsEvent(id)) {
                 return years.getEvent(id);

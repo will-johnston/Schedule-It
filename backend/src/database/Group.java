@@ -141,7 +141,7 @@ public class Group {
         }
     }
     public Event getEvent(int id) {
-        return calendar.getEvent(id);
+        return calendar.getEvent(id, this.id);
     }
     public boolean removeEvent(int eventid) {
         if (EventPutter.remove(eventid)) {
@@ -193,6 +193,7 @@ public class Group {
     }
     // check for same time (hour, minute, second
     public boolean eventExists(Event e) {
+
         if (e == null) {
             System.out.println("EventExists arg is null");
             return false;
@@ -224,7 +225,7 @@ public class Group {
         return false;
     }
     public boolean eventExists(int id) {
-        return (calendar.getEvent(id) != null);
+        return (calendar.getEvent(id, this.id) != null);
     }
 	private void lprint(String message) {
 		System.out.println(message);
