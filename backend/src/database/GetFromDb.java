@@ -583,7 +583,13 @@ public class GetFromDb {
             String query = String.format("SELECT noadmins FROM groups WHERE groupID=%d;", groupid);
             System.out.println(query);
             result = statement.executeQuery(query);
-            return result.getBoolean("noadmins");
+            if (result.next()) {
+                return result.getBoolean("noadmins");
+            }
+            else {
+                System.out.println("No rows were returned, returning false");
+                return false;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
