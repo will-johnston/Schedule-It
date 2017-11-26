@@ -264,6 +264,7 @@ public class SCalendar {
             for (int i = 1 ; i < 13; i++) {
                 HashMap<Integer, Event> monthEvents = year.getMonth(i);
                 for (Event event : monthEvents.values()) {
+                    System.out.println(String.format("Index: %d, eventCount: %d", index, eventCount));
                     events[index] = event;
                     index++;
                 }
