@@ -2,6 +2,8 @@ package database;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import management.SCalendar;
 import management.Tracker;
 public class Group {
@@ -163,6 +165,7 @@ public class Group {
 		lprint("admins.length: " + admins.size());
 	}
 	public boolean isAdmin(String username) {
+        System.out.println("Noadmins: " + noAdmins);
         if (noAdmins) {
             return true;
         }
@@ -174,8 +177,14 @@ public class Group {
         return false;
     }
 
-    public void setNoAdmins(boolean noAdmins) {
-        this.noAdmins = noAdmins;
+    public boolean setNoAdmins(boolean noAdmins) {
+        if (ModifyGroup.setNoAdmins(this.id, noAdmins)) {
+            this.noAdmins = noAdmins;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     public boolean isNoAdmins() {
         return noAdmins;

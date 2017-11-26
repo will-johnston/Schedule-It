@@ -51,14 +51,29 @@ public class SetNoAdmins implements IAPIRoute {
         }
         if (value) {
             //set noadmins
-            group.setNoAdmins(true);
+            if (group.setNoAdmins(true)) {
+                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
+            else {
+                String response = "{\"error\":\"Could not update groupd\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
         else {
             //set !noadmins
-            group.setNoAdmins(false);
+            if (group.setNoAdmins(false)) {
+                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                return;
+            }
+            else {
+                String response = "{\"error\":\"Could not update groupd\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
         }
-        Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
-        return;
+
     }
     Object[] parseArgs(String body) {
         try {

@@ -282,4 +282,53 @@ public class ModifyGroup {
             return false;
         }
     }
+    public static boolean setNoAdmins(int groupid, boolean value) {
+        int newValue = 0;
+        if (value) {
+            newValue = 1;
+        }
+        MysqlConnectionPoolDataSource ds = null;  //datasource to connect to database
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            //call the DataSourceFactory class to create a pooled datasource
+            ds = DataSourceFactory.getDataSource();
+            //check for potential failed connection
+            if (ds == null) {
+                System.out.println("ERROR: could not get data source");
+                return false;
+            }
+
+            connection = ds.getConnection(); //acquire datasource object
+            if (connection == null) {
+                System.out.println("ERROR: could not connect to data source");
+                return false;
+            }
+
+            //set no admins
+            String query = String.format("UPDATE groups SET noadmins=%d WHERE groupID=%d;", newValue, groupid);
+            statement = connection.createStatement();
+            int rows = statement.executeUpdate(query);
+            if (rows == 1) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        /*try {
+            if (result != null) result.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }*/
+    }
 }
