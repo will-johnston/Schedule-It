@@ -100,7 +100,7 @@ public class GroupEditCalendar implements IAPIRoute {
         if (description != null) {
             event.setDescription(description);
         }
-        if (group.removeEvent(event.getEventID())) {
+        /*if (group.removeEvent(event.getEventID())) {
             if (group.addEvent(event)) {
                 Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
                 return;
@@ -110,9 +110,13 @@ public class GroupEditCalendar implements IAPIRoute {
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
+        }*/
+        if (group.editEvent(event)) {
+            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+            return;
         }
         else {
-            String response = "{\"error\":\"Couldn't remove event locally\"}";
+            String response = "{\"error\":\"Couldn't update event\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }

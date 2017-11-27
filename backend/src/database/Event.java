@@ -1,7 +1,7 @@
 package database;
 
 import java.sql.*;
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.time.LocalDateTime;
 
 public class Event {
@@ -17,8 +17,11 @@ public class Event {
     boolean is_open_ended;  //determines whether an event is open-ended or set ('is_polling_users' field in database)
     //CSVs of users that have responded
     int[] accept;   //String in database
+    int acceptCount = 0;
     int[] decline;  //String in database
+    int declineCount = 0;
     int[] maybe;    //String in database
+    int maybeCount = 0;
 
     public Event(int eventID, String name, String type, String description, String image, boolean is_open_ended) {
         //fill in the basics for now
@@ -53,6 +56,7 @@ public class Event {
         if (accept.contains(",")) {
             //split csv and add
             this.accept = splitCsv(accept);
+            acceptCount = this.accept.length;
         }
         else {
             int value = makeInteger(accept);
@@ -61,45 +65,112 @@ public class Event {
             }
             else {
                 this.accept = new int[]{value};
+                this.acceptCount = 1;
             }
         }
     }
-
+    public boolean addAccept(int userid) {
+        if (arrExists(accept, userid)) {
+            System.out.println("User has already accepted the invitation, handling silently");
+            return true;
+        }
+        try {
+            accept = resize(accept);
+            accept[acceptCount] = userid;
+            acceptCount++;
+            EventPutter.updateAttendanceList(1, getAcceptString(), this.eventID);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public void setIs_open_ended(boolean is_open_ended) {
         this.is_open_ended = is_open_ended;
     }
-
-
 
     public void setDecline(String decline) {
         if (decline == null) return;
         if (decline.contains(",")) {
             this.decline = splitCsv(decline);
+            this.declineCount = this.decline.length;
         }
         else {
             int value = makeInteger(decline);
             if (value == -1) {
-                this.decline = new int[]{value};
+                this.decline = null;
             }
             else {
                 this.decline = new int[]{value};
+                this.declineCount = 1;
             }
+        }
+    }
+    public boolean addDecline(int userid) {
+        if (arrExists(decline, userid)) {
+            System.out.println("User has already accepted the invitation, handling silently");
+            return true;
+        }
+        try {
+            decline = resize(decline);
+            decline[declineCount] = userid;
+            declineCount++;
+            EventPutter.updateAttendanceList(-1, getAcceptString(), this.eventID);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
     public void setMaybe(String maybe) {
         if (maybe == null) return;
         if (maybe.contains(",")) {
             this.maybe = splitCsv(maybe);
+            this.maybeCount = this.maybe.length;
         }
         else {
             int value = makeInteger(maybe);
             if (value == -1) {
-                this.maybe = new int[]{value};
+                this.maybe = null;
             }
             else {
                 this.maybe = new int[]{value};
+                this.maybeCount = 1;
             }
         }
+    }
+    public boolean addMaybe(int userid) {
+        if (arrExists(maybe, userid)) {
+            System.out.println("User has already accepted the invitation, handling silently");
+            return true;
+        }
+        try {
+            maybe = resize(maybe);
+            maybe[maybeCount] = userid;
+            maybeCount++;
+            EventPutter.updateAttendanceList(0, getAcceptString(), this.eventID);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private boolean arrExists(int[] arr, int key) {
+        if (arr == null) {
+            return false;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private int[] resize(int[] arr) {
+        return Arrays.copyOf(arr, arr.length + 1);
     }
     private int[] splitCsv(String tosplit) {
         try {
@@ -164,6 +235,21 @@ public class Event {
         return groupID;
     }
 
+    public int getResponseCount() {
+        return acceptCount + maybeCount + declineCount;
+    }
+
+    public int getAcceptCount() {
+        return acceptCount;
+    }
+
+    public int getDeclineCount() {
+        return declineCount;
+    }
+
+    public int getMaybeCount() {
+        return maybeCount;
+    }
 
     public boolean getIs_open_ended() {
         return this.is_open_ended;

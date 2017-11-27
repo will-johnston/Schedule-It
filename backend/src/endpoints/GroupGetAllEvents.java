@@ -89,6 +89,12 @@ public class GroupGetAllEvents implements IAPIRoute{
                     item.addProperty("address", event.getAddress());
                     item.addProperty("type", event.getType());
                     item.addProperty("is_open_ended", event.getIs_open_ended());
+                    JsonObject response = new JsonObject();
+                    response.addProperty("count", event.getResponseCount());
+                    response.add("going", usersFromArray(resolveUsernamesFromIds(event.getAccept())));
+                    response.add("maybe", usersFromArray(resolveUsernamesFromIds(event.getMaybe())));
+                    response.add("declined", usersFromArray(resolveUsernamesFromIds(event.getDecline())));
+                    item.add("response", response);
                     objs.add(item);
                 }
                 catch (Exception e) {
@@ -105,6 +111,33 @@ public class GroupGetAllEvents implements IAPIRoute{
             e.printStackTrace();
             return null;
         }
+    }
+    JsonObject usersFromArray(String[] arr) {
+        if (arr == null) {
+            return null;
+        }
+        JsonObject responded = new JsonObject();
+        responded.addProperty("count", arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            responded.addProperty("username", arr[i]);
+        }
+        return responded;
+    }
+    String[] resolveUsernamesFromIds(int[] arr) {
+        if (arr == null) {
+            return null;
+        }
+        String[] usernames = new String[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            User user = tracker.getUserById(arr[i]);
+            if (user != null) {
+                usernames[i] = user.getUsername();
+            }
+            else {
+                usernames[i] = null;
+            }
+        }
+        return usernames;
     }
     //returns cookie, month, year, groupid
     int[] parseArgs(String body) {

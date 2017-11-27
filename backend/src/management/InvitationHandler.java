@@ -73,25 +73,56 @@ public class InvitationHandler implements IHandler {
             }
         }
         else if (type.equals("invite.event")) {
+            //Notification format, groupid, eventid
             //user.clearNotification(notification);
-            int responseType = getResponseValue(response);
-            switch (responseType) {
-                case 1:
-                    //going, add to calendar and to database
-                    user.clearNotification(notification);
-                    return "";
-                case 0:
-                    //on the fence, add to calendar and to database
-                    user.clearNotification(notification);
-                    return "";
-                case -1:
-                    //not going, don't add to calendar but add to database
-                    user.clearNotification(notification);
-                    return "";
-                case -2:
-                default:
-                    System.out.println("Response was invalid");
+            try {
+                int responseType = getResponseValue(response);
+                Group group = getGroup(notification.getParams());
+                Event event = getEvent(notification);
+                if (group == null) {
+                    System.out.println("Couldn't handle notification invite.event because group is null");
                     return null;
+                }
+                if (event == null) {
+                    System.out.println("Couldn't handle notification invite.event because event is null");
+                }
+                switch (responseType) {
+                    case 1:
+                        //going, add to calendar and to database
+                        user.clearNotification(notification);
+                        if (group.addGoing(user, event)) {
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case 0:
+                        //on the fence, add to calendar and to database
+                        user.clearNotification(notification);
+                        if (group.addMaybe(user, event)) {
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case -1:
+                        //not going, don't add to calendar but add to database
+                        user.clearNotification(notification);
+                        if (group.addNotGoing(user, event)) {
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case -2:
+                    default:
+                        System.out.println("Response was invalid");
+                        return null;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
         else {
@@ -220,8 +251,37 @@ public class InvitationHandler implements IHandler {
             return -2;
         }
     }
+    public Group getGroup(String params) throws Exception {
+        if (params == null) {
+            return null;
+        }
+        int eventid = -1;
+        int groupid = -1;
+        try {
+            String[] split = params.split("[,]");
+            groupid = Integer.parseInt(split[0]);
+            eventid = Integer.parseInt(split[1]);
+        }
+        catch (Exception e) {
+            eventid = -1;
+            groupid = -1;
+        }
+        if (eventid == -1 || groupid == -1) {
+            System.out.println("Invalid group_id format in params");
+            throw new Exception("Invalid group_id format in params");
+        }
+        Group group = tracker.getGroupById(groupid);
+        if (group == null) {
+            System.out.println("Null group");
+            return null;
+        }
+        return group;
+    }
     //groupid, eventid
     public Event getEvent(Notification notification) throws Exception {
+        if (notification == null) {
+            return null;
+        }
         int eventid = -1;
         int groupid = -1;
            try {
@@ -230,6 +290,8 @@ public class InvitationHandler implements IHandler {
                eventid = Integer.parseInt(split[1]);
            }
            catch (Exception e) {
+               eventid = -1;
+               groupid = -1;
            }
         if (eventid == -1 || groupid == -1) {
             System.out.println("Invalid event_id format in params");

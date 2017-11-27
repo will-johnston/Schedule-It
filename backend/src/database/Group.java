@@ -153,6 +153,21 @@ public class Group {
             return false;
         }
     }
+    public boolean editEvent(Event event) {
+        if (EventPutter.updateEvent(event.getEvent_name(), event.getDescription(), event.getTime().toString(), event.getType(), event.getEventID())) {
+            if (calendar.removeEvent(event.getEventID()) && calendar.addLocal(event)) {
+                return true;
+            }
+            else {
+                System.out.println("Couldn't update local calendar");
+                return false;
+            }
+        }
+        else {
+            System.out.println("Couldn't update database");
+            return false;
+        }
+    }
     public int getId() {
         return id;
     }
@@ -253,5 +268,41 @@ public class Group {
 
     public User getOwner() {
         return owner;
+    }
+    public synchronized boolean addGoing(User user, Event event) {
+        if (user == null || event == null) {
+            System.out.println("Can't add going, params are null");
+            return false;
+        }
+        if (!eventExists(event.getEventID())) {
+            System.out.println("Event doesn't exist");
+            return false;
+        }
+        Event realEvent = getEvent(event.getEventID());
+        return realEvent.addAccept(user.getId());
+    }
+    public synchronized boolean addMaybe(User user, Event event) {
+        if (user == null || event == null) {
+            System.out.println("Can't add maybe, params are null");
+            return false;
+        }
+        if (!eventExists(event.getEventID())) {
+            System.out.println("Event doesn't exist");
+            return false;
+        }
+        Event realEvent = getEvent(event.getEventID());
+        return realEvent.addMaybe(user.getId());
+    }
+    public synchronized boolean addNotGoing(User user, Event event) {
+        if (user == null || event == null) {
+            System.out.println("Can't add not going, params are null");
+            return false;
+        }
+        if (!eventExists(event.getEventID())) {
+            System.out.println("Event doesn't exist");
+            return false;
+        }
+        Event realEvent = getEvent(event.getEventID());
+        return realEvent.addDecline(user.getId());
     }
 }

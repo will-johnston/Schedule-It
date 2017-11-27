@@ -7,6 +7,7 @@ import java.sql.*;
 public class EventPutter {
     public static Event addEvent(Event event) {
         if (event == null) {
+            System.out.println("Invalid Event");
             return null;
         }
         //gets all the event ids connected to the user
@@ -103,6 +104,7 @@ public class EventPutter {
     }
     public static boolean updateEvent(String name, String description, String date, String type, int eventid) {
         if (eventid == 0) {
+            System.out.println("Invalid eventid");
             return false;
         }
         //gets all the event ids connected to the user
@@ -142,6 +144,7 @@ public class EventPutter {
     }
     public static boolean remove(int eventid) {
         if (eventid == 0) {
+            System.out.println("Invalid eventid");
             return false;
         }
         //gets all the event ids connected to the user
@@ -206,5 +209,58 @@ public class EventPutter {
             builder.append(String.format("type='%s'", type));
         }
         return builder.toString();
+    }
+    //-1 notgoing list, 0 maybe list, going list
+    public static boolean updateAttendanceList(int list, String value, int eventid) {
+        if (eventid == 0) {
+            System.out.println("Invalid eventid");
+            return false;
+        }
+        //gets all the event ids connected to the user
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        try {
+            String query = null;
+            switch (list) {
+                case -1:
+                    query = String.format("UPDATE events SET decline='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    break;
+                case 0:
+                    query = String.format("UPDATE events SET maybe='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    break;
+                case 1:
+                    query = String.format("UPDATE events SET accept='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    break;
+                default:
+                    System.out.println("Invalid list");
+                    return false;
+            }
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println(query);
+            int result = statement.executeUpdate(query);
+            if (result == 0) {
+                System.out.println("Didn't update anything");
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
