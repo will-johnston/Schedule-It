@@ -1,6 +1,6 @@
 var calendarHTML = `
 <div style="margin-top: 10px">
-	<button type="button" class="btn btn-primary createNewEventButton" data-toggle="modal" data-target="#createEventModal">Create new event</button>
+	<button type="button" class="btn btn-primary createNewEventButton">Create new event</button>
 	<button type="button" class="btn btn-primary goToTodayButton">Go to today</button>
 </div>
 <div class="row-fluid text-center cal-month-heading">
