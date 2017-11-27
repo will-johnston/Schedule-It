@@ -174,7 +174,8 @@ public class InvitationHandler implements IHandler {
                     jobj.addProperty("type", "invite.event");
                     jobj.addProperty("name", event.getEvent_name());
                     jobj.addProperty("time", event.getTime().toString());
-                    jobj.addProperty("id", event.getEventID());
+                    jobj.addProperty("eventid", event.getEventID());
+                    jobj.addProperty("id", notification.getNotifid());
                     return jobj;
                 }
                 catch (Exception e) {
