@@ -38,6 +38,7 @@ public class Main {
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/user/groups/mute", new GroupMute(tracker));
+            router.add("/user/groups/members/get", new GetMembers(tracker));
 
             /*Friend Endpoints*/
             router.add("/user/friends/remove", new FriendsRemove(tracker));
