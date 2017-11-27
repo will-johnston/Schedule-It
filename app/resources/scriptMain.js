@@ -1253,7 +1253,7 @@ $(document).ready(function(){
 				alert("Failed to remove event");
 			});
 	});
-
+  
    //getting messages
 	var messages = [];
 
