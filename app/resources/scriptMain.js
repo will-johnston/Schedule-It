@@ -726,6 +726,24 @@ $(document).ready(function(){
 						});
 				});
 
+				$(".createNewEventButton").click(function() {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupid"] = activeGroupID;
+					data["groupmember"] = username;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+						function(result) { //success
+							console.log("User is admin of active group");
+							$("#createEventModal").modal("show");
+						},
+						function(result) { //fail
+							console.log("User is not admin of active group");
+							alert("You are not an admin of this group");
+						});
+				});
+
 				$(".chatbotButton").off();
 				$(".chatbotButton").click(function() {
 					//get user ID
