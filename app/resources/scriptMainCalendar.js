@@ -5,6 +5,12 @@ var currentMonth = date.getMonth();
 var assignCalendarFunctionality;
 var updateCalendar;
 
+var eventNameOld;
+var editEventInfoOld;
+var eventDateOld;
+var eventTimeOld;
+var activeEventID;
+
 $(document).ready(function(){
 	var accessServer = function(method, url, data, onSuccess, onFail) {
 		var xhr = new XMLHttpRequest();
@@ -135,19 +141,19 @@ $(document).ready(function(){
 				console.log("Successfully retrieved events");
 
 				var json = JSON.parse(result);
+				var keys = Object.keys(json);
+				var length = keys.length;
 
-				//endpoint needs to return an array of events but it's fine for now
-				if(Object.keys(json).length == 0) {
+				if(length == 0) {
 					return;
 				}
 
-				for(var i = 0; i < 1; i++) {
-					var event = json["event"];
+				for(var i = 0; i < length; i++) {
+					var event = json[keys[i]];
 
-					//temporary fix for event bug
-					var eventMonthTemp = parseInt(event["time"].split(" ")[0].split("-")[1]);
-					var eventYearTemp = parseInt(event["time"].split(" ")[0].split("-")[0]);
-					if(eventMonthTemp == month + 1 && eventYearTemp == year) {
+					var eventMonth = parseInt(event["time"].split(" ")[0].split("-")[1]);
+					var eventYear = parseInt(event["time"].split(" ")[0].split("-")[0]);
+					if(eventMonth == month + 1 && eventYear == year) {
 						var eventDay = parseInt(event["time"].split(" ")[0].split("-")[2]);
 						var eventDate = new Date(year, month, eventDay);
 						var col = eventDate.getDay();
@@ -157,16 +163,22 @@ $(document).ready(function(){
 						cell.getElementsByClassName("dropdown")[0].classList.remove("invisible");
 						cell.getElementsByClassName("eventCount")[0].innerHTML++;
 
+						var eventDateDispArr = event["time"].split(" ")[0].split("-");
+						var eventDateDisp = eventDateDispArr[1] + "/" + eventDateDispArr[2] + "/" + eventDateDispArr[0];
+						eventTimeDisp = event["time"].split(" ")[1];
+						eventTimeDisp = eventTimeDisp.substring(0, 5);
+						eventTimeDisp += " am"; //fix this later
+
 						var eventHTML = `
-							<div class="card">
+							<div class="card" eventID="` + event["id"] + `">
 								<div class="card-header">` + event["name"] + 
 								`</div>
 								<div class="card-body">
-									<p>` + event["description"] + `</p>
+									<div>` + event["description"] + `</div>
 								</div>
 								<div class="card-footer">
 									<button type="button" class="btn btn-sm btn-secondary float-right editEventButton">Edit</button>
-									<div class="eventTime">` + event["time"] + `</div>
+									<div class="eventTime">` + eventDateDisp + " " + eventTimeDisp + `</div>
 								</div>
 							</div>`;
 
@@ -174,24 +186,50 @@ $(document).ready(function(){
 					}
 				}
 
-				$(".editEventButton").click(function() {
-					var parent = $(this).parent().parent();
-					var name = parent.find(".card-header").html();
-					var info = parent.find(".card-body p").html();
+				$(".editEventButton").click(function(event) {
+					var data = {};
+					data["cookie"] = document.cookie.split("=")[1];
+					data = JSON.stringify(data);
 
-					var dateFull = parent.find(".eventTime").html().split(" ")[0].split("-");
-					var date = dateFull[1] + "/" + dateFull[2] + "/" + dateFull[0];
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+						function(result) { //success
+							var data = {};
+							data["cookie"] = document.cookie.split("=")[1];
+							data["groupid"] = groupID;
+							data["groupmember"] = JSON.parse(result)["username"];
+							data = JSON.stringify(data);
 
-					var timeFull = parent.find(".eventTime").html().split(" ")[1].split(".")[0].split(":");
-					var time = timeFull[0] + ":" + timeFull[2] + " am"; //there is no way for me to know if it is am or pm right now
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+								function(result) { //success
+									console.log("User is admin of active group");
+									var parent = $(event.target).parent().parent();
+									var name = parent.find(".card-header").html();
+									var info = parent.find(".card-body div").html();
+									var date = parent.find(".eventTime").html().split(" ")[0];
+									var time = parent.find(".eventTime").html().split(" ")[1] + " " + parent.find(".eventTime").html().split(" ")[2];
 
+									$("#editEventModalName").val(name);
+									$("#editEventModalInfo").val(info);
+									$("#editEventModalDate").val(date);
+									$("#editEventModalTime").val(time);
 
-					$("#editEventModalName").val(name);
-					$("#editEventModalInfo").val(info);
-					$("#editEventModalDate").val(date);
-					$("#editEventModalTime").val(time);
+									eventNameOld = name;
+									eventInfoOld = info;
+									eventDateOld = date;
+									eventTimeOld = time;
+									activeEventID = parent.attr("eventID");
 
-					$("#editEventModal").modal("show");
+									$("#editEventModal").modal("show");
+								},
+								function(result) { //fail
+									console.log("User is not admin of active group");
+									alert("You are not an admin of this group");
+								});
+							
+						},
+						function(result) { //fail
+							console.log("Failed to get user settings");
+						});
 				});
 			},
 			function(result) { //fail

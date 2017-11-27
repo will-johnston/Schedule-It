@@ -179,35 +179,46 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<div class="col-4">
-							<label>Group picture</label>
-						</div>
+						<label class="col-4 col-form-label" id="groupSettingsModalInfo">Mute group</label>
 						<div class="col-8">
-							<label class="btn btn-primary">
-								<input type="file" style="display: none">Choose file
-							</label>
-							<img src="resources/groupDefaultPhoto.jpg" alt="Default Profile Photo" class="img-thumbnail float-right" width="100">
+							<button type="button" id="groupSettingsModalMuteGroup" class="btn btn-primary">Mute</button>
+							<button type="button" id="groupSettingsModalUnmuteGroup" class="btn btn-primary">Unmute</button>
 						</div>
 					</div>
 					<div class="form-group row">
-						<div class="col-6">
-							<label>Add friends to group:</label>
-							<div class="list-group">
+						<div class="col-4">
+							<label>Invite friends</label>
+						</div>
+						<div class="col-8">
+							<div class="card groupOverflowList">
+								<ul class="list-group list-group-flush groupFriendsList" groupID="">
+
+								</ul>
 							</div>
 						</div>
-						<div class="col-6">
-							<label>Members:</label>
-							<br />
-							<ul class="list-group" style="width: 100%">
-							</ul>
+					</div>
+					<div class="form-group row">
+						<div class="col-4">
+							<label>Admin permissions</label>
+						</div>
+						<div class="col-8">
+							<div class="card groupOverflowList">
+								<ul class="list-group list-group-flush groupMembersList" groupID="">
+									<li class="list-group-item">username1<img class="float-right" src="resources/minus.png" width="18px" /><img class="float-right" src="resources/plus.png" width="18px" style="margin-right: 10px"/></li>
+									<li class="list-group-item">username2<img class="float-right" src="resources/plus.png" width="18px" /></li>
+									<li class="list-group-item">username3<img class="float-right" src="resources/plus.png" width="18px" /></li>
+									<li class="list-group-item">username1<img class="float-right" src="resources/plus.png" width="18px" /></li>
+									<li class="list-group-item">username2<img class="float-right" src="resources/remove.png" width="18px" /></li>
+									<li class="list-group-item">username3<img class="float-right" src="resources/remove.png" width="18px" /></li>
+									<li class="list-group-item">username1<img class="float-right" src="resources/remove.png" width="18px" /></li>
+									<li class="list-group-item">username2<img class="float-right" src="resources/remove.png" width="18px" /></li>
+									<li class="list-group-item">username3<img class="float-right" src="resources/remove.png" width="18px" /></li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<div class="mr-auto">
-						<button type="button" class="btn btn-danger">Delete group</button>
-						<button type="button" class="btn btn-danger">Leave group</button>
-					</div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" id="groupSettingsSaveButton">Confirm</button>
 				</div>

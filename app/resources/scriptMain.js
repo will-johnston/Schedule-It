@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 	var cookie = document.cookie.split("=")[1];
 	var activeGroupID;
+	var username;
 
 	//This stops the notification menu from closing when it's clicked on
 	$("#notificationMenu").click(function(event){
@@ -87,6 +88,27 @@ $(document).ready(function(){
 
 		xhr.send(data);
 	};
+
+	//get username
+	var data = {};
+	data["cookie"] = cookie;
+	data = JSON.stringify(data);
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+		function(result) { //success
+			console.log("Successfully retrieved user settings");
+
+			username = JSON.parse(result)["username"];
+		},
+		function(result) { //fail
+			console.log("Failed to retrieve user settings");
+		});
+
+	$("#settingsModalChooseFileButton").change(function() {
+		var button = $("#settingsModalChooseFileButton");
+		var dirArr = button.val().split("\\");
+		$("#settingsModalFileLabel").html(dirArr[dirArr.length - 1]);
+	});
 
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
@@ -370,9 +392,8 @@ $(document).ready(function(){
 	};
 
 	//update notifications every 30 seconds
-	//temporary
-	//setInterval(updateNotifications, 30000);
-	//updateNotifications();
+	setInterval(updateNotifications, 30000);
+	updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -540,7 +561,6 @@ $(document).ready(function(){
 					var realID = json[i]["id"];
 					var id = "group" + realID + "Content";
 					var name = json[i]["name"];
-					var info = "...";
 
 					var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 					var contentHTML = `
@@ -549,11 +569,15 @@ $(document).ready(function(){
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
-										<h3>` + name + `</h3>
-										<p>` + info + `</p>`;
+										<h3>` + name + `</h3>`;
 
 										if(name != "Me") {
-											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" data-toggle="modal" data-target="#groupSettingsModal">Group settings</button>';
+											contentHTML += '<br />';
+											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" style="margin-right: 10px">Group settings</button>';
+											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
+										}
+										else {
+											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
 										}
 						
 					contentHTML += `
@@ -615,14 +639,109 @@ $(document).ready(function(){
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
-					console.log("clicked");
+					$("#groupMembersList").empty();
+
 					//populate the group settings modal with group information
 					var parent = $(event.target).parent().parent().parent().parent();
 
 					$(".groupFriendsList").attr("groupID", parent.attr("groupID"));
 
 					$("#groupSettingsModalName").val(parent.attr("groupName"));
-					//info & pic...
+					//info...
+
+					//if the user is not an admin, restrict access
+					var data = {};
+					data["cookie"] = cookie;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+						function(result) { //success
+							var data = {};
+							data["cookie"] = cookie;
+							data["groupid"] = activeGroupID;
+							data["groupmember"] = JSON.parse(result)["username"];
+							data = JSON.stringify(data);
+
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+								function(result) { //success
+									console.log("User is admin of active group");
+									$("#groupSettingsModal").modal("show");
+
+									var data = {};
+									data["cookie"] = cookie;
+									data["groupid"] = activeGroupID;
+									data = JSON.stringify(data);
+
+									accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/members", data,
+										function(result) { //success
+											console.log("Successfully retrieved group members");
+
+											var json = JSON.parse(result);
+
+											for(var i = 0; i < json.length; i++) {
+												if(json[i]["username"] == username || json[i]["username"] == "Clarence") {
+													continue;
+												}
+
+												var memberHTML = '<li class="list-group-item">' + json[i]["username"] + '<img class="float-right removeAdminPermission" src="resources/minus.png" width="18px" /><img class="float-right giveAdminPermission" src="resources/plus.png" width="18px" style="margin-right: 10px"/></li>';
+												$("#groupMembersList").append(memberHTML);
+											}
+
+											assignGroupMemberListFunctionality();
+										},
+										function(result) { //fail
+											console.log("Failed to retrieve group members");
+										});
+								},
+								function(result) { //fail
+									console.log("User is not admin of active group");
+									alert("You are not an admin of this group");
+
+									//modal only shows if you're a admin so shouldn't need this
+									/*setTimeout(function() {
+										$("#groupSettingsModal").modal("hide");
+									}, 500);*/
+								});
+							
+						},
+						function(result) { //fail
+							console.log("Failed to get user settings");
+						});
+				});
+
+				$(".leaveGroupButton").click(function() {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupid"] = activeGroupID;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/leave", data,
+						function(result) { //success
+							console.log("Successfully left group");
+
+							updateGroups();
+						},
+						function(result) { //fail
+							alert("Failed to leave group");
+						});
+				});
+
+				$(".createNewEventButton").click(function() {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupid"] = activeGroupID;
+					data["groupmember"] = username;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+						function(result) { //success
+							console.log("User is admin of active group");
+							$("#createEventModal").modal("show");
+						},
+						function(result) { //fail
+							console.log("User is not admin of active group");
+							alert("You are not an admin of this group");
+						});
 				});
 
 				$(".chatbotButton").off();
@@ -671,6 +790,42 @@ $(document).ready(function(){
 
 	updateGroups();
 
+	var assignGroupMemberListFunctionality = function() {
+		$("#groupMembersList .giveAdminPermission").off();
+		$("#groupMembersList .giveAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/add", data,
+				function(result) { //success
+					console.log("Successfully gave user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to give user admin permissions");
+				});
+		});
+
+		$("#groupMembersList .removeAdminPermission").off();
+		$("#groupMembersList .removeAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/remove", data,
+				function(result) { //success
+					console.log("Successfully revoked user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to revoke user admin permissions");
+				});
+		});
+	}
+
 	var assignGroupModalInviteFriendsFunctionality = function(modal) {
 		$("body").on("click", ".groupFriendsList img", function(event) {
 			var nameField = $("#groupSettingsModalName");
@@ -705,10 +860,8 @@ $(document).ready(function(){
 
 	$("#newGroupModalCreateButton").click(function() {
 		var nameField = $("#newGroupModalName");
-		var infoField = $("#newGroupModalInfo");
 
 		var name = nameField.val();
-		var info = infoField.val();
 
 		if(name == "") {
 			nameField.addClass("is-invalid");
@@ -748,23 +901,6 @@ $(document).ready(function(){
 
 
 		$("#groupSettingsModal").modal("hide");
-	});
-
-	$("#groupSettingsLeaveGroupButton").click(function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data["groupid"] = activeGroupID;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/leave", data,
-			function(result) { //success
-				console.log("Successfully left group");
-
-				updateGroups();
-			},
-			function(result) { //fail
-				alert("Failed to leave group");
-			});
 	});
 
 	$("#groupSettingsModalMuteGroup").click(function() {
@@ -885,9 +1021,22 @@ $(document).ready(function(){
 			$("#createEventModalName").removeClass("is-invalid");
 		}
 
-		var dateArr = date.split("/");
+		//must specify event type
+		var staticEvent;
+		if(!$("#createEventModalStaticRadio").prop("checked") && !$("#createEventModalBestFitRadio").prop("checked")) {
+			$("#createEventModalStaticRadio").parent().addClass("is-invalid");
+			$("#createEventModalBestFitRadio").parent().addClass("is-invalid");
+			return;
+		}
+		else {
+			$("#createEventModalStaticRadio").parent().removeClass("is-invalid");
+			$("#createEventModalBestFitRadio").parent().removeClass("is-invalid");
+
+			staticEvent = $("#createEventModalStaticRadio").prop("checked") ? true : false;
+		}
 
 		//date must have day, month and year
+		var dateArr = date.split("/");
 		if(dateArr.length != 3) {
 			$("#createEventModalDate").addClass("is-invalid");
 			return;
@@ -952,9 +1101,19 @@ $(document).ready(function(){
 		data["cookie"] = cookie;
 		data["name"] = name;
 		data["description"] = info;
-		data["type"] = "group.event";
-		data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
 		data["groupid"] = activeGroupID;
+
+		if(staticEvent) {
+			data["type"] = "group.event";
+			data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+			data["expiration_time"] = "None";
+		}
+		else {
+			data["type"] = "Generic";
+			data["date"] = "None";
+			data["expiration_time"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+		}
+
 		data = JSON.stringify(data);
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/add", data,
@@ -967,7 +1126,134 @@ $(document).ready(function(){
 				alert("Failed to create event");
 			});
 	});
-    
+
+	$("#createEventModalRadioRow").click(function() {
+		if($("#createEventModalStaticRadio").prop("checked")) {
+			$("#createEventModalDateLabel").html("Date");
+			$("#createEventModalTimeLabel").html("Time");
+		}
+		else if($("#createEventModalBestFitRadio").prop("checked")) {
+			$("#createEventModalDateLabel").html("Expiration date");
+			$("#createEventModalTimeLabel").html("Expiration time");
+		}
+	});
+
+	$("#editEventModalConfirmButon").click(function() {
+		var eventNameNew = $("#editEventModalName").val();
+		var eventInfoNew = $("#editEventModalInfo").val();
+		var eventDateNew = $("#editEventModalDate").val();
+		var eventTimeNew = $("#editEventModalTime").val();
+
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+
+		if(eventNameNew != eventNameOld) {
+			data["name"] = eventNameNew;
+		}
+
+		if(eventInfoNew != eventInfoOld) {
+			data["description"] = eventInfoNew;
+		}
+
+		if(eventDateNew != eventDateOld || eventTimeNew != eventTimeOld) {
+			//date must have day, month and year
+			var dateArr = eventDateNew.split("/");
+			if(dateArr.length != 3) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var year = parseInt(dateArr[2]);
+			if(isNaN(year) || year < 1950 || year > 2500) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var month = parseInt(dateArr[0]);
+			if(isNaN(month) || month < 1 || month > 12) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var day = parseInt(dateArr[1]);
+			var endDay = new Date(year, month, 0).getDate();
+			if(isNaN(day) || day < 1 || day > endDay) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalDate").removeClass("is-invalid");
+
+			//must have time and am/pm
+			var timeArr = eventTimeNew.split(" ");
+			if(timeArr.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var meridiem = timeArr[1];
+			if(meridiem != "am" && meridiem != "pm") {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			//must have hours and minutes
+			var digits = timeArr[0].split(":");
+			if(digits.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var hours = parseInt(digits[0]);
+			if(isNaN(hours) || hours < 1 || hours > 12) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var minutes = parseInt(digits[1]);
+			if(isNaN(minutes) || minutes < 0 || minutes > 59) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalTime").removeClass("is-invalid");
+
+			data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+		}
+
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/edit", data,
+			function(result) { //success
+				console.log("Successfully edited event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to edit event");
+			});
+	});
+
+	$("#editEventModalRemoveButton").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/remove", data,
+			function(result) { //success
+				console.log("Successfully removed event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to remove event");
+			});
+	});
+  
    //getting messages
 	var messages = [];
 

@@ -1,6 +1,8 @@
 package database;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Event {
     int eventID = 0;
@@ -183,6 +185,18 @@ public class Event {
         return type;
     }
 
+    public void setName(String event_name) {
+        this.event_name = event_name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setEventID(int eventID) {
         this.eventID = eventID;
     }
@@ -203,7 +217,6 @@ public class Event {
         }
         return builder.toString();
     }
-
     public int[] getDecline() {
         return decline;
     }
@@ -236,5 +249,8 @@ public class Event {
             }
         }
         return builder.toString();
+    }
+    public LocalDateTime getDate() {
+        return time.toLocalDateTime();
     }
 }

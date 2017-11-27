@@ -133,7 +133,7 @@ public class GetFromDb {
         return null;
     }
 
-    //returns id, name, creator, imagePath
+    //returns id, name, creator, imagePath, noadmins
     public static Object[] getGroupInfo(int groupid) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -166,7 +166,8 @@ public class GetFromDb {
                 String groupname = result.getString("name");
                 int creatorid = result.getInt("creatorid");
                 String imagePath = result.getString("image_path");
-                return new Object[] { grupid, groupname, creatorid, imagePath};
+                int noadmins = result.getInt("noadmins");
+                return new Object[] { grupid, groupname, creatorid, imagePath, noadmins};
             }
             else {
                 return null;
@@ -557,6 +558,51 @@ public class GetFromDb {
             }
             System.out.println("Returning false");
             return null;
+        }
+    }
+    public static boolean noadmins(int groupid) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query noadmins");
+            String query = String.format("SELECT noadmins FROM groups WHERE groupID=%d;", groupid);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            if (result.next()) {
+                return result.getBoolean("noadmins");
+            }
+            else {
+                System.out.println("No rows were returned, returning false");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if(result != null) result.close();
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return false;
         }
     }
 }

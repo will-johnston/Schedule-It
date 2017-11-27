@@ -27,7 +27,7 @@ public class UserLogin implements IAPIRoute {
             }
             else {
                 System.out.println(String.format("name: %s, pass: %s", args[0], args[1]));
-                User user = User.fromDatabase(args[0]);
+                User user = tracker.getUserByName(args[0]);
                 if (user == null) {
                     String response = "{\"error\":\"User doesn't exist\"}";
                     Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest,
