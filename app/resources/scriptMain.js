@@ -1236,6 +1236,24 @@ $(document).ready(function(){
 			});
 	});
 
+	$("#editEventModalRemoveButton").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/remove", data,
+			function(result) { //success
+				console.log("Successfully removed event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to remove event");
+			});
+	});
+
    //getting messages
 	var messages = [];
 
