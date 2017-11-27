@@ -1138,6 +1138,104 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#editEventModalConfirmButon").click(function() {
+		var eventNameNew = $("#editEventModalName").val();
+		var eventInfoNew = $("#editEventModalInfo").val();
+		var eventDateNew = $("#editEventModalDate").val();
+		var eventTimeNew = $("#editEventModalTime").val();
+
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+
+		if(eventNameNew != eventNameOld) {
+			data["name"] = eventNameNew;
+		}
+
+		if(eventInfoNew != eventInfoOld) {
+			data["description"] = eventInfoNew;
+		}
+
+		if(eventDateNew != eventDateOld || eventTimeNew != eventTimeOld) {
+			//date must have day, month and year
+			var dateArr = eventDateNew.split("/");
+			if(dateArr.length != 3) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var year = parseInt(dateArr[2]);
+			if(isNaN(year) || year < 1950 || year > 2500) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var month = parseInt(dateArr[0]);
+			if(isNaN(month) || month < 1 || month > 12) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var day = parseInt(dateArr[1]);
+			var endDay = new Date(year, month, 0).getDate();
+			if(isNaN(day) || day < 1 || day > endDay) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalDate").removeClass("is-invalid");
+
+			//must have time and am/pm
+			var timeArr = eventTimeNew.split(" ");
+			if(timeArr.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var meridiem = timeArr[1];
+			if(meridiem != "am" && meridiem != "pm") {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			//must have hours and minutes
+			var digits = timeArr[0].split(":");
+			if(digits.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var hours = parseInt(digits[0]);
+			if(isNaN(hours) || hours < 1 || hours > 12) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var minutes = parseInt(digits[1]);
+			if(isNaN(minutes) || minutes < 0 || minutes > 59) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalTime").removeClass("is-invalid");
+
+			data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+		}
+
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/edit", data,
+			function(result) { //success
+				console.log("Successfully edited event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to edit event");
+			});
+	});
+
    //getting messages
 	var messages = [];
 
