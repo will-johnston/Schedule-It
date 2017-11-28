@@ -51,7 +51,7 @@ public class Event {
         }
     }
 
-    public void setAccept(String accept) {
+    public synchronized void setAccept(String accept) {
         if (accept == null) return;
         if (accept.contains(",")) {
             //split csv and add
@@ -69,7 +69,7 @@ public class Event {
             }
         }
     }
-    public boolean addAccept(int userid) {
+    public synchronized boolean addAccept(int userid) {
         if (arrExists(accept, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -89,7 +89,7 @@ public class Event {
         this.is_open_ended = is_open_ended;
     }
 
-    public void setDecline(String decline) {
+    public synchronized void setDecline(String decline) {
         if (decline == null) return;
         if (decline.contains(",")) {
             this.decline = splitCsv(decline);
@@ -106,7 +106,7 @@ public class Event {
             }
         }
     }
-    public boolean addDecline(int userid) {
+    public synchronized boolean addDecline(int userid) {
         if (arrExists(decline, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -139,7 +139,7 @@ public class Event {
             }
         }
     }
-    public boolean addMaybe(int userid) {
+    public synchronized boolean addMaybe(int userid) {
         if (arrExists(maybe, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -155,7 +155,7 @@ public class Event {
             return false;
         }
     }
-    private boolean arrExists(int[] arr, int key) {
+    private synchronized boolean arrExists(int[] arr, int key) {
         if (arr == null) {
             return false;
         }
@@ -166,7 +166,7 @@ public class Event {
         }
         return false;
     }
-    private int[] resize(int[] arr) {
+    private synchronized int[] resize(int[] arr) {
         if (arr == null) {
             return new int[1];
         }
@@ -287,7 +287,7 @@ public class Event {
         this.eventID = eventID;
     }
 
-    public int[] getAccept() {
+    public synchronized int[] getAccept() {
         return accept;
     }
     public String getAcceptString() {
@@ -303,7 +303,7 @@ public class Event {
         }
         return builder.toString();
     }
-    public int[] getDecline() {
+    public synchronized int[] getDecline() {
         return decline;
     }
     public String getDeclineString() {
@@ -320,7 +320,7 @@ public class Event {
         return builder.toString();
     }
 
-    public int[] getMaybe() {
+    public synchronized int[] getMaybe() {
         return maybe;
     }
     public String getMaybeString() {
