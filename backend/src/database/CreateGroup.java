@@ -29,15 +29,6 @@ public class CreateGroup {
             }
             connection = ds.getConnection(); //acquire datasource object
 
-            //get adminID
-            int adminID = -1;
-            String getAdmin = "SELECT adminID from groupAdmins WHERE groupID=" + groupID + " AND userID=" + creatorID;
-            statement = connection.createStatement();
-            result = statement.executeQuery(getAdmin);
-            if (result.next()) {
-                adminID = result.getInt(1);
-            }
-
 
             //if userID already has a group with same name, reject.
             String query = String.format("SELECT * FROM groups WHERE name='%s' AND creatorID='%s';", name, creatorID);
@@ -60,6 +51,12 @@ public class CreateGroup {
                 String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + creatorID + ")";
                 statement = connection.createStatement();
                 statement.executeUpdate(addAdmin);
+
+		//add Clarence to group admins
+		String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + 46 + ")";
+                statement = connection.createStatement();
+                statement.executeUpdate(addAdmin);
+
 
 		//add user to group_user_junction with userID and groupID
                 String updateJT = "INSERT INTO group_user_junction (userID, groupID) VALUES(" + creatorID + ", " + groupID + ")";
