@@ -599,8 +599,8 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
-											 
+									<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:70vw; border:1px solid rgb(220, 220, 220); overflow-y:auto;white-space: -webkit-pre-wrap;word-break:break-all;white-space:normal;padding:0.75vw"></div>
+									
 										<form name="message" action="">
 											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
 											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
@@ -1256,6 +1256,7 @@ $(document).ready(function(){
   
    //getting messages
 	var messages = [];
+	var lastID = 0;
 
 	var updateChat = function() {
 		//call endpoint
@@ -1265,33 +1266,85 @@ $(document).ready(function(){
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
-				//console.log("Successfully retrieved chat messages");
-
-				//parse messages
 				var json = JSON.parse(result);
-
-				//if there are no messages in the array they should all be put in there
-				if(json.lenth == 0) {
-					messages = json["chat"];
-				}
-				else {
-					var newMessages = [];
-					//update newMessages with the new messages
-					//update messages with the new messages
-
-					//console.log($("#group" + activeGroupID + "Content .chatBox"));
+				
+				//Apparently this is the only way for it to update when switching between groups tabs.......k
+				if(lastID != activeGroupID) {
 					$("#chatbox_" + activeGroupID).empty();
-					for(var i = 0; i < json.length; i++) {
-						//update the chat box for the group 
-						$("#group" + activeGroupID + "Content .chatBox").append("<p>" + json[i][1] + "[" + json[i][2] + "]" + ": " + json[i][0] + "\n" + "</p>");
-					}
+					messages = [];
 				}
+				lastID = activeGroupID;
+
+				//Print only new messages
+				if(messages.length != json.length && messages.length != 0) {
+					var difference = json.length - messages.length;
+					for(var i = json.length - difference; i < json.length; i++) {
+
+						//Image
+						var isURL = checkURL(json[i][0]);
+						if(isURL == true) {
+							var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + "</p>");
+							$("#group" + activeGroupID + "Content .chatBox").append("<img src='" + json[i][0] + "'>");
+	
+						} else {
+						//Plain Text
+						var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + json[i][0] + "\n" + "</p>");
+						} 
+					}
+
+					//Push messages to array
+					for(var i = json.length - difference; i < json.length; i++) {
+						messages.push(json[i]);
+					}
+				} else if(messages.length == 0) {
+					for(var i = 0; i < json.length; i++) {
+						//Image
+						var isURL = checkURL(json[i][0]);
+						if(isURL == true) {
+							var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + "</p>");
+							$("#group" + activeGroupID + "Content .chatBox").append("<img src='" + json[i][0] + "'>");
+	
+						} else {
+						//Plain Text
+						var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + json[i][0] + "\n" + "</p>");
+						} 
+					}
+					//Push messages to array
+					for(var i = 0; i < json.length; i++) {
+						messages.push(json[i]);
+					}
+				}		
 				
 			},
 			function(result) { //fail
 				//alert("Failed to retrieve chat messages");
 				console.log("Failed to retrieve chat messages");
-			});
+		});
+	}
+
+
+	function checkURL(url) {
+		//END FORMATS: .gif, .jpg, .jpeg, .png
+		var length = url.length;
+		if(url.indexOf("www") == 0 || url.indexOf("http") == 0 || url.indexOf("https") == 0) {
+			if(url.indexOf(".gif") == length - 4 || url.indexOf(".GIF") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpg") == length - 4 || url.indexOf(".JPG") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpeg") == length - 4 || url.indexOf(".JPEG") == length - 4) {
+				return true;
+			} else if(url.indexOf(".png") == length - 4 || url.indexOf(".PNG") == length - 4) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	//update chat every 3 seconds
