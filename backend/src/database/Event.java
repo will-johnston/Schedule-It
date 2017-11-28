@@ -170,6 +170,9 @@ public class Event {
         return false;
     }
     private int[] resize(int[] arr) {
+        if (arr == null) {
+            return new int[1];
+        }
         return Arrays.copyOf(arr, arr.length + 1);
     }
     private int[] splitCsv(String tosplit) {
