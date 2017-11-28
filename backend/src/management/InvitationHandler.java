@@ -228,11 +228,12 @@ public class InvitationHandler implements IHandler {
     //-1 not going, 0 on the fence, 1 going, -2 ERROR
     public int getResponseValue(JsonObject response) {
         try {
-            if (response == null || !response.has("response")) {
+            /*if (response == null || !response.has("response")) {
+                System.out.println(String.format("Response: %d, hasR"));
                 return -2;
             }
-            JsonObject obj = response.getAsJsonObject("response");
-            if (obj == null || !response.has("accept")) {
+            JsonObject obj = response.getAsJsonObject("response");*/
+            if (response == null || !response.has("accept")) {
                 return -2;
             }
             String value = response.get("accept").getAsString();
