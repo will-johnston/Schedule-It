@@ -15,25 +15,25 @@ public class NotificationHandler {
     }
     //formats all notifications for delivery
     //returns message to be sent to the client
-    public JsonObject format(Notification notification) {
+    public JsonObject format(Notification notification) throws Exception {
         if (notification == null) {
             System.out.println("Tried to handle null notification");
             return null;
         }
         if (notification.getType().isInvite()) {
-            try {
+            //try {
                 JsonObject response = invitationHandler.format(notification);
                 if (response == null) {
                     System.out.println("Couldn't format invite notification. handler returned null");
                     return null;
                 }
                 return response;
-            }
-            catch (Exception e){
+            //}
+            /*catch (Exception e){
                 System.out.println("Couldn't format invite notification");
                 e.printStackTrace();
                 return null;
-            }
+            }*/
         }
         else {
             return null;
