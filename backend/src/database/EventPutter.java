@@ -229,13 +229,13 @@ public class EventPutter {
             String query = null;
             switch (list) {
                 case -1:
-                    query = String.format("UPDATE events SET decline='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    query = String.format("UPDATE events SET decline=%s WHERE eventID=%d;", resolveNull(value), eventid);
                     break;
                 case 0:
-                    query = String.format("UPDATE events SET maybe='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    query = String.format("UPDATE events SET maybe=%s WHERE eventID=%d;", resolveNull(value), eventid);
                     break;
                 case 1:
-                    query = String.format("UPDATE events SET accept='%s' WHERE eventID=%d;", resolveNull(value), eventid);
+                    query = String.format("UPDATE events SET accept=%s WHERE eventID=%d;", resolveNull(value), eventid);
                     break;
                 default:
                     System.out.println("Invalid list");

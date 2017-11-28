@@ -78,8 +78,7 @@ public class Event {
             accept = resize(accept);
             accept[acceptCount] = userid;
             acceptCount++;
-            EventPutter.updateAttendanceList(1, getAcceptString(), this.eventID);
-            return true;
+            return EventPutter.updateAttendanceList(1, getAcceptString(), this.eventID);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -116,8 +115,7 @@ public class Event {
             decline = resize(decline);
             decline[declineCount] = userid;
             declineCount++;
-            EventPutter.updateAttendanceList(-1, getAcceptString(), this.eventID);
-            return true;
+            return EventPutter.updateAttendanceList(-1, getAcceptString(), this.eventID);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -150,8 +148,7 @@ public class Event {
             maybe = resize(maybe);
             maybe[maybeCount] = userid;
             maybeCount++;
-            EventPutter.updateAttendanceList(0, getAcceptString(), this.eventID);
-            return true;
+            return EventPutter.updateAttendanceList(0, getAcceptString(), this.eventID);
         }
         catch (Exception e) {
             e.printStackTrace();
