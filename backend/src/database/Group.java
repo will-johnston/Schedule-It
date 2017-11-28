@@ -79,7 +79,13 @@ public class Group {
             if (user == null) {
                 continue;
             }
-            if (tracker.addUser(user)) {
+            /*if (tracker.addUser(user)) {
+                users.add(user.username);
+            }*/
+            if (!containsUsername(user.username)) {
+                if (!tracker.containsUser(user.username) {
+                    tracker.addUser(user);
+                }
                 users.add(user.username);
             }
         }
@@ -87,7 +93,7 @@ public class Group {
     }
     public boolean containsUsername(String username) {
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).toLowerCase().equals(username.toLowerCase())) {
+            if (users.get(i).equals(username)) {
                 return true;
             }
         }

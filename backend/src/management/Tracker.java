@@ -122,6 +122,9 @@ public class Tracker {
         }
         return null;
     }
+    public synchronized boolean containsUser(String username) {
+        return getUserByName(username) != null;
+    }
     public synchronized User getUserById(int id) {
 		if (id == 0) {
 			return null;
