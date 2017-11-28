@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Tracker {
-    static Tracker mainTracker;
+    public static Tracker mainTracker;
     volatile HashMap<Integer, User> users;           //logged in <cookie, User>
     volatile HashMap<Integer, Group> groups;
     volatile int userCount;

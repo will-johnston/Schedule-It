@@ -94,6 +94,7 @@ public class Group {
         return false;
     }
     public String[] getMembers() {
+        updateUsers(Tracker.mainTracker);
         String[] members = new String[users.size()];
         users.toArray(members);
         return members;
