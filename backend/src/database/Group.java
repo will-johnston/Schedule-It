@@ -83,7 +83,7 @@ public class Group {
                 users.add(user.username);
             }*/
             if (!containsUsername(user.username)) {
-                if (!tracker.containsUser(user.username) {
+                if (!tracker.containsUser(user.username)) {
                     tracker.addUser(user);
                 }
                 users.add(user.username);
