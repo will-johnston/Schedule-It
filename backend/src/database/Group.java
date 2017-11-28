@@ -237,11 +237,11 @@ public class Group {
     }
     // check for same time (hour, minute, second
     public boolean eventExists(Event e) {
-
         if (e == null) {
             System.out.println("EventExists arg is null");
             return false;
         }
+        calendar.update(id);
         LocalDateTime dateTime = e.getDate();
         if (dateTime == null) {
             System.out.println("EventExists dateTime is null");
