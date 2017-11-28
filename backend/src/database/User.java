@@ -476,9 +476,9 @@ public class User {
         return null;
     }
     public void refreshGroups(Tracker tracker) {
-        if (updatedGroups) {
+        /*if (updatedGroups) {
             return;
-        }
+        }*/
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
         if (groups == null || groups.isEmpty() || groups.size() == 0) {
             //complains that size can never be zero, but it can
