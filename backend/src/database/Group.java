@@ -104,9 +104,9 @@ public class Group {
         }
         HashMap<String, Boolean> hasBeenNotified = new HashMap<>(users.size() - 2);
         for (String username : users) {
-            if (hasBeenNotified.containsKey(username)) {
+            /*if (hasBeenNotified.containsKey(username)) {
                 continue;
-            }
+            }*/
             User user = tracker.getUserByName(username);
             if (user.getId() == tracker.getClarence().getId()) {
                 continue;
@@ -117,7 +117,7 @@ public class Group {
                 Notification newer = NotificationInDb.add(notification);
                 if (newer != null) {
                     user.addNotification(notification);
-                    hasBeenNotified.put(username, true);
+                    //hasBeenNotified.put(username, true);
                 }
                 else {
                     System.out.println("Failed to add notification");
