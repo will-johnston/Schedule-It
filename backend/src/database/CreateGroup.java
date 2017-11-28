@@ -53,7 +53,7 @@ public class CreateGroup {
                 statement.executeUpdate(addAdmin);
 
 		//add Clarence to group admins
-		String addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + 46 + ")";
+		addAdmin = "INSERT INTO groupAdmins VALUES(null," +  groupID + "," + 46 + ")";
                 statement = connection.createStatement();
                 statement.executeUpdate(addAdmin);
 

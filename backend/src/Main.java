@@ -55,6 +55,7 @@ public class Main {
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
             router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
             router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
+	    router.add("/findbesttime", new GroupFindBestTime(tracker));
 
             /*Calendar Endpoints*/
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));

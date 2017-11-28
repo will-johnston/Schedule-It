@@ -25,6 +25,7 @@ public class GroupFindBestTime implements IAPIRoute {
     @Override
     public void execute(SSocket sock, HTTPMessage request) {
         Object[] args = parseArgs(request.getBody());
+        System.out.println("Parsed args");
         if (args == null) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -58,6 +59,7 @@ public class GroupFindBestTime implements IAPIRoute {
         }
         //get event
         Event event = group.getEvent(eventid);
+        System.out.println("Got event");
         //make sure event is open-ended
         boolean is_open_ended = event.getIs_open_ended();
         if (!is_open_ended) {
@@ -67,6 +69,7 @@ public class GroupFindBestTime implements IAPIRoute {
         }
         //call TimeInputBestTime.findBestTime(int groupID, int eventID)
         Timestamp time = TimeInputBestTime.findBestTime(groupid, eventid);
+        System.out.println("Found time: " + time.toString());
         if (time == null) {
             String response = "{\"error\":\"Couldn't find best time\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -75,7 +78,7 @@ public class GroupFindBestTime implements IAPIRoute {
        //change event properties: date, is_open_ended
         event.setTime(time);
         event.setIs_open_ended(false);
-
+        System.out.println("Set event things");
         //remove event locally, readd.
         if (group.removeEvent(event.getEventID())) {
             if (group.addEvent(event)) {
@@ -87,12 +90,13 @@ public class GroupFindBestTime implements IAPIRoute {
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-        }
-        else {
+        } else {
             String response = "{\"error\":\"Couldn't remove event locally when updating tracker\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+
+
     }
 
     //cookie, name, description, date, groupid
@@ -114,8 +118,8 @@ public class GroupFindBestTime implements IAPIRoute {
 
             return new Object[] {
                     jobj.get("cookie").getAsInt(),
-                    jobj.get("groupid").getAsString(),
-                    jobj.get("eventid").getAsString()
+                    jobj.get("groupid").getAsInt(),
+                    jobj.get("eventid").getAsInt()
             };
         }
         catch (Exception e) {
