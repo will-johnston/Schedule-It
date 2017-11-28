@@ -21,6 +21,8 @@ public class User {
     int id;
     long lastCheckedIn = -1;
     boolean updatedGroups = false;
+    boolean updatedNotifications = false;
+    int notifAccess = 0;
     public User(String name, String email, String password, String phone, int id, String username, String notif_prefs, String imageUrl) {
         this.name = name;
         this.email = email;
@@ -243,14 +245,18 @@ public class User {
         }
         return friends;
     }
-    public Notification[] getNotifications() {
-        try {
+    public synchronized Notification[] getNotifications() {
+        updateNotifications();
+        Notification[] arr = new Notification[notifications.size()];
+        notifications.toArray(arr);
+        return arr;
+        /*try {
             System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
             Notification[] dbnotifs = NotificationInDb.get(id);
             if (notifications == null || dbnotifs == null) {
                 return new Notification[0];
             }
-            for (Notification notification : dbnotifs) {
+            /*for (Notification notification : dbnotifs) {
                 if (notification == null) {
                     continue;
                 }
@@ -270,30 +276,34 @@ public class User {
                     System.out.println(String.format("Adding %d to notification list", notification.notifid));
                     this.notifications.add(notification);
                 }
-            }
-            Notification[] copy = new Notification[this.notifications.size()];
+            }*/
+        /*    Notification[] copy = new Notification[this.notifications.size()];
             this.notifications.toArray(copy);
             return copy;
         }
         catch (Exception e) {
             return null;
-        }
+        }*/
     }
-    public Notification getNotificationById(int id) {
-        for (int i = 0; i < 2; i++) {
-            for (Notification notification : notifications) {
-                if (notification.getNotifid() == id) {
-                    return notification;
-                }
-            }
-            if (i == 0) {
-                //update notifications and check if in there
-                updateNotifications();
+    public synchronized Notification getNotificationById(int id) {
+        updateNotifications();
+        for (Notification notification : notifications) {
+            if (notification.getNotifid() == id) {
+                return notification;
             }
         }
         return null;
     }
     private void updateNotifications() {
+        if (updatedNotifications) {
+            //recheck for updates after 5 access
+            if (notifAccess == 5) {
+                notifAccess = 0;
+            }
+            else {
+                return;
+            }
+        }
         Notification[] dbnotifs = NotificationInDb.get(id);
         for (Notification dbnotif : dbnotifs) {
             boolean exists = false;
@@ -307,6 +317,8 @@ public class User {
                 this.notifications.add(dbnotif);
             }
         }
+        updatedNotifications = true;
+        notifAccess++;
     }
     public boolean clearNotification(Notification notification) {
         if (notification == null) {
@@ -328,7 +340,7 @@ public class User {
             return false;
         }
     }
-    public boolean addNotification(Notification notification) {
+    public synchronized boolean addNotification(Notification notification) {
         if (notification == null) {
             System.out.println("Tried to clear null notification");
             return false;
