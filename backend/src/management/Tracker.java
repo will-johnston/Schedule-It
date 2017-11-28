@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Tracker {
+    static Tracker mainTracker;
     volatile HashMap<Integer, User> users;           //logged in <cookie, User>
     volatile HashMap<Integer, Group> groups;
     volatile int userCount;
@@ -21,6 +22,7 @@ public class Tracker {
         timeout = 60 * 30;      //30 Minutes
         Clarence = User.fromDatabase(46);
         //timeout = 30;           //testy
+        mainTracker = this;
     }
     public synchronized Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {

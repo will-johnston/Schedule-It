@@ -65,9 +65,9 @@ public class Group {
     }
     //TODO
     public void updateUsers(Tracker tracker) {
-        if (gotUsers) {
+        /*if (gotUsers) {
             return;
-        }
+        }*/
         ArrayList<String> members = GetFromDb.getGroupMembers(this.id);
         if (members == null || members.isEmpty() || members.size() == 0) {
             gotUsers = true;
@@ -99,6 +99,7 @@ public class Group {
         return members;
     }
     public void notifyMembers(Notification notification, Tracker tracker) throws Exception {
+        updateUsers(tracker);
         if (notification == null || tracker == null) {
             throw new Exception("Invalid arguments");
         }
