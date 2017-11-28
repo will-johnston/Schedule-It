@@ -108,7 +108,9 @@ public class Group {
                 continue;
             }*/
             User user = tracker.getUserByName(username);
+            System.out.println("Username: " + username);
             if (user.getId() == tracker.getClarence().getId()) {
+                System.out.println("Skipping because of clarence");
                 continue;
             }
             if (!user.isMuted(this.id)) {
