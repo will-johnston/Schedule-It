@@ -599,8 +599,8 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
-											 
+									<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:70vw; border:1px solid rgb(220, 220, 220); overflow-y:auto;white-space: -webkit-pre-wrap;word-break:break-all;white-space:normal;padding:0.75vw"></div>
+									
 										<form name="message" action="">
 											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
 											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
@@ -1282,8 +1282,16 @@ $(document).ready(function(){
 					//console.log($("#group" + activeGroupID + "Content .chatBox"));
 					$("#chatbox_" + activeGroupID).empty();
 					for(var i = 0; i < json.length; i++) {
+						var isURL = checkURL(json[i][0]);
+						if(isURL == true) {
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + "</p>");
+							$("#group" + activeGroupID + "Content .chatBox").append("<img src='" + json[i][0] + "'>");
+
+						} else {
 						//update the chat box for the group 
-						$("#group" + activeGroupID + "Content .chatBox").append("<p>" + json[i][1] + "[" + json[i][2] + "]" + ": " + json[i][0] + "\n" + "</p>");
+						var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + json[i][0] + "\n" + "</p>");
+						}
 					}
 				}
 				
@@ -1292,6 +1300,27 @@ $(document).ready(function(){
 				//alert("Failed to retrieve chat messages");
 				console.log("Failed to retrieve chat messages");
 			});
+	}
+
+
+	function checkURL(url) {
+		//END FORMATS: .gif, .jpg, .jpeg, .png
+		var length = url.length;
+		if(url.indexOf("www") == 0 || url.indexOf("http") == 0 || url.indexOf("https") == 0) {
+			if(url.indexOf(".gif") == length - 4 || url.indexOf(".GIF") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpg") == length - 4 || url.indexOf(".JPG") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpeg") == length - 4 || url.indexOf(".JPEG") == length - 4) {
+				return true;
+			} else if(url.indexOf(".png") == length - 4 || url.indexOf(".PNG") == length - 4) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	//update chat every 3 seconds
