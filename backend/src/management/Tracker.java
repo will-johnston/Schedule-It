@@ -26,7 +26,7 @@ public class Tracker {
         if (!users.containsKey(cookie)) {
             return false;
         }
-        System.out.println("User exists");
+        //System.out.println("User exists");
         User user = users.get(cookie);
         if (!hasElapsed(user.getLastCheckedIn())) {
             return false;
@@ -80,9 +80,9 @@ public class Tracker {
     //Returns true if the User has been inactive for too long
     private boolean hasElapsed(long timestamp) {
         long currentTime = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
-        System.out.println("Current time: " + currentTime);
-        System.out.println("Timestamp: " + timestamp);
-        System.out.println("Difference: " + (currentTime - timestamp));
+        //System.out.println("Current time: " + currentTime);
+        //System.out.println("Timestamp: " + timestamp);
+        //System.out.println("Difference: " + (currentTime - timestamp));
         if (currentTime - timestamp > timeout) {
             return false;
         }

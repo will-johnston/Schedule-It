@@ -166,8 +166,9 @@ public class InvitationHandler implements IHandler {
                 //Get Group that being invited to
                 Event event = getEvent(notification);
                 if (event == null) {
+                    //clear the notification
                     System.out.println("Null event");
-                    return null;
+                    throw new Exception("Null event");
                 }
                 try {
                     JsonObject jobj = new JsonObject();

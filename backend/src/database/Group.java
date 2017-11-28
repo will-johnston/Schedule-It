@@ -102,14 +102,22 @@ public class Group {
         if (notification == null || tracker == null) {
             throw new Exception("Invalid arguments");
         }
+        HashMap<String, Boolean> hasBeenNotified = new HashMap<>(users.size() - 2);
         for (String username : users) {
+            if (hasBeenNotified.containsKey(username)) {
+                continue;
+            }
             User user = tracker.getUserByName(username);
+            if (user.getId() == tracker.getClarence().getId()) {
+                continue;
+            }
             if (!user.isMuted(this.id)) {
                 System.out.println("Adding notification to " + user.getId());
                 notification.userid = user.getId();
                 Notification newer = NotificationInDb.add(notification);
                 if (newer != null) {
                     user.addNotification(notification);
+                    hasBeenNotified.put(username, true);
                 }
                 else {
                     System.out.println("Failed to add notification");

@@ -55,7 +55,14 @@ public class NotificationDealer implements IAPIRoute {
                 JsonObject[] objects = new JsonObject[notifications.length];
                 int j = 0;
                 for (Notification notification : notifications) {
-                    JsonObject formatted = handler.format(notification);
+                    JsonObject formatted = null;
+                    try {
+                        formatted = handler.format(notification);
+                    }
+                    catch (Exception nullevent) {
+                        user.clearNotification(notification);
+                        continue;
+                    }
                     if (formatted == null) {
                         System.out.println("Failed to format notification " + notification.getNotifid());
                         continue;
