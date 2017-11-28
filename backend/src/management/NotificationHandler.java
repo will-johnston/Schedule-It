@@ -21,19 +21,19 @@ public class NotificationHandler {
             return null;
         }
         if (notification.getType().isInvite()) {
-            //try {
+            try {
                 JsonObject response = invitationHandler.format(notification);
                 if (response == null) {
                     System.out.println("Couldn't format invite notification. handler returned null");
                     return null;
                 }
                 return response;
-            //}
-            /*catch (Exception e){
+            }
+            catch (Exception e){
                 System.out.println("Couldn't format invite notification");
                 e.printStackTrace();
                 return null;
-            }*/
+            }
         }
         else {
             return null;

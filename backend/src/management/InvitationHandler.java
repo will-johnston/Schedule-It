@@ -168,7 +168,7 @@ public class InvitationHandler implements IHandler {
                 if (event == null) {
                     //clear the notification
                     System.out.println("Null event");
-                    throw new Exception("Null event");
+                    return null;
                 }
                 try {
                     JsonObject jobj = new JsonObject();
