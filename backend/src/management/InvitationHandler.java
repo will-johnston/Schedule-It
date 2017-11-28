@@ -89,8 +89,8 @@ public class InvitationHandler implements IHandler {
                 switch (responseType) {
                     case 1:
                         //going, add to calendar and to database
-                        user.clearNotification(notification);
                         if (group.addGoing(user, event)) {
+                            user.clearNotification(notification);
                             return "";
                         }
                         else {
@@ -98,8 +98,8 @@ public class InvitationHandler implements IHandler {
                         }
                     case 0:
                         //on the fence, add to calendar and to database
-                        user.clearNotification(notification);
                         if (group.addMaybe(user, event)) {
+                            user.clearNotification(notification);
                             return "";
                         }
                         else {
@@ -107,8 +107,8 @@ public class InvitationHandler implements IHandler {
                         }
                     case -1:
                         //not going, don't add to calendar but add to database
-                        user.clearNotification(notification);
                         if (group.addNotGoing(user, event)) {
+                            user.clearNotification(notification);
                             return "";
                         }
                         else {

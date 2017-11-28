@@ -283,7 +283,7 @@ public class Group {
             return false;
         }
         if (!eventExists(event.getEventID())) {
-            System.out.println("Event doesn't exist");
+            System.out.println("Event doesn't exist with id: " + event.getEventID());
             return false;
         }
         Event realEvent = getEvent(event.getEventID());
