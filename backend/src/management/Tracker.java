@@ -141,7 +141,6 @@ public class Tracker {
         if (id == 0) {
             return null;
         }
-        System.out.println(String.format("Get group with %d in tracker: %s with object: %s", id, groups.containsKey(id), groups.containsKey(new Integer(id))));
         if (groups.containsKey(id)) {
             return groups.get(id);
         }

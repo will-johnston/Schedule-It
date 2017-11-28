@@ -296,8 +296,8 @@ public class User {
     }
     private void updateNotifications() {
         if (updatedNotifications) {
-            //recheck for updates after 5 access
-            if (notifAccess == 5) {
+            //recheck for updates after 2 access
+            if (notifAccess == 2) {
                 notifAccess = 0;
             }
             else {
@@ -305,6 +305,9 @@ public class User {
             }
         }
         Notification[] dbnotifs = NotificationInDb.get(id);
+        if (dbnotifs == null) {
+            return;
+        }
         for (Notification dbnotif : dbnotifs) {
             boolean exists = false;
             for (Notification notification : notifications) {
