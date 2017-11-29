@@ -1,21 +1,15 @@
 package endpoints;
 
 import database.*;
-import server.HTTPMessage;
-import server.SSocket;
-import server.Socketeer;
+import server.*;
 import management.*;
 import com.google.gson.*;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.sql.Timestamp;
 import java.text.*;
-
-import javax.print.attribute.standard.NumberUp;
-import java.sql.*;
-import java.text.DateFormat;
+import java.util.*;
+import server.*;
+import management.*;
+import com.google.gson.*;
 
 public class GroupFindBestTime implements IAPIRoute {
     Tracker tracker;
@@ -31,10 +25,19 @@ public class GroupFindBestTime implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+
         int cookie = (int)args[0];
         int groupid = (int)args[1];
         int eventid = (int)args[2];
+        String mode = "set";
+        Timestamp time = TimeInputBestTime.findBestTime(groupid, eventid);
+        Long timel = time.getTime();
+        System.out.println("BEST TIME: " + timel);
+        System.out.println("BEST TIMESTAMP: " + time);
 
+
+
+        //from groupeditcalendar
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -57,47 +60,61 @@ public class GroupFindBestTime implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        //get event
+        if (!group.isAdmin(user.getUsername())) {
+            String invAdmin = "{\"error\":\"User is not an admin in the group\"}";
+            Socketeer.send(HTTPMessage.makeResponse(invAdmin, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
+
         Event event = group.getEvent(eventid);
-        System.out.println("Got event");
-        //make sure event is open-ended
-        boolean is_open_ended = event.getIs_open_ended();
-        if (!is_open_ended) {
-            String response = "{\"error\":\"Event is not open ended\"}";
+        if (event == null) {
+            //String response = "{\"error\":\"Couldn't get events\"}";
+            //has no events
+            Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"Event doesn't exist\"}", HTTPMessage.HTTPStatus
+                    .BadRequest),sock);
+            return;
+        }
+        if (event.getIs_open_ended() == false) {
+            Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"Event is not open-ended\"}", HTTPMessage.HTTPStatus
+                    .BadRequest),sock);
+            return;
+        }
+
+        Timestamp date = time;
+        System.out.println("DATE: " + date);
+        if (date == null) {
+            String response = "{\"error\":\"Invalid date\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-        //call TimeInputBestTime.findBestTime(int groupID, int eventID)
-        Timestamp time = TimeInputBestTime.findBestTime(groupid, eventid);
-        System.out.println("Found time: " + time.toString());
-        if (time == null) {
-            String response = "{\"error\":\"Couldn't find best time\"}";
-            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
-            return;
+        if (date != null) {
+            event.setTime(date);
         }
-       //change event properties: date, is_open_ended
-        event.setTime(time);
-        event.setIs_open_ended(false);
-        System.out.println("Set event things");
-        //remove event locally, readd.
+        if (mode != null) {
+            if (mode.equals("set")) {
+                event.setIs_open_ended(false);
+            } else {
+                event.setIs_open_ended(true);
+            }
+        }
         if (group.removeEvent(event.getEventID())) {
             if (group.addEvent(event)) {
                 Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
                 return;
             }
             else {
-                String response = "{\"error\":\"Couldn't add modified event when updating tracker\"}";
+                String response = "{\"error\":\"Couldn't add modified event\"}";
                 Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
                 return;
             }
-        } else {
-            String response = "{\"error\":\"Couldn't remove event locally when updating tracker\"}";
+        }
+        else {
+            String response = "{\"error\":\"Couldn't remove event locally\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-
-
     }
+
 
     //cookie, name, description, date, groupid
     Object[] parseArgs(String body) {

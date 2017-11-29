@@ -40,8 +40,14 @@ public class EventPutter {
             }
             else {
                 //get the eventID
-                query = String.format("SELECT * FROM events WHERE event_name=%s AND groupid=%d AND description=%s AND time=%s;", resolveNull(event.getEvent_name()),
+		System.out.println("NAME: " + resolveNull(event.getEvent_name()));
+		System.out.println("GROUPID: " + event.getGroupID());
+		System.out.println("DESC: " + resolveNull(event.getDescription()));
+		System.out.println("TIME: " + resolveNull(event.getTime().toString()));
+
+                query = String.format("SELECT * FROM events WHERE event_name=%s AND groupid=%d AND description=%s AND time=%s", resolveNull(event.getEvent_name()),
                         event.getGroupID(), resolveNull(event.getDescription()), resolveNull(event.getTime().toString()));
+		System.out.println(query);
                 ResultSet newevent = statement.executeQuery(query);
                 if (newevent.next()) {
                     event.setEventID(newevent.getInt("eventID"));

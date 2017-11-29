@@ -42,7 +42,8 @@ public class TimeInputBestTime {
             long input;
             if(rs != null) {
                 while (rs.next()) {
-                    input = (long) rs.getInt(1);
+                    input = rs.getLong(1) * (long) 1000; //convert to millis
+                    System.out.println("TIMESTAMP: " + input);
                     times.add(input);
                 }
                 rs.close();
