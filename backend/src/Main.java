@@ -35,6 +35,7 @@ public class Main {
             router.add("/user/groups/create", new GroupCreate(tracker));
             router.add("/user/groups/chat", new MessageAdd(tracker));
             router.add("/user/groups/getChat", new MessageGet(tracker));
+            router.add("/user/groups/chat/bot", new Chatbot());
             router.add("/user/groups/get", new GroupGet(tracker));
             router.add("/user/groups/invite", new GroupInvite(tracker, handler));
             router.add("/user/groups/mute", new GroupMute(tracker));
@@ -55,7 +56,7 @@ public class Main {
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
             router.add("/ugejunction/add", new UserGroupEventJunctionAdd(tracker));
             router.add("/ugejunction/get", new UserGroupEventJunctionGet(tracker));
-	    router.add("/findbesttime", new GroupFindBestTime(tracker));
+	        router.add("/findbesttime", new GroupFindBestTime(tracker));
 
             /*Calendar Endpoints*/
             router.add("/user/groups/calendar/get", new GroupGetCalendar(tracker));

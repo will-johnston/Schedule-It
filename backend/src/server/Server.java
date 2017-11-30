@@ -4,6 +4,7 @@ package server;
  */
 
 import endpoints.IAPIRoute;
+import management.CertificateManager;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -21,10 +22,7 @@ public class Server {
 
     public Server(int port, int secureport) {
         try {
-            System.setProperty("javax.net.ssl.keyStore", "/home/ryan/Schedule-It/newkeystore.jks.old");
-            System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
-            java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-
+            CertificateManager.load();
             sock = new ServerSocket(port);
             SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
             sslSock = (SSLServerSocket)factory.createServerSocket(secureport);
