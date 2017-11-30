@@ -18,6 +18,7 @@ public class ReminderHandler implements IHandler {
             return null;
         }
         JsonObject object = new JsonObject();
+        object.addProperty("type", "remind.event");
         object.addProperty("name", event.getEvent_name());
         object.addProperty("date", event.getTime().toString());
         object.addProperty("groupid", event.getGroupID());
