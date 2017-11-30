@@ -334,4 +334,12 @@ public class Group {
         //Event realEvent = getEvent(event.getEventID());
         return event.addDecline(user.getId());
     }
+    public boolean isMeGroup() {
+        if (name.equals("me") || name.equals("Me")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
