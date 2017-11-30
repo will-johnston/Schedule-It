@@ -296,8 +296,8 @@ public class Group {
             System.out.println("Event doesn't exist with id: " + event.getEventID());
             return false;
         }
-        Event realEvent = getEvent(event.getEventID());
-        return realEvent.addAccept(user.getId());
+        //Event realEvent = getEvent(event.getEventID());
+        return event.addAccept(user.getId());
     }
     public synchronized boolean addMaybe(User user, Event event) {
         if (user == null || event == null) {
@@ -308,8 +308,8 @@ public class Group {
             System.out.println("Event doesn't exist with id: " + event.getEventID());
             return false;
         }
-        Event realEvent = getEvent(event.getEventID());
-        return realEvent.addMaybe(user.getId());
+        //Event realEvent = getEvent(event.getEventID());
+        return event.addMaybe(user.getId());
     }
     public synchronized boolean addNotGoing(User user, Event event) {
         if (user == null || event == null) {
@@ -320,7 +320,7 @@ public class Group {
             System.out.println("Event doesn't exist with id: " + event.getEventID());
             return false;
         }
-        Event realEvent = getEvent(event.getEventID());
-        return realEvent.addDecline(user.getId());
+        //Event realEvent = getEvent(event.getEventID());
+        return event.addDecline(user.getId());
     }
 }

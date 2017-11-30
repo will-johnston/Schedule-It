@@ -30,6 +30,7 @@ public class EventPutter {
             String values = format(event);
             if (values == null) {
                 System.out.println("Failed to format values");
+                connection.close();
                 return null;
             }
             String query = String.format("INSERT INTO events VALUES(%s);", values);
@@ -37,6 +38,7 @@ public class EventPutter {
             int result = statement.executeUpdate(query);
             if (result == 0) {
                 System.out.println("Didn't update anything");
+                connection.close();
                 return null;
             }
             else {
@@ -47,10 +49,12 @@ public class EventPutter {
                 if (newevent.next()) {
                     event.setEventID(newevent.getInt("eventID"));
                     System.out.println("New id is: " + event.getEventID());
+                    connection.close();
                     return event;
                 }
                 else {
                     System.out.println("Couldn't get event id after adding event in db");
+                    connection.close();
                     return null;
                 }
             }
@@ -131,9 +135,11 @@ public class EventPutter {
             int result = statement.executeUpdate(query);
             if (result == 0) {
                 System.out.println("Didn't update anything");
+                connection.close();
                 return false;
             }
             else {
+                connection.close();
                 return true;
             }
 
@@ -169,10 +175,12 @@ public class EventPutter {
             System.out.println(query);
             int result = statement.executeUpdate(query);
             if (result == 0) {
+                connection.close();
                 System.out.println("Didn't update anything");
                 return false;
             }
             else {
+                connection.close();
                 return true;
             }
 
@@ -239,6 +247,7 @@ public class EventPutter {
                     break;
                 default:
                     System.out.println("Invalid list");
+                    connection.close();
                     return false;
             }
             //set up connection
@@ -252,9 +261,11 @@ public class EventPutter {
             int result = statement.executeUpdate(query);
             if (result == 0) {
                 System.out.println("Didn't update anything");
+                connection.close();
                 return false;
             }
             else {
+                connection.close();
                 return true;
             }
 
@@ -294,10 +305,12 @@ public class EventPutter {
                 args[0] = result.getString("decline");
                 args[1] = result.getString("maybe");
                 args[2] = result.getString("accept");
+                connection.close();
                 return args;
             }
             else {
                 System.out.println("didn't query any rows");
+                connection.close();
                 return null;
             }
             /*int result = statement.executeUpdate(query);
