@@ -235,7 +235,7 @@ public class User {
         }
     }
     private boolean inFriends(String name) {
-        friends = getFriends();
+        //friends = getFriends();
         return friends.contains(name);
     }
     public ArrayList<String> getFriends() {
