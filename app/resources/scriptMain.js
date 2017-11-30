@@ -208,7 +208,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "going";
+			data["response"]["accept"] = "going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -228,7 +228,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "maybeGoing";
+			data["response"]["accept"] = "on the fence";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -248,7 +248,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "notGoing";
+			data["response"]["accept"] = "not going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -806,9 +806,10 @@ $(document).ready(function(){
 			data["groupid"] = activeGroupID;
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/add", data,
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/add", data,
 				function(result) { //success
 					console.log("Successfully gave user admin permissions");
+					alert("Successfully gave user admin permissions");
 				},
 				function(result) { //fail
 					console.log("Failed to give user admin permissions");
@@ -823,9 +824,10 @@ $(document).ready(function(){
 			data["groupid"] = activeGroupID;
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/remove", data,
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/remove", data,
 				function(result) { //success
 					console.log("Successfully revoked user admin permissions");
+					alert("Successfully revoked user admin permissions");
 				},
 				function(result) { //fail
 					console.log("Failed to revoke user admin permissions");
