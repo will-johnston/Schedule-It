@@ -111,7 +111,7 @@ public class GroupRemoveAdmin implements IAPIRoute {
 
         }*/
 
-        if (group.isAdmin(groupmember.getUsername())) {
+        if (!group.isAdmin(groupmember.getUsername())) {
             String response = "{\"error\":\"Group member is not an admin\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
