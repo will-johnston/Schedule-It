@@ -4,7 +4,10 @@ public class CertificateManager {
     public static void load() {
         String value = System.getenv("HOSTTYPE");
         boolean isUbuntu = false;
-        if (value.equals("x86_64") || value.equals("x86") || value.contains("x86")) {
+        if (value == null) {
+            isUbuntu = false;
+        }
+        else if (value.equals("x86_64") || value.equals("x86") || value.contains("x86")) {
             isUbuntu = true;
         }
         else if (value.equals("arm") || value.contains("arm")) {
