@@ -263,4 +263,55 @@ public class EventPutter {
             return false;
         }
     }
+    //returns noting, maybe, going
+    public static String[] getAttendanceLists(int eventid) {
+        if (eventid == 0) {
+            System.out.println("Invalid eventid");
+            return null;
+        }
+        //gets all the event ids connected to the user
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getUserFromName");
+            return null;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        try {
+            String query = String.format("select accept, decline, maybe from events where eventID=%d;", eventid);
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println(query);
+            ResultSet result = statement.executeQuery(query);
+            if (result.next()) {
+                String[] args = new String[3];
+                args[0] = result.getString("decline");
+                args[1] = result.getString("maybe");
+                args[2] = result.getString("accept");
+                return args;
+            }
+            else {
+                System.out.println("didn't query any rows");
+                return null;
+            }
+            /*int result = statement.executeUpdate(query);
+            if (result == 0) {
+                System.out.println("Didn't update anything");
+                return false;
+            }
+            else {
+                return true;
+            }*/
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

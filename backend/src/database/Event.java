@@ -70,6 +70,7 @@ public class Event {
         }
     }
     public synchronized boolean addAccept(int userid) {
+        updateAttendance();
         if (arrExists(accept, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -84,6 +85,16 @@ public class Event {
             e.printStackTrace();
             return false;
         }
+    }
+    public void updateAttendance() {
+        //update notgoing, maybe, going
+        String[] lists = EventPutter.getAttendanceLists(this.eventID);
+        if (lists == null) {
+            return;
+        }
+        setAccept(lists[2]);
+        setMaybe(lists[1]);
+        setDecline(lists[0]);
     }
     public void setIs_open_ended(boolean is_open_ended) {
         this.is_open_ended = is_open_ended;
@@ -107,6 +118,7 @@ public class Event {
         }
     }
     public synchronized boolean addDecline(int userid) {
+        updateAttendance();
         if (arrExists(decline, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -140,6 +152,7 @@ public class Event {
         }
     }
     public synchronized boolean addMaybe(int userid) {
+        updateAttendance();
         if (arrExists(maybe, userid)) {
             System.out.println("User has already accepted the invitation, handling silently");
             return true;
@@ -288,6 +301,7 @@ public class Event {
     }
 
     public synchronized int[] getAccept() {
+        updateAttendance();
         return accept;
     }
     public String getAcceptString() {
@@ -304,6 +318,7 @@ public class Event {
         return builder.toString();
     }
     public synchronized int[] getDecline() {
+        updateAttendance();
         return decline;
     }
     public String getDeclineString() {
@@ -321,6 +336,7 @@ public class Event {
     }
 
     public synchronized int[] getMaybe() {
+        updateAttendance();
         return maybe;
     }
     public String getMaybeString() {
