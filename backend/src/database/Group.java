@@ -6,6 +6,8 @@ import java.util.*;
 import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 public class Group {
     int id;
     String name;
@@ -161,7 +163,15 @@ public class Group {
         }
     }
     public Event getEvent(int id) {
-        return calendar.getEvent(id, this.id);
+        Event event = calendar.getEvent(id, this.id);
+        if (event == null) {
+            System.out.println("Event doesn't exist in group, trying db. ID: " + id);
+            return GetFromDb.getEvent(id);
+        }
+        else {
+            return event;
+        }
+        //return calendar.getEvent(id, this.id);
     }
     public boolean removeEvent(int eventid) {
         if (EventPutter.remove(eventid)) {

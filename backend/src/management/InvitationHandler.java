@@ -307,9 +307,9 @@ public class InvitationHandler implements IHandler {
             return null;
         }
         Event event = group.getEvent(eventid);
-        if (event == null) {
+        /*if (event == null) {
             event = GetFromDb.getEvent(eventid);
-        }
+        }*/
         return event;
     }
     public JsonObject makeFriendInvite(Notification notification, User user) {
