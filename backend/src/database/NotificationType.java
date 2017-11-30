@@ -21,6 +21,13 @@ public class NotificationType {
             }
             this.type = method;
         }
+        else if (split[0].toLowerCase().equals("remind")) {
+            int method =  ReminderFromString(split[1]);
+            if (method == -1) {
+                throw new Exception("Invalid method");
+            }
+            this.type = 100 + method;
+        }
         else {
             throw new Exception("Unknown class");
         }
@@ -42,6 +49,11 @@ public class NotificationType {
             if (method == null) return null;
             return String.format("invite.%s", method);
         }
+        else if (type >= 100 && type < 200) {
+            String method = ReminderToString(type);
+            if (method == null) return null;
+            return String.format("remind.%s", method);
+        }
         else {
             return null;
         }
@@ -52,6 +64,14 @@ public class NotificationType {
         } else if (value == 1) {
             return "group";
         } else if (value == 2) {
+            return "event";
+        }
+        else {
+            return null;
+        }
+    }
+    public String ReminderToString(int value) {
+        if (value == 0) {
             return "event";
         }
         else {
@@ -72,8 +92,31 @@ public class NotificationType {
             return -1;
         }
     }
+    public int ReminderFromString(String method) {
+        if (method.toLowerCase().equals("event")) {
+            return 0;
+        }
+        else {
+            return -1;
+        }
+    }
+    public int getType() {
+        return type;
+    }
     public boolean isInvite() {
         if (type >= 0 && type < 100) {
+            return true;
+        }
+        return false;
+    }
+    public boolean isRemind() {
+        if (type >= 100 && type < 200) {
+            return true;
+        }
+        return false;
+    }
+    public boolean equals(NotificationType other) {
+        if (other.getType() == type) {
             return true;
         }
         return false;

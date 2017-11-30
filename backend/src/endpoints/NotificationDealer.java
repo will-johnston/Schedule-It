@@ -52,19 +52,19 @@ public class NotificationDealer implements IAPIRoute {
                     Socketeer.send(HTTPMessage.makeResponse("{}", HTTPMessage.HTTPStatus.OK), sock);
                     return;
                 }
-                JsonObject[] objects = new JsonObject[notifications.length];
-                int j = 0;
+                ArrayList<JsonObject> objList = new ArrayList<>(notifications.length);
                 for (Notification notification : notifications) {
                     JsonObject formatted = handler.format(notification);
                     if (formatted == null) {
                         System.out.println("Failed to format notification " + notification.getNotifid());
+                        System.out.println("Removing the shitty notification");
+                        user.clearNotification(notification);
                         continue;
                     }
-                    objects[j] = formatted;
-                    j++;
+                    objList.add(formatted);
                 }
                 Gson gson = new Gson();
-                String message = gson.toJson(objects);
+                String message = gson.toJson(objList);
                 if (message == null) {
                     Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"couldn't serialize notifications\"}", HTTPMessage.HTTPStatus.BadRequest), sock);
                     return;
@@ -113,11 +113,37 @@ public class NotificationDealer implements IAPIRoute {
             }
         }
         else if (request.getMethod().equals("/user/notifications/dismiss")) {
-            Socketeer.send(HTTPMessage.makeNotImplemented(), sock);
+            int[] args = parseDismissArgs(request.getBody()); //cookie, notif_id, response (JsonObject)
+            if (args == null) {
+                String response = "{\"error\":\"Invalid Arguments\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            int cookie = args[0];
+            int notifid = args[1];
+            User user = tracker.getUser(cookie);
+            if (user == null) {
+                //already handled sending errors
+                return;
+            }
+            Notification notification = user.getNotificationById(notifid);
+            if (notification == null) {
+                String response = "{\"error\":\"Notification doesn't exist\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
+            if (user.clearNotification(notification)) {
+                Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+            }
+            else {
+                String response = "{\"error\":\"Couldn't dismiss notification\"}";
+                Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+                return;
+            }
             return;
         }
         else {
-            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.BadRequest), sock);
+            Socketeer.send(HTTPMessage.makeResponse("{\"error\":\"Invalid Method\"", HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
     }
@@ -157,5 +183,26 @@ public class NotificationDealer implements IAPIRoute {
         return new Object[] {
                 cookie, notification.get("id").getAsInt(), response
         };
+    }
+    //cookie, notification id
+    private int[] parseDismissArgs(String body) {
+        try {
+            Gson gson = new Gson();
+            JsonObject jobj = gson.fromJson(body, JsonObject.class);
+            if (!jobj.has("cookie")) {
+                return null;
+            }
+            if (!jobj.has("id")) {
+                return null;
+            }
+            return new int[] {
+                    jobj.get("cookie").getAsInt(),
+                    jobj.get("id").getAsInt()
+            };
+        }
+        catch (Exception e) {
+            System.out.println("Failed to parse Args");
+            return null;
+        }
     }
 }

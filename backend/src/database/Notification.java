@@ -34,11 +34,26 @@ public class Notification implements Comparable {
         }*/
         return false;
     }
-    //handles a notification response
-    public static void handle(Notification notification, String response, SSocket sock) {
-        //TODO implement
-    }
 
+    //if notifications are earily similar, return true
+    public boolean same(Notification other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.getNotifid() == notifid) {
+            return true;
+        }
+        if (other.getType().equals(type)) {
+            if (other.getUserid() == userid) {
+                if (other.getParams() == params) {
+                    if (created == created) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     //Getters
     public int getNotifid() {
         return this.notifid;

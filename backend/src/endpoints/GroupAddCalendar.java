@@ -143,6 +143,11 @@ public class GroupAddCalendar implements IAPIRoute {
                 }
                 if (group.addEvent(event)) {
                     //send notifications
+                    if (group.isMeGroup()) {
+                        //don't store any notifications for me group
+                        Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+                        return;
+                    }
                     try {
                         //groupid, eventid
                         String params = String.format("%d,%d", group.getId(), event.getEventID());
