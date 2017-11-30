@@ -523,14 +523,14 @@ public class GetFromDb {
             if (result.next()) {
                 //name, type, desc, image
                 String name = result.getString("event_name");
-		String type = result.getString("type");
+		        String type = result.getString("type");
                 String desc = result.getString("description");
                 String image = result.getString("image_path");
-		int is_polling_users = result.getInt(6); //finds the is_polling users field
-		boolean is_open_ended = false;
-		if (is_polling_users != -1) {
-			is_open_ended = true;
-		}
+                int is_polling_users = result.getInt(6); //finds the is_polling users field
+                boolean is_open_ended = false;
+                if (is_polling_users != -1) {
+                    is_open_ended = true;
+                }
                 Event event = new Event(id, name, type, desc, image, is_open_ended);
                 event.setAddress(result.getString("address"));
                 event.setGroupID(result.getInt("groupID"));

@@ -279,6 +279,7 @@ public class Group {
         return false;
     }
     public boolean eventExists(int id) {
+        calendar.update(this.id);
         return (calendar.getEvent(id, this.id) != null);
     }
 	private void lprint(String message) {

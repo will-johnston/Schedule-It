@@ -168,6 +168,7 @@ public class User {
     }
     //We assume that the database has already been checked to see if the user exists
     public boolean addFriend(String username) {
+        friends = getFriends();
         if (friends.contains(username)) {
             System.out.println("Already contained in friends list");
             System.out.println("The Users are already friends");
@@ -211,6 +212,7 @@ public class User {
     }
     //We assume that the database has already been checked to see if the user exists
     public boolean removeFriend(String username) {
+        friends = getFriends();
         if (!friends.contains(username)) {
             if (areFriendsInDb(username)) {
                 //This is silly, but it works
@@ -233,6 +235,7 @@ public class User {
         }
     }
     private boolean inFriends(String name) {
+        friends = getFriends();
         return friends.contains(name);
     }
     public ArrayList<String> getFriends() {
