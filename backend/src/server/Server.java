@@ -21,7 +21,7 @@ public class Server {
 
     public Server(int port, int secureport) {
         try {
-            System.setProperty("javax.net.ssl.keyStore", "certificate.jks");
+            System.setProperty("javax.net.ssl.keyStore", "/home/ryan/Schedule-It/newkeystore.jks.old");
             System.setProperty("javax.net.ssl.keyStorePassword", "scheduleit");
             java.lang.System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
 
@@ -91,10 +91,12 @@ public class Server {
             while (!calledQuit) {
                 try {
                     if (isSsl) {
+			System.out.println("Recieved secure request");
                         SSocket recievedSock = new SSocket(secureMainServer.accept(), isSsl);
                         new Handler(recievedSock, router).run();
                     }
                     else {
+			System.out.println("Recieved a plain request");
                         SSocket recievedSock = new SSocket(mainServer.accept(), isSsl);
                         new Handler(recievedSock, router).run();
                     }
@@ -197,7 +199,7 @@ public class Server {
                     String readstr = new String(buffer, 0, read);
                     String[] lines = readstr.split("\n");
                     for (int i = 0; i < lines.length; i++) {
-                        //System.out.println(lines[i]);
+                        System.out.println(lines[i]);
                         if (inBody) {
                             if (length == 0) {
                                 //GET requests and other requests without bodies
@@ -208,12 +210,14 @@ public class Server {
                             for (int j = 0; j < chars.length; j++) {
                                 if (chars[j] == '{') {
                                     jsonStack.push('{');
+				    System.out.println("Pushed to json stack");
                                     hasPushed = true;
                                 }
                                 else if (chars[j] == '}') {
                                     jsonStack.pop();
                                 }
                             }
+				System.out.println("Adding to body: " + lines[i]);
                             body.append(lines[i] + '\n');
                             /*if ((body.length() - 1) == length || body.length() == length) {
                                 return new HTTPMessage(head.toString(), body.toString());
@@ -247,14 +251,17 @@ public class Server {
                             }
                             else if (lines[i].length() <= 1) {
                                 //encountered the body
+				System.out.println("In the body");
                                 inBody = true;
-                                if (length == -1) {
+                                /*if (length == -1) {
+				    System.out.println("No Content-Length specified");
                                     //No Content-Length specified
                                     return new HTTPMessage(head.toString(), body.toString());
-                                }
+                                }*/
                                 continue;
                             }
                             else {
+				System.out.println("Length: " + lines[i].length());
                                 head.append(lines[i] + '\n');
                             }
                         }
