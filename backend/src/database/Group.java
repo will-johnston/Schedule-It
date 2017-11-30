@@ -232,7 +232,11 @@ public class Group {
         for (String admin : admins) {
             System.out.println("Admin: " + admin);
             if (admin.equals(username)) {
+                System.out.println("Admins equal");
                 return true;
+            }
+            else {
+                System.out.println(String.format("%s does not equal %s", admin, username));
             }
         }
         return false;
