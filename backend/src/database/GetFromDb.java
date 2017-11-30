@@ -334,7 +334,7 @@ public class GetFromDb {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }*/
-                close(result, statement, connection);
+                //close(result, statement, connection);
                 return result.getString("username");
             }
             else {
@@ -346,17 +346,17 @@ public class GetFromDb {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }*/
-                close(result, statement, connection);
+                //close(result, statement, connection);
                 return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
+            /*try {
                 close(result, statement, connection);
             }
             catch (SQLException etwo) {
                 etwo.printStackTrace();
-            }
+            }*/
             return null;
         }
         /*try {
