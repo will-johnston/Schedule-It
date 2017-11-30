@@ -97,6 +97,7 @@ public class GroupAddAdmin implements IAPIRoute {
         System.out.printf("group id: %d, group member id: %d\n", groupid, memberid);
         //add admin priveleges to group member
         if (ModifyGroup.addAdminPrivileges(groupid, memberid)) {
+            groupmember.getGroupById(groupid).updateAdmins();
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
             return;
         } else {
