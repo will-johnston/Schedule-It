@@ -606,8 +606,9 @@ public class GetFromDb {
             System.out.println(query);
             result = statement.executeQuery(query);
             if (result.next()) {
+                boolean res = result.getBoolean("noadmins");
                 close(result, statement, connection);
-                return result.getBoolean("noadmins");
+                return res;
             }
             else {
                 System.out.println("No rows were returned, returning false");
