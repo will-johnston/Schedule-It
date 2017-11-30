@@ -47,6 +47,7 @@ public class CheckIfAdmin implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
+        System.out.println("\nCALLING isADMIN\n");
         if (group.isAdmin(user.getUsername())) {
             String response = "{\"value\":\"true\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);

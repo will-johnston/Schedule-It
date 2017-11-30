@@ -309,6 +309,7 @@ public class Group {
         return name;
     }
     public void updateAdmins() {
+        System.out.println("Called updateAdmins()");
         Tracker tracker = Tracker.mainTracker;
         ArrayList<Integer> adminsdb = GetGroupAdmins.getGroupAdmins(this.getId());
         if (adminsdb == null) {
@@ -327,6 +328,7 @@ public class Group {
                 }
             }
             if (!contains) {
+                System.out.println("Added: " + user.getUsername());
                 this.admins.add(user.getUsername());
             }
         }
