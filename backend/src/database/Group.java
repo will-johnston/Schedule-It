@@ -230,6 +230,7 @@ public class Group {
             return true;
         }
         for (String admin : admins) {
+            System.out.println("Admin: " + admin);
             if (admin.equals(username)) {
                 return true;
             }
