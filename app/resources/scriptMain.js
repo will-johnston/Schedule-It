@@ -736,12 +736,18 @@ $(document).ready(function(){
 
 					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
 						function(result) { //success
+							var json = JSON.parse(result);
+							if(json["value"] == "false") {
+								console.log("User is not admin of active group");
+								alert("You are not an admin of this group");
+								return;
+							}
+
 							console.log("User is admin of active group");
 							$("#createEventModal").modal("show");
 						},
 						function(result) { //fail
-							console.log("User is not admin of active group");
-							alert("You are not an admin of this group");
+							console.log("Failed to retrieve admin permission");
 						});
 				});
 
