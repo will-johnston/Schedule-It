@@ -3,7 +3,6 @@ package database;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
 
@@ -225,6 +224,7 @@ public class Group {
 	}
 	public synchronized boolean isAdmin(String username) {
         //refresh noAdmins
+        updateAdmins();
         System.out.println("Noadmins: " + noAdmins);
         if (isNoAdmins()) {
             return true;
@@ -307,6 +307,29 @@ public class Group {
     }
     public String getName() {
         return name;
+    }
+    public void updateAdmins() {
+        Tracker tracker = Tracker.mainTracker;
+        ArrayList<Integer> adminsdb = GetGroupAdmins.getGroupAdmins(this.getId());
+        if (adminsdb == null) {
+            return;
+        }
+        for (int admin : adminsdb) {
+            boolean contains = false;
+            User user = tracker.getUserById(admin);
+            if (user == null) {
+                continue;
+            }
+            for (String username : this.admins) {
+                if (user.getUsername().equals(username)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                this.admins.add(user.getUsername());
+            }
+        }
     }
     public ArrayList<String> getAdmins() {
         return admins;
