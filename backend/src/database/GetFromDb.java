@@ -314,7 +314,7 @@ public class GetFromDb {
         ResultSet result = null;
         try {
             //set up connection
-            connection = ds.getConnection();
+            //connection = ds.getConnection();
             //create statement
             //statement = connection.createStatement();
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
