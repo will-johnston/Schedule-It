@@ -6,7 +6,6 @@ import java.util.*;
 import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 public class Group {
     int id;
@@ -64,6 +63,23 @@ public class Group {
         }
         return group;
         //set list of users and eventually admins
+    }
+    //checks for events happening today
+    public void checkForEvents(Tracker tracker) {
+        LocalDateTime date = LocalDateTime.now();
+        Event[] events = calendar.getEvents(this.id, date.getYear(), date.getMonthValue());
+        if (events == null || events.length == 0) {
+            return;
+        }
+        for (Event event : events) {
+            try {
+                Notification notification = new Notification(-1, -1, "remind.event", String.format("%d,%d", this.id, event.getEventID()), null);
+                notifyMembers(notification, tracker);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     //TODO
     public void updateUsers(Tracker tracker) {

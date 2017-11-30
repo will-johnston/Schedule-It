@@ -351,17 +351,25 @@ public class User {
             System.out.println("Tried to clear null notification");
             return false;
         }
-        if (this.notifications.contains(notification)) {
+        /*if (this.notifications.contains(notification)) {
             System.out.println("Already contains notification");
             return false;
+        }*/
+        updateNotifications();
+        if (notifications != null) {
+            for (int i = 0; i < notifications.size(); i++) {
+                if (notification.same(notifications.get(i))) {
+                    return true;
+                }
+            }
         }
         //check for matching id
-        for (Notification original : notifications) {
+        /*for (Notification original : notifications) {
             if (original.getNotifid() == notification.getNotifid()) {
                 System.out.println("Already contains notification");
                 return false;
             }
-        }
+        }*/
         this.notifications.add(notification);
         return true;
     }
