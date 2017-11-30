@@ -664,6 +664,13 @@ $(document).ready(function(){
 
 							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
 								function(result) { //success
+									var json = JSON.parse(result);
+									if(json["value"] == "false") {
+										console.log("User is not admin of active group");
+										alert("You are not an admin of this group");
+										return;
+									}
+
 									console.log("User is admin of active group");
 									$("#groupSettingsModal").modal("show");
 
@@ -694,18 +701,12 @@ $(document).ready(function(){
 										});
 								},
 								function(result) { //fail
-									console.log("User is not admin of active group");
-									alert("You are not an admin of this group");
-
-									//modal only shows if you're a admin so shouldn't need this
-									/*setTimeout(function() {
-										$("#groupSettingsModal").modal("hide");
-									}, 500);*/
+									console.log("Failed to check admin permission");
 								});
 							
 						},
 						function(result) { //fail
-							console.log("Failed to get user settings");
+							console.log("Failed to retrieve user settings");
 						});
 				});
 
@@ -885,7 +886,6 @@ $(document).ready(function(){
 			$("#newGroupModal").modal("hide");
 
 			nameField.val("");
-			infoField.val("");
 			nameField.removeClass("is-invalid");
 		}
 	});
