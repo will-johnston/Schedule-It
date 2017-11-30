@@ -208,7 +208,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "going";
+			data["response"]["accept"] = "going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -228,7 +228,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "maybeGoing";
+			data["response"]["accept"] = "on the fence";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -248,7 +248,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "notGoing";
+			data["response"]["accept"] = "not going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -260,140 +260,171 @@ $(document).ready(function(){
 					alert("Failed to respond to event");
 				});
 		});
+
+		$(".eventReminderDismissButton").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["id"] = $(event.target).parent().attr("notifID");
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/dismiss", data,
+				function(result) { //success
+					console.log("Successfully dismissed event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to dismiss event");
+				});
+		});
 	};
 
 	var updateNotifications = function() {
 		var data = {};
 		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/check", data,
 			function(result) { //success
-				console.log("Successfully retrieved notifications");
+				var data = {};
+				data["cookie"] = cookie;
+				data = JSON.stringify(data);
 
-				$("#notificationMenu").empty();
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+					function(result) { //success
+						console.log("Successfully retrieved notifications");
 
-				var json = JSON.parse(result);
+						$("#notificationMenu").empty();
 
-				if(json[0] == null) {
-					$("#notificationsBadge").text("0");
-					return;
-				}
+						var json = JSON.parse(result);
 
-				$("#notificationsBadge").text(json.length);
+						if(json[0] == null) {
+							$("#notificationsBadge").text("0");
+							return;
+						}
 
-				for(var i = 0; i < json.length; i++) {
-					var notification = json[i];
+						$("#notificationsBadge").text(json.length);
 
-					if(notification["type"] == "invite.friend") {
-						var notifID = notification["id"];
-						var fullName = notification["data"]["fullName"];
-						//var picture = notification["data"]["picture"];
+						for(var i = 0; i < json.length; i++) {
+							var notification = json[i];
 
-						var html = `
-							<!-- friend request -->
-							<div class="card">
-								<div class="card-header">
-									Friend request
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + notifID + `">
-										<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+							if(notification["type"] == "invite.friend") {
+								var notifID = notification["id"];
+								var fullName = notification["data"]["fullName"];
+								//var picture = notification["data"]["picture"];
+
+								var html = `
+									<!-- friend request -->
+									<div class="card">
+										<div class="card-header">
+											Friend request
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + notifID + `">
+												<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-						//might need to assign the functionality of the accept/decline buttons
-					}
-					else if(notification["type"] == "invite.group") {
-						var id = notification["id"];
-						var name = notification["data"]["groupname"];
-						//var picture = notification["data"]["picture"];
+								$("#notificationMenu").append(html);
+								//might need to assign the functionality of the accept/decline buttons
+							}
+							else if(notification["type"] == "invite.group") {
+								var id = notification["id"];
+								var name = notification["data"]["groupname"];
+								//var picture = notification["data"]["picture"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Group invite
-								</div>
-								<div class="card-body">
-									<p class="card-text">You have been invited to join ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Group invite
+										</div>
+										<div class="card-body">
+											<p class="card-text">You have been invited to join ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "invite.event") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "invite.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Event added
-								</div>
-								<div class="card-body">
-									<p class="card-text">An event has been created: ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
-										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
-										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Event added
+										</div>
+										<div class="card-body">
+											<p class="card-text">An event has been created: ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
+												<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+												<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "eventReminder") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "remind.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- event reminder -->
-							<div class="card">
-								<div class="card-header">
-									Upcoming event
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + name + ` in one day</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+								var html = `
+									<!-- event reminder -->
+									<div class="card">
+										<div class="card-header">
+											Event reminder
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
-					}
+									`;
 
-					assignNotificationFunctionality();
-				}
+								$("#notificationMenu").append(html);
+							}
+
+							assignNotificationFunctionality();
+						}
+					},
+					function(result) { //fail
+						console.log("Failed to retrieve notifications")
+					});
 			},
 			function(result) { //fail
-				//alert("Failed to retrived notifications");
+				console.log("Failed to call calendar/check");
 			});
+
+
+			
 	};
 
 	//update notifications every 30 seconds
 	setInterval(updateNotifications, 30000);
-	updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -636,6 +667,7 @@ $(document).ready(function(){
 
 				//set active group ID to first group
 				activeGroupID = $("#vPillsContent .tab-pane").first().attr("groupID");
+				updateNotifications();
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
@@ -736,12 +768,18 @@ $(document).ready(function(){
 
 					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
 						function(result) { //success
+							var json = JSON.parse(result);
+							if(json["value"] == "false") {
+								console.log("User is not admin of active group");
+								alert("You are not an admin of this group");
+								return;
+							}
+
 							console.log("User is admin of active group");
 							$("#createEventModal").modal("show");
 						},
 						function(result) { //fail
-							console.log("User is not admin of active group");
-							alert("You are not an admin of this group");
+							console.log("Failed to retrieve admin permission");
 						});
 				});
 
@@ -800,9 +838,10 @@ $(document).ready(function(){
 			data["groupid"] = activeGroupID;
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/add", data,
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/add", data,
 				function(result) { //success
 					console.log("Successfully gave user admin permissions");
+					alert("Successfully gave user admin permissions");
 				},
 				function(result) { //fail
 					console.log("Failed to give user admin permissions");
@@ -817,9 +856,10 @@ $(document).ready(function(){
 			data["groupid"] = activeGroupID;
 			data = JSON.stringify(data);
 
-			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admins/remove", data,
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/remove", data,
 				function(result) { //success
 					console.log("Successfully revoked user admin permissions");
+					alert("Successfully revoked user admin permissions");
 				},
 				function(result) { //fail
 					console.log("Failed to revoke user admin permissions");
