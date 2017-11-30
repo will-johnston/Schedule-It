@@ -49,7 +49,7 @@ public class Main {
             /*Notification Endpoints*/
             router.add("/user/notifications/get", dealer);
             router.add("/user/notifications/respond", dealer);
-            //router.add("/user/notifications/dismiss", dealer);
+            router.add("/user/notifications/dismiss", dealer);
 
             /*Scheduler Endpoints*/
             router.add("/timeinput/add", new TimeInputAdd(tracker, handler));
@@ -63,6 +63,7 @@ public class Main {
             router.add("/user/groups/calendar/edit", new GroupEditCalendar(tracker));
             router.add("/user/groups/calendar/remove", new GroupRemoveCalendar(tracker));
             router.add("/user/groups/calendar/all", new GroupGetAllEvents(tracker));
+            router.add("/user/groups/calendar/check", new GroupCheckCalendar(tracker));
 
             /*Admin Endpoints*/
             router.add("/user/groups/admin/add", new GroupAddAdmin(tracker, handler));

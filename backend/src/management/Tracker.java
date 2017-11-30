@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Tracker {
+    public static Tracker mainTracker;
     volatile HashMap<Integer, User> users;           //logged in <cookie, User>
     volatile HashMap<Integer, Group> groups;
     volatile int userCount;
@@ -21,12 +22,13 @@ public class Tracker {
         timeout = 60 * 30;      //30 Minutes
         Clarence = User.fromDatabase(46);
         //timeout = 30;           //testy
+        mainTracker = this;
     }
     public synchronized Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {
             return false;
         }
-        System.out.println("User exists");
+        //System.out.println("User exists");
         User user = users.get(cookie);
         if (!hasElapsed(user.getLastCheckedIn())) {
             return false;
@@ -80,9 +82,9 @@ public class Tracker {
     //Returns true if the User has been inactive for too long
     private boolean hasElapsed(long timestamp) {
         long currentTime = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
-        System.out.println("Current time: " + currentTime);
-        System.out.println("Timestamp: " + timestamp);
-        System.out.println("Difference: " + (currentTime - timestamp));
+        //System.out.println("Current time: " + currentTime);
+        //System.out.println("Timestamp: " + timestamp);
+        //System.out.println("Difference: " + (currentTime - timestamp));
         if (currentTime - timestamp > timeout) {
             return false;
         }
@@ -119,6 +121,9 @@ public class Tracker {
             return fromdb;
         }
         return null;
+    }
+    public synchronized boolean containsUser(String username) {
+        return getUserByName(username) != null;
     }
     public synchronized User getUserById(int id) {
 		if (id == 0) {

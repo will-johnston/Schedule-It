@@ -61,6 +61,21 @@ public class SCalendar {
         }
         return cal;
     }
+    public void update(int groupid) {
+        Integer[] ids = GetFromDb.getEventIds(groupid);
+        if (ids == null) {
+            return;
+        }
+        for (Integer integer : ids) {
+            if (getEvent(integer, groupid) == null) {
+                Event event = GetFromDb.getEvent(integer);
+                if (event == null) {
+                    continue;
+                }
+                addLocal(event);
+            }
+        }
+    }
     //doesn't resolve descrepancies in the db
     //returns false if can't add
     public boolean addLocal(Event event) {

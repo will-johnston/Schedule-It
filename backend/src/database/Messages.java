@@ -34,44 +34,40 @@ public class Messages {
 		boolean ret = true;
         try {
 
-            //Call DataSourceFactor
+			//Call DataSourceFactor
 			ds = DataSourceFactory.getDataSource();
 
 			//Check for potential failed connection
 			if (ds == null) {
 				ret = false;
-			}	
-
-            //Acquire datasource object
-			connection = ds.getConnection();
-			
-            //Form query 
-			String sqlInsert = "INSERT INTO chat_line (username, groupID, line) VALUES ('"+username+"','"+groupID+"','"+line+"')";
-			//String sqlInsert = String.format("INSERT INTO chat_line (username, groupID, time, line) VALUES('%s',%d,NULL,%s)", username, groupID, line);
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlInsert);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-			try {
-				if(result1 != null) result1.close();
-				if(statement != null) statement.close();
-				if(connection != null) connection.close();
-			} catch (SQLException etwo) {
-				etwo.printStackTrace();
 			}
 
-			return ret;
-        }
-        try {
-			if(result1 != null) result1.close();
-			if(statement != null) statement.close();
-			if(connection != null) connection.close();
+			//Acquire datasource object
+			connection = ds.getConnection();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return ret;
+			//Form query
+			String sqlInsert = "INSERT INTO chat_line (username, groupID, line) VALUES ('" + username + "','" + groupID + "','" + line + "')";
+			//String sqlInsert = String.format("INSERT INTO chat_line (username, groupID, time, line) VALUES('%s',%d,NULL,%s)", username, groupID, line);
+			statement = connection.createStatement();
+			int rows = statement.executeUpdate(sqlInsert);
+			if (statement != null) statement.close();
+			if (connection != null) connection.close();
+			if (rows == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		}catch (SQLException e) {
+				e.printStackTrace();
+				try { ;
+					if(statement != null) statement.close();
+					if(connection != null) connection.close();
+					return false;
+				} catch (SQLException etwo) {
+					etwo.printStackTrace();
+					return false;
+				}
+        }
     }
 
     public static ArrayList<Object[]> getMessage(int groupID) {
