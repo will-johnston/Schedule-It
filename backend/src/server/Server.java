@@ -137,7 +137,7 @@ public class Server {
                 HTTPMessage mess;*/
                 HTTPMessage mess;
                 try {
-                    mess = getRequest(in);
+                    mess = getRequest(in, sock);
                     if (mess == null) {
                         //timed out
                         System.out.println("Failed to parse HTTP Message, TIMED OUT");
@@ -183,7 +183,7 @@ public class Server {
                 System.out.println("e.Message: " + e.getLocalizedMessage());
             }
         }
-        public HTTPMessage getRequest(InputStream in) throws Exception {
+        public HTTPMessage getRequest(InputStream in, SSocket sock) throws Exception {
             byte[] buffer = new byte[20480];     //was 8KB, now 20KB
             StringBuilder head = new StringBuilder();
             StringBuilder body = new StringBuilder();
@@ -193,6 +193,11 @@ public class Server {
             Stack<Character> jsonStack = new Stack<>();
             boolean hasPushed = false;
             while (!timer.hasExpired()) {
+                if (sock.isClosed()) {
+                    //client canceled
+                    System.out.println("Client cancelled the request");
+                    return null;
+                }
                 //read what there is, find content-length and verify that the data has been recieved
                 if (in.available() > 0) {
                     int read = in.read(buffer);
@@ -210,14 +215,14 @@ public class Server {
                             for (int j = 0; j < chars.length; j++) {
                                 if (chars[j] == '{') {
                                     jsonStack.push('{');
-				    System.out.println("Pushed to json stack");
+				    //System.out.println("Pushed to json stack");
                                     hasPushed = true;
                                 }
                                 else if (chars[j] == '}') {
                                     jsonStack.pop();
                                 }
                             }
-				System.out.println("Adding to body: " + lines[i]);
+				//System.out.println("Adding to body: " + lines[i]);
                             body.append(lines[i] + '\n');
                             /*if ((body.length() - 1) == length || body.length() == length) {
                                 return new HTTPMessage(head.toString(), body.toString());
@@ -251,7 +256,7 @@ public class Server {
                             }
                             else if (lines[i].length() <= 1) {
                                 //encountered the body
-				System.out.println("In the body");
+				//System.out.println("In the body");
                                 inBody = true;
                                 /*if (length == -1) {
 				    System.out.println("No Content-Length specified");
@@ -261,7 +266,7 @@ public class Server {
                                 continue;
                             }
                             else {
-				System.out.println("Length: " + lines[i].length());
+				//System.out.println("Length: " + lines[i].length());
                                 head.append(lines[i] + '\n');
                             }
                         }
