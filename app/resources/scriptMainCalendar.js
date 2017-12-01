@@ -165,9 +165,18 @@ $(document).ready(function(){
 
 						var eventDateDispArr = event["time"].split(" ")[0].split("-");
 						var eventDateDisp = eventDateDispArr[1] + "/" + eventDateDispArr[2] + "/" + eventDateDispArr[0];
-						eventTimeDisp = event["time"].split(" ")[1];
-						eventTimeDisp = eventTimeDisp.substring(0, 5);
-						eventTimeDisp += " am"; //fix this later
+
+						var eventTime =  event["time"].split(" ")[1].substring(0, 5);
+						var eventTimeHours = parseInt(eventTime.split(":")[0]);
+
+						var eventTimeDisp;
+						if(eventTimeHours > 12) {
+							eventTimeHours -= 12;
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " pm";
+						}
+						else {
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " am";
+						}
 
 						var eventHTML = `
 							<div class="card" eventID="` + event["id"] + `">

@@ -1137,6 +1137,10 @@ $(document).ready(function(){
 
 		$("#createEventModalTime").removeClass("is-invalid");
 
+		if(meridiem == "pm") {
+			hours += 12;
+		}
+
 		var data = {}
 		data["cookie"] = cookie;
 		data["name"] = name;
