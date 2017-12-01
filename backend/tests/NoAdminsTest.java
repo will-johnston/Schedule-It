@@ -8,8 +8,8 @@ import java.util.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class NoAdminsTest {
-    String groupsGet = "http://scheduleit.duckdns.org/api/user/groups/get";
-    String noAdmins = "http://scheduleit.duckdns.org/api/user/groups/admin/no";
+    String groupsGet = "http://scheduleitdb.duckdns.org:8181/user/groups/get";
+    String noAdmins = "http://scheduleitdb.duckdns.org:8181/user/groups/admin/no";
     @Test
     public void test() {
         CAssert.AssertDoesNotFail(() -> {

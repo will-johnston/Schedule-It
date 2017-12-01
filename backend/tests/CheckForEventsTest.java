@@ -5,8 +5,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class CheckForEventsTest {
 
-    String groupsGet = "http://scheduleit.duckdns.org/api/user/groups/get";
-    String calendarCheck = "http://scheduleit.duckdns.org/api/user/groups/calendar/check";
+    String groupsGet = "http://scheduleitdb.duckdns.org:8181/user/groups/get";
+    String calendarCheck = "http://scheduleitdb.duckdns.org:8181/user/groups/calendar/check";
 
     @Test
     public void test() {
