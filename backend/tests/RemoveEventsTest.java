@@ -5,14 +5,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class RemoveEventsTest {
     String groupsGet = "http://scheduleitdb.duckdns.org:8181/user/groups/get";
     String calendarGet = "http://scheduleitdb.duckdns.org:8181/user/groups/calendar/all";
-    String calendarEdit = "http://scheduleitdb.duckdns.org:8181/user/groups/calendar/edit";
+    String calendarRemove = "http://scheduleitdb.duckdns.org:8181/user/groups/calendar/remove";
     @Test
     public void test() {
-        CAssert.AssertDoesNotFail(() -> {
+        CAssert.AssertDoesFail(() -> {
             int cookie = Misc.login();
             int groupid = getMeGroup(cookie);
-            int eventid = getFirstEvent(cookie, groupid);
-            changeName(cookie, groupid, eventid);
+            removeEvent(cookie, groupid);
             return 0;
         });
     }
@@ -35,5 +34,38 @@ public class RemoveEventsTest {
             }
         }
         return 0;
+    }
+    public void removeEvent(int cookie, int groupid) throws Exception {
+        JsonObject request = new JsonObject();
+        request.addProperty("cookie", cookie);
+        request.addProperty("groupid", groupid);
+        request.addProperty("eventid", 0);
+
+        HttpRequest.postRequest(calendarRemove, request.toString());
+    }
+    class Groups {
+        private long id;
+        private String imageUrl;
+        private String muted;
+        private String name;
+        private boolean noadmins;
+        public Groups(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        public long getId() { return id; }
+        public void setId(long value) { this.id = value; }
+
+        public String getImageUrl() { return imageUrl; }
+        public void setImageUrl(String value) { this.imageUrl = value; }
+
+        public String getMuted() { return muted; }
+        public void setMuted(String value) { this.muted = value; }
+
+        public String getName() { return name; }
+        public void setName(String value) { this.name = value; }
+
+        public boolean getNoadmins() { return noadmins; }
+        public void setNoadmins(boolean value) { this.noadmins = value; }
     }
 }
