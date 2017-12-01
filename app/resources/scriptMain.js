@@ -1335,7 +1335,7 @@ $(document).ready(function(){
 				return true;
 			} else if(url.indexOf(".jpg") == length - 4 || url.indexOf(".JPG") == length - 4) {
 				return true;
-			} else if(url.indexOf(".jpeg") == length - 4 || url.indexOf(".JPEG") == length - 4) {
+			} else if(url.indexOf(".jpeg") == length - 5 || url.indexOf(".JPEG") == length - 5) {
 				return true;
 			} else if(url.indexOf(".png") == length - 4 || url.indexOf(".PNG") == length - 4) {
 				return true;
@@ -1349,6 +1349,70 @@ $(document).ready(function(){
 
 	//update chat every 3 seconds
 	setInterval(updateChat, 3000);
+
+	var expirationTime = function() {
+		//Get month and year
+		var dateObject = new Date();
+		var month = dateObject.getMonth() + 1;
+		var year = dateObject.getFullYear();
+
+		//Set fields in json
+		var data = {};
+		data["cookie"] = cookie;
+		data["month"] = month;
+		data["year"] = year;
+		data["groupid"] = activeGroupID;
+
+		//Make endpoint call
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/get", JSON.stringify(data),
+		//Success
+		function(result) {
+			var json = JSON.parse(result);
+			//console.log(json);
+			for(var i = 0; i < json.length; i++) {
+				var openEnded = json[i]["is_open_ended"];
+				if(openEnded == true) {
+					var now = new Date();
+					var currDateObject = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+					var expireDate = json[i]["time"];
+					var expireDateObject = new Date();
+					expireDateObject.setFullYear(expireDate.substring(0,4));
+					expireDateObject.setMonth(expireDate.substring(5,7));
+					expireDateObject.setDate(expireDate.substring(9,11));
+					expireDateObject.setHours(expireDate.substring(11,13));
+					expireDateObject.setMinutes(expireDate.substring(14,16));
+					expireDateObject.setSeconds(expireDate.substring(17,19));
+					expireDateObject.setMilliseconds(expireDate.substring(20,21));
+					if(expireDateObject < currDateObject) {
+						//console.log("expire is before the current");
+
+						var data1 = {};
+						data1["cookie"] = cookie;
+						data1["groupid"] = activeGroupID;
+						data1["eventid"] = json[i]["id"];
+
+						accessServer("POST", "https://scheduleit.duckdns.org/api/findbesttime", JSON.stringify(data1),
+						//Success
+						function(result) {
+							console.log("Successfully assigned the best time.");
+						},
+						//Failure
+						function(result) {
+							console.log("Failed to assign the best time.");
+						});
+					} 
+				}
+			}
+		}, 
+
+		//Failure
+		function(result) {
+			console.log("Failed to retrieve calendar events for expiration time.");
+		});
+	}
+
+	//Expiration Time Polling
+	setInterval(expirationTime, 10000);
 
 });
 
