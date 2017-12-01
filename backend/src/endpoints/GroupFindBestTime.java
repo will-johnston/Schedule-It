@@ -97,7 +97,16 @@ public class GroupFindBestTime implements IAPIRoute {
                 event.setIs_open_ended(true);
             }
         }
-        if (group.removeEvent(event.getEventID())) {
+        if (group.editEvent(event)) {
+            Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
+            return;
+        }
+        else {
+            String response = "{\"error\":\"Couldn't remove event locally\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
+            return;
+        }
+        /*if (group.removeEvent(event.getEventID())) {
             if (group.addEvent(event)) {
                 Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
                 return;
@@ -112,7 +121,7 @@ public class GroupFindBestTime implements IAPIRoute {
             String response = "{\"error\":\"Couldn't remove event locally\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
-        }
+        }*/
     }
 
 
