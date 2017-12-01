@@ -608,7 +608,8 @@ $(document).ready(function(){
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
 										else {
-											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
+											contentHTML += "<p>This tab is just for you!";//" Set personal events and see all events you're attending in your calendar.";
+											meGroupID = realID;
 										}
 						
 					contentHTML += `
@@ -647,6 +648,19 @@ $(document).ready(function(){
 
 					$("#vPillsContent").append(contentHTML);
 					$("#vPillsTab").append(tabHTML);
+
+					var data = {}
+					data["cookie"] = cookie;
+					data["groupid"] = realID;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/check", data,
+						function(result) { //success
+							console.log("Successfully called check");
+						},
+						function(result) { //fail
+							alert("Failed to call check");
+						});
 				}
 
 				//make first tab active
@@ -804,14 +818,14 @@ $(document).ready(function(){
 
 							console.log(data);
 
-							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat/bot", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
 
-									var messageRecieved = json["text"];
+									/*var messageRecieved = json["text"];
 									var html = "<p>Chatbot: " + messageRecieved + "</p>";
-									$("#group" + activeGroupID + "Content input").append(html);
+									$("#group" + activeGroupID + "Content input").append(html);*/
 								},
 								function(result) { //fail
 									alert("Failed to send message to chat bot");
@@ -1391,8 +1405,8 @@ $(document).ready(function(){
 		}
 	}
 
-	//update chat every 3 seconds
-	setInterval(updateChat, 3000);
+	//update chat every 8 seconds
+	setInterval(updateChat, 8000);
 
 	var expirationTime = function() {
 		//Get month and year
