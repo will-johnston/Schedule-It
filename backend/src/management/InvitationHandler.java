@@ -73,8 +73,57 @@ public class InvitationHandler implements IHandler {
             }
         }
         else if (type.equals("invite.event")) {
-            user.clearNotification(notification);
-            return "";
+            //Notification format, groupid, eventid
+            //user.clearNotification(notification);
+            try {
+                int responseType = getResponseValue(response);
+                Group group = getGroup(notification.getParams());
+                Event event = getEvent(notification);
+                if (group == null) {
+                    System.out.println("Couldn't handle notification invite.event because group is null");
+                    return null;
+                }
+                if (event == null) {
+                    System.out.println("Couldn't handle notification invite.event because event is null");
+                }
+                switch (responseType) {
+                    case 1:
+                        //going, add to calendar and to database
+                        if (group.addGoing(user, event)) {
+                            user.clearNotification(notification);
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case 0:
+                        //on the fence, add to calendar and to database
+                        if (group.addMaybe(user, event)) {
+                            user.clearNotification(notification);
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case -1:
+                        //not going, don't add to calendar but add to database
+                        if (group.addNotGoing(user, event)) {
+                            user.clearNotification(notification);
+                            return "";
+                        }
+                        else {
+                            return null;
+                        }
+                    case -2:
+                    default:
+                        System.out.println("Response was invalid");
+                        return null;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         else {
             return null;
@@ -117,6 +166,7 @@ public class InvitationHandler implements IHandler {
                 //Get Group that being invited to
                 Event event = getEvent(notification);
                 if (event == null) {
+                    //clear the notification
                     System.out.println("Null event");
                     return null;
                 }
@@ -125,7 +175,9 @@ public class InvitationHandler implements IHandler {
                     jobj.addProperty("type", "invite.event");
                     jobj.addProperty("name", event.getEvent_name());
                     jobj.addProperty("time", event.getTime().toString());
-                    jobj.addProperty("id", event.getEventID());
+                    jobj.addProperty("eventid", event.getEventID());
+                    jobj.addProperty("groupid", event.getGroupID());
+                    jobj.addProperty("id", notification.getNotifid());
                     return jobj;
                 }
                 catch (Exception e) {
@@ -174,8 +226,66 @@ public class InvitationHandler implements IHandler {
         }
         return user;
     }
+    //-1 not going, 0 on the fence, 1 going, -2 ERROR
+    public int getResponseValue(JsonObject response) {
+        try {
+            /*if (response == null || !response.has("response")) {
+                System.out.println(String.format("Response: %d, hasR"));
+                return -2;
+            }
+            JsonObject obj = response.getAsJsonObject("response");*/
+            if (response == null || !response.has("accept")) {
+                return -2;
+            }
+            String value = response.get("accept").getAsString();
+            if (value.toLowerCase().equals("going")) {
+                return 1;
+            }
+            else if (value.toLowerCase().equals("on the fence")) {
+                return 0;
+            }
+            else if (value.toLowerCase().equals("not going")) {
+                return -1;
+            }
+            else {
+                return -2;
+            }
+        }
+        catch (Exception e) {
+            return -2;
+        }
+    }
+    public Group getGroup(String params) throws Exception {
+        if (params == null) {
+            return null;
+        }
+        int eventid = -1;
+        int groupid = -1;
+        try {
+            String[] split = params.split("[,]");
+            groupid = Integer.parseInt(split[0]);
+            eventid = Integer.parseInt(split[1]);
+        }
+        catch (Exception e) {
+            eventid = -1;
+            groupid = -1;
+        }
+        if (eventid == -1 || groupid == -1) {
+            System.out.println("Invalid group_id format in params");
+            throw new Exception("Invalid group_id format in params");
+        }
+        Group group = tracker.getGroupById(groupid);
+        if (group == null) {
+            System.out.println("Null group");
+            return null;
+        }
+        return group;
+    }
     //groupid, eventid
     public Event getEvent(Notification notification) throws Exception {
+        if (notification == null) {
+            return null;
+        }
         int eventid = -1;
         int groupid = -1;
            try {
@@ -184,6 +294,8 @@ public class InvitationHandler implements IHandler {
                eventid = Integer.parseInt(split[1]);
            }
            catch (Exception e) {
+               eventid = -1;
+               groupid = -1;
            }
         if (eventid == -1 || groupid == -1) {
             System.out.println("Invalid event_id format in params");
@@ -195,9 +307,9 @@ public class InvitationHandler implements IHandler {
             return null;
         }
         Event event = group.getEvent(eventid);
-        if (event == null) {
+        /*if (event == null) {
             event = GetFromDb.getEvent(eventid);
-        }
+        }*/
         return event;
     }
     public JsonObject makeFriendInvite(Notification notification, User user) {

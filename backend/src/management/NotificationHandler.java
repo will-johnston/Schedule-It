@@ -8,14 +8,16 @@ import database.User;
 public class NotificationHandler {
     //singletons
     InvitationHandler invitationHandler;
+    ReminderHandler reminderHandler;
     Gson gson;
     public NotificationHandler(Tracker tracker) {
         invitationHandler = new InvitationHandler(tracker);
+        reminderHandler = new ReminderHandler(tracker);
         gson = new Gson();
     }
     //formats all notifications for delivery
     //returns message to be sent to the client
-    public JsonObject format(Notification notification) {
+    public JsonObject format(Notification notification) throws Exception {
         if (notification == null) {
             System.out.println("Tried to handle null notification");
             return null;
@@ -30,6 +32,21 @@ public class NotificationHandler {
                 return response;
             }
             catch (Exception e){
+                System.out.println("Couldn't format invite notification");
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else if (notification.getType().isRemind()) {
+            try {
+                JsonObject response = reminderHandler.format(notification);
+                if (response == null) {
+                    System.out.println("Couldn't format invite notification. handler returned null");
+                    return null;
+                }
+                return response;
+            }
+            catch (Exception e) {
                 System.out.println("Couldn't format invite notification");
                 e.printStackTrace();
                 return null;
@@ -55,6 +72,21 @@ public class NotificationHandler {
             }
             catch (Exception e) {
                 System.out.println("Couldn't handle invite notification");
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else if (notification.getType().isRemind()) {
+            try {
+                String handledResponse = reminderHandler.handle(user, notification, response);
+                if (handledResponse == null) {
+                    System.out.println("Couldn't reminder invite notification, handler returned null");
+                    return null;
+                }
+                return handledResponse;
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't handle reminder notification");
                 e.printStackTrace();
                 return null;
             }

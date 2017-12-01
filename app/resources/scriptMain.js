@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 	var cookie = document.cookie.split("=")[1];
 	var activeGroupID;
+	var username;
 
 	//This stops the notification menu from closing when it's clicked on
 	$("#notificationMenu").click(function(event){
@@ -87,6 +88,21 @@ $(document).ready(function(){
 
 		xhr.send(data);
 	};
+
+	//get username
+	var data = {};
+	data["cookie"] = cookie;
+	data = JSON.stringify(data);
+
+	accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+		function(result) { //success
+			console.log("Successfully retrieved user settings");
+
+			username = JSON.parse(result)["username"];
+		},
+		function(result) { //fail
+			console.log("Failed to retrieve user settings");
+		});
 
 	$("#settingsModalChooseFileButton").change(function() {
 		var button = $("#settingsModalChooseFileButton");
@@ -192,7 +208,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "going";
+			data["response"]["accept"] = "going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -212,7 +228,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "maybeGoing";
+			data["response"]["accept"] = "on the fence";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -232,7 +248,7 @@ $(document).ready(function(){
 			data["notification"]["id"] = $(event.target).parent().attr("notifID");
 			data["notification"]["type"] = "event.invite";
 			data["response"] = {};
-			data["response"]["status"] = "notGoing";
+			data["response"]["accept"] = "not going";
 			data = JSON.stringify(data);
 
 			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/respond", data,
@@ -244,140 +260,171 @@ $(document).ready(function(){
 					alert("Failed to respond to event");
 				});
 		});
+
+		$(".eventReminderDismissButton").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["id"] = $(event.target).parent().attr("notifID");
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/dismiss", data,
+				function(result) { //success
+					console.log("Successfully dismissed event");
+					updateNotifications();
+				},
+				function(result) { //fail
+					alert("Failed to dismiss event");
+				});
+		});
 	};
 
 	var updateNotifications = function() {
 		var data = {};
 		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
 		data = JSON.stringify(data);
 
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/check", data,
 			function(result) { //success
-				console.log("Successfully retrieved notifications");
+				var data = {};
+				data["cookie"] = cookie;
+				data = JSON.stringify(data);
 
-				$("#notificationMenu").empty();
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+					function(result) { //success
+						console.log("Successfully retrieved notifications");
 
-				var json = JSON.parse(result);
+						$("#notificationMenu").empty();
 
-				if(json[0] == null) {
-					$("#notificationsBadge").text("0");
-					return;
-				}
+						var json = JSON.parse(result);
 
-				$("#notificationsBadge").text(json.length);
+						if(json[0] == null) {
+							$("#notificationsBadge").text("0");
+							return;
+						}
 
-				for(var i = 0; i < json.length; i++) {
-					var notification = json[i];
+						$("#notificationsBadge").text(json.length);
 
-					if(notification["type"] == "invite.friend") {
-						var notifID = notification["id"];
-						var fullName = notification["data"]["fullName"];
-						//var picture = notification["data"]["picture"];
+						for(var i = 0; i < json.length; i++) {
+							var notification = json[i];
 
-						var html = `
-							<!-- friend request -->
-							<div class="card">
-								<div class="card-header">
-									Friend request
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + notifID + `">
-										<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+							if(notification["type"] == "invite.friend") {
+								var notifID = notification["id"];
+								var fullName = notification["data"]["fullName"];
+								//var picture = notification["data"]["picture"];
+
+								var html = `
+									<!-- friend request -->
+									<div class="card">
+										<div class="card-header">
+											Friend request
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + notifID + `">
+												<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-						//might need to assign the functionality of the accept/decline buttons
-					}
-					else if(notification["type"] == "invite.group") {
-						var id = notification["id"];
-						var name = notification["data"]["groupname"];
-						//var picture = notification["data"]["picture"];
+								$("#notificationMenu").append(html);
+								//might need to assign the functionality of the accept/decline buttons
+							}
+							else if(notification["type"] == "invite.group") {
+								var id = notification["id"];
+								var name = notification["data"]["groupname"];
+								//var picture = notification["data"]["picture"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Group invite
-								</div>
-								<div class="card-body">
-									<p class="card-text">You have been invited to join ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Group invite
+										</div>
+										<div class="card-body">
+											<p class="card-text">You have been invited to join ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "invite.event") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "invite.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Event added
-								</div>
-								<div class="card-body">
-									<p class="card-text">An event has been created: ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
-										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
-										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Event added
+										</div>
+										<div class="card-body">
+											<p class="card-text">An event has been created: ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
+												<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+												<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "eventReminder") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "remind.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- event reminder -->
-							<div class="card">
-								<div class="card-header">
-									Upcoming event
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + name + ` in one day</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+								var html = `
+									<!-- event reminder -->
+									<div class="card">
+										<div class="card-header">
+											Event reminder
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
-					}
+									`;
 
-					assignNotificationFunctionality();
-				}
+								$("#notificationMenu").append(html);
+							}
+
+							assignNotificationFunctionality();
+						}
+					},
+					function(result) { //fail
+						console.log("Failed to retrieve notifications")
+					});
 			},
 			function(result) { //fail
-				//alert("Failed to retrived notifications");
+				console.log("Failed to call calendar/check");
 			});
+
+
+			
 	};
 
 	//update notifications every 30 seconds
 	setInterval(updateNotifications, 30000);
-	updateNotifications();
 
 
 	//SETTINGS MODAL
@@ -545,7 +592,6 @@ $(document).ready(function(){
 					var realID = json[i]["id"];
 					var id = "group" + realID + "Content";
 					var name = json[i]["name"];
-					var info = "...";
 
 					var tabHTML = `<a class="nav-link" data-toggle="pill" href="#` + id + `" role="tab">` + name + `</a>`;
 					var contentHTML = `
@@ -554,10 +600,10 @@ $(document).ready(function(){
 							<div class="collapse show" id="` + id + "Collapse" + `">
 								<div class="card card-group">
 									<div class="card-body">
-										<h3>` + name + `</h3>
-										<p>` + info + `</p>`;
+										<h3>` + name + `</h3>`;
 
 										if(name != "Me") {
+											contentHTML += '<br />';
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm groupSettingsButton" style="margin-right: 10px">Group settings</button>';
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
@@ -585,8 +631,8 @@ $(document).ready(function(){
 							<div class="tab-content">
 								<div class="tab-pane show" id="` + id + "Chat" + `" role="tabpanel"  style="padding: 2%">
 									<div id="` + id + "_wrapper" + `">
-										<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:100%; border:1px solid rgb(220, 220, 220); overflow:auto"></div>
-											 
+									<div disabled class="chatBox" id="` + "chatbox_" + realID + `" style="resize:none; border-radius: 0.25em; text-align:left;margin-bottom:1%;background:#fff;height:21em;transition: 0.25s ease-out; width:70vw; border:1px solid rgb(220, 220, 220); overflow-y:auto;white-space: -webkit-pre-wrap;word-break:break-all;white-space:normal;padding:0.75vw"></div>
+									
 										<form name="message" action="">
 											<input name="usermsg" class="chatbotTextField" type="text" id="` + "message_" +  realID + `" style="width: 53em; border:1px solid rgb(220, 220, 220)" maxlength="1000">
 											<button type="button" class="btn btn-primary" id="` + "sendMessage_" + realID + `"  style="width: 5em; margin-right: 0.5em; margin-left: 0.5em">Send</button>
@@ -635,9 +681,12 @@ $(document).ready(function(){
 
 				//set active group ID to first group
 				activeGroupID = $("#vPillsContent .tab-pane").first().attr("groupID");
+				updateNotifications();
 
 				$(".groupSettingsButton").off();
 				$(".groupSettingsButton").click(function(event) {
+					$("#groupMembersList").empty();
+
 					//populate the group settings modal with group information
 					var parent = $(event.target).parent().parent().parent().parent();
 
@@ -661,20 +710,49 @@ $(document).ready(function(){
 
 							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
 								function(result) { //success
+									var json = JSON.parse(result);
+									if(json["value"] == "false") {
+										console.log("User is not admin of active group");
+										alert("You are not an admin of this group");
+										return;
+									}
+
 									console.log("User is admin of active group");
 									$("#groupSettingsModal").modal("show");
+
+									var data = {};
+									data["cookie"] = cookie;
+									data["groupid"] = activeGroupID;
+									data = JSON.stringify(data);
+
+									accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/members", data,
+										function(result) { //success
+											console.log("Successfully retrieved group members");
+
+											var json = JSON.parse(result);
+
+											for(var i = 0; i < json.length; i++) {
+												if(json[i]["username"] == username || json[i]["username"] == "Clarence") {
+													continue;
+												}
+
+												var memberHTML = '<li class="list-group-item">' + json[i]["username"] + '<img class="float-right removeAdminPermission" src="resources/minus.png" width="18px" /><img class="float-right giveAdminPermission" src="resources/plus.png" width="18px" style="margin-right: 10px"/></li>';
+												$("#groupMembersList").append(memberHTML);
+											}
+
+											assignGroupMemberListFunctionality();
+										},
+										function(result) { //fail
+											console.log("Failed to retrieve group members");
+										});
 								},
 								function(result) { //fail
-									console.log("User is not admin of active group");
-									alert("You are not an admin of this group");
-									setTimeout(function() {
-										$("#groupSettingsModal").modal("hide");
-									}, 500);
+									console.log("Failed to check admin permission");
 								});
 							
 						},
 						function(result) { //fail
-							console.log("Failed to get user settings");
+							console.log("Failed to retrieve user settings");
 						});
 				});
 
@@ -692,6 +770,30 @@ $(document).ready(function(){
 						},
 						function(result) { //fail
 							alert("Failed to leave group");
+						});
+				});
+
+				$(".createNewEventButton").click(function() {
+					var data = {};
+					data["cookie"] = cookie;
+					data["groupid"] = activeGroupID;
+					data["groupmember"] = username;
+					data = JSON.stringify(data);
+
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+						function(result) { //success
+							var json = JSON.parse(result);
+							if(json["value"] == "false") {
+								console.log("User is not admin of active group");
+								alert("You are not an admin of this group");
+								return;
+							}
+
+							console.log("User is admin of active group");
+							$("#createEventModal").modal("show");
+						},
+						function(result) { //fail
+							console.log("Failed to retrieve admin permission");
 						});
 				});
 
@@ -741,6 +843,44 @@ $(document).ready(function(){
 
 	updateGroups();
 
+	var assignGroupMemberListFunctionality = function() {
+		$("#groupMembersList .giveAdminPermission").off();
+		$("#groupMembersList .giveAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/add", data,
+				function(result) { //success
+					console.log("Successfully gave user admin permissions");
+					alert("Successfully gave user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to give user admin permissions");
+				});
+		});
+
+		$("#groupMembersList .removeAdminPermission").off();
+		$("#groupMembersList .removeAdminPermission").click(function() {
+			var data = {};
+			data["cookie"] = cookie;
+			data["groupmember"] = $(event.target).parent().text();
+			data["groupid"] = activeGroupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/remove", data,
+				function(result) { //success
+					console.log("Successfully revoked user admin permissions");
+					alert("Successfully revoked user admin permissions");
+				},
+				function(result) { //fail
+					console.log("Failed to revoke user admin permissions");
+				});
+		});
+	}
+
 	var assignGroupModalInviteFriendsFunctionality = function(modal) {
 		$("body").on("click", ".groupFriendsList img", function(event) {
 			var nameField = $("#groupSettingsModalName");
@@ -775,10 +915,8 @@ $(document).ready(function(){
 
 	$("#newGroupModalCreateButton").click(function() {
 		var nameField = $("#newGroupModalName");
-		var infoField = $("#newGroupModalInfo");
 
 		var name = nameField.val();
-		var info = infoField.val();
 
 		if(name == "") {
 			nameField.addClass("is-invalid");
@@ -802,7 +940,6 @@ $(document).ready(function(){
 			$("#newGroupModal").modal("hide");
 
 			nameField.val("");
-			infoField.val("");
 			nameField.removeClass("is-invalid");
 		}
 	});
@@ -811,35 +948,6 @@ $(document).ready(function(){
 		$("#newGroupModalName").val("");
 		$("#newGroupModalInfo").val("");
 		$("#newGroupModalName").removeClass("is-invalid");
-	});
-
-	$("#groupSettingsModal").click(function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data = JSON.stringify(data);
-
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
-			function(result) { //success
-				var data = {};
-				data["cookie"] = cookie;
-				data["groupid"] = activeGroupID;
-				data["groupmember"] = JSON.parse(result)["username"];
-				data = JSON.stringify(data);
-
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
-					function(result) { //success
-						console.log("User is admin")
-					},
-					function(result) { //fail
-						console.log("User is not admin");
-						$("#groupSettingsModal").modal("hide");
-						alert("You are not an admin of this group");
-					});
-				
-			},
-			function(result) { //fail
-				console.log("Failed to get user settings");
-			});
 	});
 
 	$("#groupSettingsSaveButton").click(function() {
@@ -1043,6 +1151,10 @@ $(document).ready(function(){
 
 		$("#createEventModalTime").removeClass("is-invalid");
 
+		if(meridiem == "pm") {
+			hours += 12;
+		}
+
 		var data = {}
 		data["cookie"] = cookie;
 		data["name"] = name;
@@ -1084,8 +1196,125 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#editEventModalConfirmButon").click(function() {
+		var eventNameNew = $("#editEventModalName").val();
+		var eventInfoNew = $("#editEventModalInfo").val();
+		var eventDateNew = $("#editEventModalDate").val();
+		var eventTimeNew = $("#editEventModalTime").val();
+
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+
+		if(eventNameNew != eventNameOld) {
+			data["name"] = eventNameNew;
+		}
+
+		if(eventInfoNew != eventInfoOld) {
+			data["description"] = eventInfoNew;
+		}
+
+		if(eventDateNew != eventDateOld || eventTimeNew != eventTimeOld) {
+			//date must have day, month and year
+			var dateArr = eventDateNew.split("/");
+			if(dateArr.length != 3) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var year = parseInt(dateArr[2]);
+			if(isNaN(year) || year < 1950 || year > 2500) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var month = parseInt(dateArr[0]);
+			if(isNaN(month) || month < 1 || month > 12) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			var day = parseInt(dateArr[1]);
+			var endDay = new Date(year, month, 0).getDate();
+			if(isNaN(day) || day < 1 || day > endDay) {
+				$("#editEventModalDate").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalDate").removeClass("is-invalid");
+
+			//must have time and am/pm
+			var timeArr = eventTimeNew.split(" ");
+			if(timeArr.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var meridiem = timeArr[1];
+			if(meridiem != "am" && meridiem != "pm") {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			//must have hours and minutes
+			var digits = timeArr[0].split(":");
+			if(digits.length != 2) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var hours = parseInt(digits[0]);
+			if(isNaN(hours) || hours < 1 || hours > 12) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			var minutes = parseInt(digits[1]);
+			if(isNaN(minutes) || minutes < 0 || minutes > 59) {
+				$("#editEventModalTime").addClass("is-invalid");
+				return;
+			}
+
+			$("#editEventModalTime").removeClass("is-invalid");
+
+			data["date"] = new Date(year, month - 1, day, hours, minutes).toUTCString();
+		}
+
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/edit", data,
+			function(result) { //success
+				console.log("Successfully edited event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to edit event");
+			});
+	});
+
+	$("#editEventModalRemoveButton").click(function() {
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data["eventid"] = activeEventID;
+		data = JSON.stringify(data);
+
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/remove", data,
+			function(result) { //success
+				console.log("Successfully removed event");
+				updateCalendar(currentYear, currentMonth, activeGroupID);
+				$("#editEventModal").modal("hide");
+			},
+			function(result) { //fail
+				alert("Failed to remove event");
+			});
+	});
+  
    //getting messages
 	var messages = [];
+	var lastID = 0;
 
 	var updateChat = function() {
 		//call endpoint
@@ -1095,37 +1324,153 @@ $(document).ready(function(){
 
 		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/getChat", JSON.stringify(data),
 			function(result) { //success
-				//console.log("Successfully retrieved chat messages");
-
-				//parse messages
 				var json = JSON.parse(result);
-
-				//if there are no messages in the array they should all be put in there
-				if(json.lenth == 0) {
-					messages = json["chat"];
-				}
-				else {
-					var newMessages = [];
-					//update newMessages with the new messages
-					//update messages with the new messages
-
-					//console.log($("#group" + activeGroupID + "Content .chatBox"));
+				
+				//Apparently this is the only way for it to update when switching between groups tabs.......k
+				if(lastID != activeGroupID) {
 					$("#chatbox_" + activeGroupID).empty();
-					for(var i = 0; i < json.length; i++) {
-						//update the chat box for the group 
-						$("#group" + activeGroupID + "Content .chatBox").append("<p>" + json[i][1] + "[" + json[i][2] + "]" + ": " + json[i][0] + "\n" + "</p>");
-					}
+					messages = [];
 				}
+				lastID = activeGroupID;
+
+				//Print only new messages
+				if(messages.length != json.length && messages.length != 0) {
+					var difference = json.length - messages.length;
+					for(var i = json.length - difference; i < json.length; i++) {
+
+						//Image
+						var isURL = checkURL(json[i][0]);
+						if(isURL == true) {
+							var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + "</p>");
+							$("#group" + activeGroupID + "Content .chatBox").append("<img src='" + json[i][0] + "'>");
+	
+						} else {
+						//Plain Text
+						var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + json[i][0] + "\n" + "</p>");
+						} 
+					}
+
+					//Push messages to array
+					for(var i = json.length - difference; i < json.length; i++) {
+						messages.push(json[i]);
+					}
+				} else if(messages.length == 0) {
+					for(var i = 0; i < json.length; i++) {
+						//Image
+						var isURL = checkURL(json[i][0]);
+						if(isURL == true) {
+							var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + "</p>");
+							$("#group" + activeGroupID + "Content .chatBox").append("<img src='" + json[i][0] + "'>");
+	
+						} else {
+						//Plain Text
+						var timeStamp = json[i][2].slice(12,19);
+							$("#group" + activeGroupID + "Content .chatBox").append("<p>" + "<strong style='color:rgb(0, 123, 255)'>" + json[i][1] + "</strong>" + " " + "<samp style='color:rgb(150,150,150)'>" + "[" + timeStamp + "]" + "</samp>" + ": " + json[i][0] + "\n" + "</p>");
+						} 
+					}
+					//Push messages to array
+					for(var i = 0; i < json.length; i++) {
+						messages.push(json[i]);
+					}
+				}		
 				
 			},
 			function(result) { //fail
 				//alert("Failed to retrieve chat messages");
 				console.log("Failed to retrieve chat messages");
-			});
+		});
+	}
+
+
+	function checkURL(url) {
+		//END FORMATS: .gif, .jpg, .jpeg, .png
+		var length = url.length;
+		if(url.indexOf("www") == 0 || url.indexOf("http") == 0 || url.indexOf("https") == 0) {
+			if(url.indexOf(".gif") == length - 4 || url.indexOf(".GIF") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpg") == length - 4 || url.indexOf(".JPG") == length - 4) {
+				return true;
+			} else if(url.indexOf(".jpeg") == length - 5 || url.indexOf(".JPEG") == length - 5) {
+				return true;
+			} else if(url.indexOf(".png") == length - 4 || url.indexOf(".PNG") == length - 4) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	//update chat every 8 seconds
 	setInterval(updateChat, 8000);
+
+	var expirationTime = function() {
+		//Get month and year
+		var dateObject = new Date();
+		var month = dateObject.getMonth() + 1;
+		var year = dateObject.getFullYear();
+
+		//Set fields in json
+		var data = {};
+		data["cookie"] = cookie;
+		data["month"] = month;
+		data["year"] = year;
+		data["groupid"] = activeGroupID;
+
+		//Make endpoint call
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/get", JSON.stringify(data),
+		//Success
+		function(result) {
+			var json = JSON.parse(result);
+			//console.log(json);
+			for(var i = 0; i < json.length; i++) {
+				var openEnded = json[i]["is_open_ended"];
+				if(openEnded == true) {
+					var now = new Date();
+					var currDateObject = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+					var expireDate = json[i]["time"];
+					var expireDateObject = new Date();
+					expireDateObject.setFullYear(expireDate.substring(0,4));
+					expireDateObject.setMonth(expireDate.substring(5,7));
+					expireDateObject.setDate(expireDate.substring(9,11));
+					expireDateObject.setHours(expireDate.substring(11,13));
+					expireDateObject.setMinutes(expireDate.substring(14,16));
+					expireDateObject.setSeconds(expireDate.substring(17,19));
+					expireDateObject.setMilliseconds(expireDate.substring(20,21));
+					if(expireDateObject < currDateObject) {
+						//console.log("expire is before the current");
+
+						var data1 = {};
+						data1["cookie"] = cookie;
+						data1["groupid"] = activeGroupID;
+						data1["eventid"] = json[i]["id"];
+
+						accessServer("POST", "https://scheduleit.duckdns.org/api/findbesttime", JSON.stringify(data1),
+						//Success
+						function(result) {
+							console.log("Successfully assigned the best time.");
+						},
+						//Failure
+						function(result) {
+							console.log("Failed to assign the best time.");
+						});
+					} 
+				}
+			}
+		}, 
+
+		//Failure
+		function(result) {
+			console.log("Failed to retrieve calendar events for expiration time.");
+		});
+	}
+
+	//Expiration Time Polling
+	setInterval(expirationTime, 10000);
 
 });
 

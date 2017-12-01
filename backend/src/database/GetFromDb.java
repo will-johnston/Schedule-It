@@ -53,18 +53,17 @@ public class GetFromDb {
             results[6] = result.getString("notif_pref_group");
             results[7] = result.getString("image_path");
             System.out.println("Pref group: " + results[6]);
+            close(result, statement, connection);
             return results;
         }
         catch (SQLException e) {
             e.printStackTrace();
-            /*try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
+            try {
+                close(result, statement, connection);
 
             } catch (SQLException r) {
                 r.printStackTrace();
-            }*/
+            }
             return null;
         }
     }
@@ -116,11 +115,18 @@ public class GetFromDb {
                     System.out.println("Adding " + user1 + " with name " + username);
                 }
             }
-
+            close(result, statement, connection);
             return list;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                close(result, statement, connection);
+            }
+            catch (SQLException etwo) {
+                etwo.printStackTrace();
+                return null;
+            }
         }
         try {
             if(result != null) result.close();
@@ -133,7 +139,7 @@ public class GetFromDb {
         return null;
     }
 
-    //returns id, name, creator, imagePath
+    //returns id, name, creator, imagePath, noadmins
     public static Object[] getGroupInfo(int groupid) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
         ds = DataSourceFactory.getDataSource();
@@ -166,9 +172,12 @@ public class GetFromDb {
                 String groupname = result.getString("name");
                 int creatorid = result.getInt("creatorid");
                 String imagePath = result.getString("image_path");
-                return new Object[] { grupid, groupname, creatorid, imagePath};
+                int noadmins = result.getInt("noadmins");
+                close(result, statement, connection);
+                return new Object[] { grupid, groupname, creatorid, imagePath, noadmins};
             }
             else {
+                close(result, statement, connection);
                 return null;
             }
 
@@ -176,9 +185,7 @@ public class GetFromDb {
             e.printStackTrace();
         }
         try {
-            if(result != null) result.close();
-            if(statement != null) statement.close();
-            if(connection != null) connection.close();
+            close(result, statement, connection);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -221,16 +228,14 @@ public class GetFromDb {
                     list.add(username);
                 }
             }
-
+            close(result, statement, connection);
             return list;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            if(result != null) result.close();
-            if(statement != null) statement.close();
-            if(connection != null) connection.close();
+            close(result, statement, connection);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -285,12 +290,19 @@ public class GetFromDb {
                 results++;
             }
             System.out.println("Results: " + list.size());
+            close(result, statement, connection);
             return list;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                close(result, statement, connection);
+            }
+            catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            return null;
         }
-        return null;
     }
 
     private static String getNameFromId(int id, Connection connection, DataSource ds) {
@@ -302,7 +314,7 @@ public class GetFromDb {
         ResultSet result = null;
         try {
             //set up connection
-            connection = ds.getConnection();
+            //connection = ds.getConnection();
             //create statement
             //statement = connection.createStatement();
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -322,6 +334,7 @@ public class GetFromDb {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }*/
+                //close(result, statement, connection);
                 return result.getString("username");
             }
             else {
@@ -333,10 +346,17 @@ public class GetFromDb {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }*/
+                //close(result, statement, connection);
                 return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            /*try {
+                close(result, statement, connection);
+            }
+            catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }*/
             return null;
         }
         /*try {
@@ -386,10 +406,18 @@ public class GetFromDb {
             results[5] = result.getString("phone_number");
             results[6] = result.getString("notif_pref_group");
             results[7] = result.getString("image_path");
+            close(result, statement, connection);
             return results;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                close(result, statement, connection);
+            }
+            catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            return null;
         }
         /*try {
             //if(result != null) result.close();
@@ -400,7 +428,6 @@ public class GetFromDb {
             e.printStackTrace();
         }
 		*/
-        return null;
     }
     public static boolean usernameExists(String username) {
         MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
@@ -435,15 +462,13 @@ public class GetFromDb {
                     exists = true;
                 }
             }
-
+            close(result, statement, connection);
             return exists;
 
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
+                close(result, statement, connection);
 
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
@@ -482,14 +507,13 @@ public class GetFromDb {
             }
             Integer[] arr = new Integer[list.size()];
             list.toArray(arr);
+            close(result, statement, connection);
             return arr;
 
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
+                close(result, statement, connection);
 
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
@@ -522,14 +546,14 @@ public class GetFromDb {
             if (result.next()) {
                 //name, type, desc, image
                 String name = result.getString("event_name");
-		String type = result.getString("type");
+		        String type = result.getString("type");
                 String desc = result.getString("description");
                 String image = result.getString("image_path");
-		int is_polling_users = result.getInt(6); //finds the is_polling users field
-		boolean is_open_ended = false;
-		if (is_polling_users != -1) {
-			is_open_ended = true;
-		}
+                int is_polling_users = result.getInt(6); //finds the is_polling users field
+                boolean is_open_ended = false;
+                if (is_polling_users != -1) {
+                    is_open_ended = true;
+                }
                 Event event = new Event(id, name, type, desc, image, is_open_ended);
                 event.setAddress(result.getString("address"));
                 event.setGroupID(result.getInt("groupID"));
@@ -538,25 +562,74 @@ public class GetFromDb {
                 event.setDecline(result.getString("decline"));
                 event.setMaybe(result.getString("maybe"));
                 event.setCreated(result.getTimestamp("created"));
+                close(result, statement, connection);
                 return event;
             }
             else {
                 System.out.println("No events found");
+                close(result, statement, connection);
                 return null;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if(result != null) result.close();
-                if(statement != null) statement.close();
-                if(connection != null) connection.close();
-
+                close(result, statement, connection);
             } catch (SQLException etwo) {
                 etwo.printStackTrace();
             }
             System.out.println("Returning false");
             return null;
         }
+    }
+    public static boolean noadmins(int groupid) {
+        MysqlConnectionPoolDataSource ds = null;  //mysql schedule database
+
+        ds = DataSourceFactory.getDataSource();
+        if (ds == null) {
+            System.out.println("null data source getFriends");
+            return false;
+        }
+        Connection connection = null;  //used to connect to database
+        Statement statement = null;  //statement to enter command
+        ResultSet result = null;  //output after query
+        try {
+            //set up connection
+            connection = ds.getConnection();
+            //create statement
+            //statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //query  database
+            System.out.println("Formatting query noadmins");
+            String query = String.format("SELECT noadmins FROM groups WHERE groupID=%d;", groupid);
+            System.out.println(query);
+            result = statement.executeQuery(query);
+            if (result.next()) {
+                close(result, statement, connection);
+                return result.getBoolean("noadmins");
+            }
+            else {
+                System.out.println("No rows were returned, returning false");
+                close(result, statement, connection);
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                close(result, statement, connection);
+
+            } catch (SQLException etwo) {
+                etwo.printStackTrace();
+            }
+            System.out.println("Returning false");
+            return false;
+        }
+    }
+    public static void close(ResultSet result, Statement statement, Connection connection) throws SQLException {
+        if(result != null) result.close();
+        if(statement != null) statement.close();
+        if(connection != null) connection.close();
     }
 }

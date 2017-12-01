@@ -32,7 +32,7 @@ public class GroupCreate implements IAPIRoute {
         }
         System.out.println("Checking if group exists");
         User owner = tracker.getUser(cookie);
-        if (!groupname.toLowerCase().equals("me") && tracker.groupExists(groupname)) {
+        if (groupname.toLowerCase().equals("me") || tracker.groupExists(groupname)) {
             String message = "{\"error\":\"Group already exists\"}";
             Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
@@ -47,11 +47,13 @@ public class GroupCreate implements IAPIRoute {
                 return;
             }
             else {
+                tracker.addGroup(group);
                 owner.addToGroup(group);
                 tracker.updateUser(cookie, owner);
                 User clarence = tracker.getClarence();
                 clarence.addToGroup(group);
                 group.addUser(clarence);
+                owner.addToGroup(group);
                 String message = String.format("{\"groupid\":\"%d\"}", groupid);
                 Socketeer.send(HTTPMessage.makeResponse(message, HTTPMessage.HTTPStatus.OK), sock);
                 return;

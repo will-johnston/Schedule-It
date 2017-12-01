@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Tracker {
+    public static Tracker mainTracker;
     volatile HashMap<Integer, User> users;           //logged in <cookie, User>
     volatile HashMap<Integer, Group> groups;
     volatile int userCount;
@@ -21,12 +22,13 @@ public class Tracker {
         timeout = 60 * 30;      //30 Minutes
         Clarence = User.fromDatabase(46);
         //timeout = 30;           //testy
+        mainTracker = this;
     }
-    public Boolean isLoggedIn(int cookie) {
+    public synchronized Boolean isLoggedIn(int cookie) {
         if (!users.containsKey(cookie)) {
             return false;
         }
-        System.out.println("User exists");
+        //System.out.println("User exists");
         User user = users.get(cookie);
         if (!hasElapsed(user.getLastCheckedIn())) {
             return false;
@@ -34,7 +36,7 @@ public class Tracker {
         user.checkin();
         return true;
     }
-    public int login(User user) {
+    public synchronized int login(User user) {
         Tuple exists = isInUsers(user);
         if (exists != null) {
             //checkin
@@ -49,10 +51,10 @@ public class Tracker {
         userCount++;
         return cookie;
     }
-    public User getClarence() {
+    public synchronized User getClarence() {
         return Clarence;
     }
-    public boolean removeGroup(int id) {
+    public synchronized boolean removeGroup(int id) {
         if (groups.remove(id) != null) {
             return true;
         }
@@ -60,7 +62,7 @@ public class Tracker {
             return false;
         }
     }
-    private int makeCookie() {
+    private synchronized int makeCookie() {
         int cookie = 0;
         do {
             cookie = new BigInteger(256, new Random()).intValue();
@@ -80,9 +82,9 @@ public class Tracker {
     //Returns true if the User has been inactive for too long
     private boolean hasElapsed(long timestamp) {
         long currentTime = Calendar.getInstance(TimeZone.getTimeZone("EST")).getTimeInMillis() / 1000;
-        System.out.println("Current time: " + currentTime);
-        System.out.println("Timestamp: " + timestamp);
-        System.out.println("Difference: " + (currentTime - timestamp));
+        //System.out.println("Current time: " + currentTime);
+        //System.out.println("Timestamp: " + timestamp);
+        //System.out.println("Difference: " + (currentTime - timestamp));
         if (currentTime - timestamp > timeout) {
             return false;
         }
@@ -96,7 +98,7 @@ public class Tracker {
             this.timeout = timeout;
         }
     }
-    public User getUser(int cookie) {
+    public synchronized User getUser(int cookie) {
         if (!users.containsKey(cookie)) {
             return null;
         }
@@ -104,7 +106,7 @@ public class Tracker {
         user.checkin();
         return user;
     }
-    public User getUserByName(String username) {
+    public synchronized User getUserByName(String username) {
         if (username == null) {
             return null;
         }
@@ -120,7 +122,10 @@ public class Tracker {
         }
         return null;
     }
-    public User getUserById(int id) {
+    public synchronized boolean containsUser(String username) {
+        return getUserByName(username) != null;
+    }
+    public synchronized User getUserById(int id) {
 		if (id == 0) {
 			return null;
 		} 
@@ -137,7 +142,7 @@ public class Tracker {
         }
         return user;    //null if couldn't find in db
     }
-    public Group getGroupById(int id) {
+    public synchronized Group getGroupById(int id) {
         if (id == 0) {
             return null;
         }
@@ -155,7 +160,7 @@ public class Tracker {
             return group;
         }
     }
-    public boolean addUser(User newuser) {
+    public synchronized boolean addUser(User newuser) {
         //adds to tracker, but doesn't login
         //check if in tracker
         boolean intracker = false;
@@ -175,7 +180,7 @@ public class Tracker {
             return true;
         }
     }
-    public boolean updateUser(int cookie, User newUser) {
+    public synchronized boolean updateUser(int cookie, User newUser) {
         if (!users.containsKey(cookie)) {
             return false;
         }
@@ -188,7 +193,7 @@ public class Tracker {
             return false;
         }
     }
-    public boolean groupExists(int groupid) {
+    public synchronized boolean groupExists(int groupid) {
         if (!groups.containsKey(groupid)) {
             //check if it's in the database
             if (RetrieveGroupInfo.getGroupName(groupid) != null) {
@@ -204,7 +209,7 @@ public class Tracker {
         }
     }
     //TODO check if group exists in db (by name)
-    public boolean groupExists(String groupname) {
+    public synchronized boolean groupExists(String groupname) {
         if (groupname == null) {
             System.out.println("Groupname is null");
             return false;
@@ -222,7 +227,7 @@ public class Tracker {
         return false;
     }
     //TODO make sure users get updated as part of a group
-    public boolean addGroup(Group group) {
+    public synchronized boolean addGroup(Group group) {
         if (groups.containsKey(group.getId())) {
             return false;
         }

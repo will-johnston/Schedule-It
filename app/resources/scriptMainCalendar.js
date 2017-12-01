@@ -168,11 +168,21 @@ $(document).ready(function(){
 
 						var eventDateDispArr = event["time"].split(" ")[0].split("-");
 						var eventDateDisp = eventDateDispArr[1] + "/" + eventDateDispArr[2] + "/" + eventDateDispArr[0];
-						var eventTimeDisp = event["time"].split(" ")[1];
-						var eventTimeDisp = eventTimeDisp.substring(0, 5);
+
+						var eventTime =  event["time"].split(" ")[1].substring(0, 5);
+						var eventTimeHours = parseInt(eventTime.split(":")[0]);
+
+						var eventTimeDisp;
+						if(eventTimeHours > 12) {
+							eventTimeHours -= 12;
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " pm";
+						}
+						else {
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " am";
+						}
 
 						var eventHTML = `
-							<div class="card">
+							<div class="card" eventID="` + event["id"] + `">
 								<div class="card-header">` + event["name"] + 
 								`</div>
 								<div class="card-body">
@@ -188,24 +198,56 @@ $(document).ready(function(){
 					}
 				}
 
-				$(".editEventButton").click(function() {
-					var parent = $(this).parent().parent();
-					var name = parent.find(".card-header").html();
-					var info = parent.find(".card-body p").html();
+				$(".editEventButton").click(function(event) {
+					var data = {};
+					data["cookie"] = document.cookie.split("=")[1];
+					data = JSON.stringify(data);
 
-					var dateFull = parent.find(".eventTime").html().split(" ")[0].split("-");
-					var date = dateFull[1] + "/" + dateFull[2] + "/" + dateFull[0];
+					accessServer("POST", "https://scheduleit.duckdns.org/api/user/getsettings", data,
+						function(result) { //success
+							var data = {};
+							data["cookie"] = document.cookie.split("=")[1];
+							data["groupid"] = groupID;
+							data["groupmember"] = JSON.parse(result)["username"];
+							data = JSON.stringify(data);
 
-					var timeFull = parent.find(".eventTime").html().split(" ")[1].split(".")[0].split(":");
-					var time = timeFull[0] + ":" + timeFull[2] + " am"; //there is no way for me to know if it is am or pm right now
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/admin/check", data,
+								function(result) { //success
+									var json = JSON.parse(result);
+									if(json["value"] == "false") {
+										console.log("User is not admin of active group");
+										alert("You are not an admin of this group");
+										return;
+									}
 
+									console.log("User is admin of active group");
+									var parent = $(event.target).parent().parent();
+									var name = parent.find(".card-header").html();
+									var info = parent.find(".card-body div").html();
+									var date = parent.find(".eventTime").html().split(" ")[0];
+									var time = parent.find(".eventTime").html().split(" ")[1] + " " + parent.find(".eventTime").html().split(" ")[2];
 
-					$("#editEventModalName").val(name);
-					$("#editEventModalInfo").val(info);
-					$("#editEventModalDate").val(date);
-					$("#editEventModalTime").val(time);
+									$("#editEventModalName").val(name);
+									$("#editEventModalInfo").val(info);
+									$("#editEventModalDate").val(date);
+									$("#editEventModalTime").val(time);
 
-					$("#editEventModal").modal("show");
+									eventNameOld = name;
+									eventInfoOld = info;
+									eventDateOld = date;
+									eventTimeOld = time;
+									activeEventID = parent.attr("eventID");
+
+									$("#editEventModal").modal("show");
+								},
+								function(result) { //fail
+									console.log("Failed to check admin permission");
+								});
+							
+						},
+						function(result) { //fail
+							console.log("Failed to retrieve user settings");
+						});
 				});
 			},
 			function(result) { //fail

@@ -8,10 +8,9 @@ import management.*;
 import com.google.gson.*;
 import java.util.ArrayList;
 
-//Gets the User's calendar
-public class GroupGetCalendar implements IAPIRoute {
+public class GroupGetAllEvents implements IAPIRoute{
     Tracker tracker;
-    public GroupGetCalendar(Tracker tracker) {
+    public GroupGetAllEvents(Tracker tracker) {
         this.tracker = tracker;
     }
 
@@ -24,9 +23,7 @@ public class GroupGetCalendar implements IAPIRoute {
             return;
         }
         int cookie = args[0];
-        int month = args[1];
-        int year = args[2];
-        int groupid = args[3];
+        int groupid = args[1];
         if (cookie == 0) {
             String response = "{\"error\":\"Invalid Arguments\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
@@ -50,7 +47,7 @@ public class GroupGetCalendar implements IAPIRoute {
             return;
         }
 
-        Event[] events = group.getEvents(year, month);
+        Event[] events = group.getEvents();
         if (events == null) {
             //String response = "{\"error\":\"Couldn't get events\"}";
             //has no events
@@ -150,18 +147,10 @@ public class GroupGetCalendar implements IAPIRoute {
             if (!jobj.has("cookie")) {
                 return null;
             }
-            if (!jobj.has("month")) {
-                return null;
-            }
-            if (!jobj.has("year")) {
-                return null;
-            }
             if (!jobj.has("groupid")) {
                 return null;
             }
             return new int[] { jobj.get("cookie").getAsInt(),
-                    jobj.get("month").getAsInt(),
-                    jobj.get("year").getAsInt(),
                     jobj.get("groupid").getAsInt() };
         }
         catch (Exception e) {

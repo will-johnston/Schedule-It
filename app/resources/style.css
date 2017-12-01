@@ -121,7 +121,7 @@ body {
 .event-dropdown {
 	padding: 10px 10px 0px 10px;
 	width: 400px;
-	height: 300px;
+	height: 200px;
 	overflow-y: scroll;
 }
 
@@ -131,4 +131,8 @@ body {
 
 #settingsModalFileLabel {
 	margin-bottom: 10px;
+}
+
+#groupMembersList img {
+	cursor: pointer;
 }

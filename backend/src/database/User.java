@@ -21,6 +21,8 @@ public class User {
     int id;
     long lastCheckedIn = -1;
     boolean updatedGroups = false;
+    boolean updatedNotifications = false;
+    int notifAccess = 0;
     public User(String name, String email, String password, String phone, int id, String username, String notif_prefs, String imageUrl) {
         this.name = name;
         this.email = email;
@@ -166,6 +168,7 @@ public class User {
     }
     //We assume that the database has already been checked to see if the user exists
     public boolean addFriend(String username) {
+        friends = getFriends();
         if (friends.contains(username)) {
             System.out.println("Already contained in friends list");
             System.out.println("The Users are already friends");
@@ -209,6 +212,7 @@ public class User {
     }
     //We assume that the database has already been checked to see if the user exists
     public boolean removeFriend(String username) {
+        friends = getFriends();
         if (!friends.contains(username)) {
             if (areFriendsInDb(username)) {
                 //This is silly, but it works
@@ -231,6 +235,7 @@ public class User {
         }
     }
     private boolean inFriends(String name) {
+        //friends = getFriends();
         return friends.contains(name);
     }
     public ArrayList<String> getFriends() {
@@ -243,14 +248,18 @@ public class User {
         }
         return friends;
     }
-    public Notification[] getNotifications() {
-        try {
+    public synchronized Notification[] getNotifications() {
+        updateNotifications();
+        Notification[] arr = new Notification[notifications.size()];
+        notifications.toArray(arr);
+        return arr;
+        /*try {
             System.out.println(String.format("Current notifications length: %d", this.notifications.size()));
             Notification[] dbnotifs = NotificationInDb.get(id);
             if (notifications == null || dbnotifs == null) {
                 return new Notification[0];
             }
-            for (Notification notification : dbnotifs) {
+            /*for (Notification notification : dbnotifs) {
                 if (notification == null) {
                     continue;
                 }
@@ -270,31 +279,38 @@ public class User {
                     System.out.println(String.format("Adding %d to notification list", notification.notifid));
                     this.notifications.add(notification);
                 }
-            }
-            Notification[] copy = new Notification[this.notifications.size()];
+            }*/
+        /*    Notification[] copy = new Notification[this.notifications.size()];
             this.notifications.toArray(copy);
             return copy;
         }
         catch (Exception e) {
             return null;
-        }
+        }*/
     }
-    public Notification getNotificationById(int id) {
-        for (int i = 0; i < 2; i++) {
-            for (Notification notification : notifications) {
-                if (notification.getNotifid() == id) {
-                    return notification;
-                }
-            }
-            if (i == 0) {
-                //update notifications and check if in there
-                updateNotifications();
+    public synchronized Notification getNotificationById(int id) {
+        updateNotifications();
+        for (Notification notification : notifications) {
+            if (notification.getNotifid() == id) {
+                return notification;
             }
         }
         return null;
     }
     private void updateNotifications() {
+        if (updatedNotifications) {
+            //recheck for updates after 2 access
+            if (notifAccess == 2) {
+                notifAccess = 0;
+            }
+            else {
+                return;
+            }
+        }
         Notification[] dbnotifs = NotificationInDb.get(id);
+        if (dbnotifs == null) {
+            return;
+        }
         for (Notification dbnotif : dbnotifs) {
             boolean exists = false;
             for (Notification notification : notifications) {
@@ -307,6 +323,8 @@ public class User {
                 this.notifications.add(dbnotif);
             }
         }
+        updatedNotifications = true;
+        notifAccess++;
     }
     public boolean clearNotification(Notification notification) {
         if (notification == null) {
@@ -328,22 +346,30 @@ public class User {
             return false;
         }
     }
-    public boolean addNotification(Notification notification) {
+    public synchronized boolean addNotification(Notification notification) {
         if (notification == null) {
             System.out.println("Tried to clear null notification");
             return false;
         }
-        if (this.notifications.contains(notification)) {
+        /*if (this.notifications.contains(notification)) {
             System.out.println("Already contains notification");
             return false;
+        }*/
+        updateNotifications();
+        if (notifications != null) {
+            for (int i = 0; i < notifications.size(); i++) {
+                if (notification.same(notifications.get(i))) {
+                    return true;
+                }
+            }
         }
         //check for matching id
-        for (Notification original : notifications) {
+        /*for (Notification original : notifications) {
             if (original.getNotifid() == notification.getNotifid()) {
                 System.out.println("Already contains notification");
                 return false;
             }
-        }
+        }*/
         this.notifications.add(notification);
         return true;
     }
@@ -461,9 +487,9 @@ public class User {
         return null;
     }
     public void refreshGroups(Tracker tracker) {
-        if (updatedGroups) {
+        /*if (updatedGroups) {
             return;
-        }
+        }*/
         ArrayList<Group> groups = GetFromDb.getGroups(this.id, tracker);
         if (groups == null || groups.isEmpty() || groups.size() == 0) {
             //complains that size can never be zero, but it can

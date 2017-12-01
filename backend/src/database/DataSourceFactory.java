@@ -18,7 +18,7 @@ public class DataSourceFactory {
 	    Properties properties = new Properties();  //database properties
 	    try { 
 		ds = new MysqlConnectionPoolDataSource();
-		fis = new FileInputStream("/home/will/db.properties");
+		fis = new FileInputStream("/home/ryan/db.properties");
 		properties.load(fis);  //load properties file contents into properties object
 		//set properties in datasource
 		ds.setServerName(properties.getProperty("DB_URL")); 
