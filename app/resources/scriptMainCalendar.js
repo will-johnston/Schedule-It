@@ -11,6 +11,9 @@ var eventDateOld;
 var eventTimeOld;
 var activeEventID;
 
+var username;
+var meGroupID;
+
 $(document).ready(function(){
 	var accessServer = function(method, url, data, onSuccess, onFail) {
 		var xhr = new XMLHttpRequest();
@@ -165,9 +168,18 @@ $(document).ready(function(){
 
 						var eventDateDispArr = event["time"].split(" ")[0].split("-");
 						var eventDateDisp = eventDateDispArr[1] + "/" + eventDateDispArr[2] + "/" + eventDateDispArr[0];
-						eventTimeDisp = event["time"].split(" ")[1];
-						eventTimeDisp = eventTimeDisp.substring(0, 5);
-						eventTimeDisp += " am"; //fix this later
+
+						var eventTime =  event["time"].split(" ")[1].substring(0, 5);
+						var eventTimeHours = parseInt(eventTime.split(":")[0]);
+
+						var eventTimeDisp;
+						if(eventTimeHours > 12) {
+							eventTimeHours -= 12;
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " pm";
+						}
+						else {
+							eventTimeDisp = eventTimeHours + ":" + eventTime.split(":")[1] + " am";
+						}
 
 						var eventHTML = `
 							<div class="card" eventID="` + event["id"] + `">
@@ -241,5 +253,31 @@ $(document).ready(function(){
 			function(result) { //fail
 				alert("Failed to retrieve event");
 			});
+
+		if(groupID == meGroupID) {
+			var data = {};
+			data["cookie"] = document.cookie.split("=")[1];
+			data["groupid"] = groupID;
+			data = JSON.stringify(data);
+
+			accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/all", data,
+				function(result) { //success
+					console.log("Successfully retrieved all events");
+					var json = JSON.parse(result);
+
+					for(var i = 0; i < json.length; i++) {
+						var response = json[i]["response"];
+
+						for(var j = 0; j < response["count"]; j++) {
+							if(response[j]["username"] == username) {
+								console.log(json[i]["name"]);
+							}
+						}
+					}
+				},
+				function(result) { //fail
+					console.log("Failed to retrieve all events");
+				});
+		}
 	};
 });
