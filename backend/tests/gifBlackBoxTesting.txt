@@ -1,0 +1,18 @@
+As a group member, I want to add a gif to the chat
+
+Functional Testing (functionality):
+png: https://pbs.twimg.com/profile_images/530582971552501761/e6zy4JCq.png, loaded
+jpg: https://res.cloudinary.com/teepublic/image/private/s--G-sEUdGD--/t_Preview/b_rgb:ffffff,c_limit,f_jpg,h_630,q_90,w_630/v1446161353/production/designs/71233_0.jpg, loaded 
+jpeg: https://pbs.twimg.com/profile_images/378800000098702098/8c576c71e68122c3f8f5367e44cb4c41_400x400.jpeg, loaded
+gif: https://img.buzzfeed.com/buzzfeed-static/static/2017-08/15/11/asset/buzzfeed-prod-fastlane-02/anigif_sub-buzz-773-1502811734-5.gif, loaded
+
+Non-Functional Testing (performance and usability): 
+Performance:
+	-with multiple, high-quality gifs in the same chat, runs  with litte(unseen) to no latency
+
+Scalability:
+	-images dont scale according to chat window, small images work fine, large images create horizontal scroll bars
+
+Usability: 
+	-not able to put text and link to gif or images on the same line, images and gifs must be on a separate line
+	-cant put multiple links on the same line

@@ -278,130 +278,147 @@ $(document).ready(function(){
 	};
 
 	var updateNotifications = function() {
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+		var data = {};
+		data["cookie"] = cookie;
+		data["groupid"] = activeGroupID;
+		data = JSON.stringify(data);
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/check", data,
 			function(result) { //success
-				console.log("Successfully retrieved notifications");
+				var data = {};
+				data["cookie"] = cookie;
+				data = JSON.stringify(data);
 
-				$("#notificationMenu").empty();
+				accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
+					function(result) { //success
+						console.log("Successfully retrieved notifications");
 
-				var json = JSON.parse(result);
+						$("#notificationMenu").empty();
 
-				if(json[0] == null) {
-					$("#notificationsBadge").text("0");
-					return;
-				}
+						var json = JSON.parse(result);
 
-				$("#notificationsBadge").text(json.length);
+						if(json[0] == null) {
+							$("#notificationsBadge").text("0");
+							return;
+						}
 
-				for(var i = 0; i < json.length; i++) {
-					var notification = json[i];
+						$("#notificationsBadge").text(json.length);
 
-					if(notification["type"] == "invite.friend") {
-						var notifID = notification["id"];
-						var fullName = notification["data"]["fullName"];
-						//var picture = notification["data"]["picture"];
+						for(var i = 0; i < json.length; i++) {
+							var notification = json[i];
 
-						var html = `
-							<!-- friend request -->
-							<div class="card">
-								<div class="card-header">
-									Friend request
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + notifID + `">
-										<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+							if(notification["type"] == "invite.friend") {
+								var notifID = notification["id"];
+								var fullName = notification["data"]["fullName"];
+								//var picture = notification["data"]["picture"];
+
+								var html = `
+									<!-- friend request -->
+									<div class="card">
+										<div class="card-header">
+											Friend request
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + notifID + `">
+												<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-						//might need to assign the functionality of the accept/decline buttons
-					}
-					else if(notification["type"] == "invite.group") {
-						var id = notification["id"];
-						var name = notification["data"]["groupname"];
-						//var picture = notification["data"]["picture"];
+								$("#notificationMenu").append(html);
+								//might need to assign the functionality of the accept/decline buttons
+							}
+							else if(notification["type"] == "invite.group") {
+								var id = notification["id"];
+								var name = notification["data"]["groupname"];
+								//var picture = notification["data"]["picture"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Group invite
-								</div>
-								<div class="card-body">
-									<p class="card-text">You have been invited to join ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
-										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Group invite
+										</div>
+										<div class="card-body">
+											<p class="card-text">You have been invited to join ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
+												<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "invite.event") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "invite.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- group invite -->
-							<div class="card">
-								<div class="card-header">
-									Event added
-								</div>
-								<div class="card-body">
-									<p class="card-text">An event has been created: ` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
-										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
-										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+								var html = `
+									<!-- group invite -->
+									<div class="card">
+										<div class="card-header">
+											Event added
+										</div>
+										<div class="card-body">
+											<p class="card-text">An event has been created: ` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
+												<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+												<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
-					else if(notification["type"] == "remind.event") {
-						var id = notification["id"];
-						var name = notification["name"];
+								$("#notificationMenu").append(html);
+							}
+							else if(notification["type"] == "remind.event") {
+								var id = notification["id"];
+								var name = notification["name"];
 
-						var html = `
-							<!-- event reminder -->
-							<div class="card">
-								<div class="card-header">
-									Event reminder
-								</div>
-								<div class="card-body">
-									<p class="card-text">` + name + `</p>
-								</div>
-								<div class="card-footer">
-									<div class="float-right" notifID="` + id + `">
-										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+								var html = `
+									<!-- event reminder -->
+									<div class="card">
+										<div class="card-header">
+											Event reminder
+										</div>
+										<div class="card-body">
+											<p class="card-text">` + name + `</p>
+										</div>
+										<div class="card-footer">
+											<div class="float-right" notifID="` + id + `">
+												<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							`;
+									`;
 
-						$("#notificationMenu").append(html);
-					}
+								$("#notificationMenu").append(html);
+							}
 
-					assignNotificationFunctionality();
-				}
+							assignNotificationFunctionality();
+						}
+					},
+					function(result) { //fail
+						console.log("Failed to retrieve notifications")
+					});
 			},
 			function(result) { //fail
-				console.log("Failed to retrieve notifications")
+				console.log("Failed to call calendar/check");
 			});
+
+
+			
 	};
 
 	//update notifications every 30 seconds
@@ -589,7 +606,8 @@ $(document).ready(function(){
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
 										else {
-											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
+											contentHTML += "<p>This tab is just for you!";//" Set personal events and see all events you're attending in your calendar.";
+											meGroupID = realID;
 										}
 						
 					contentHTML += `
@@ -628,7 +646,6 @@ $(document).ready(function(){
 
 					$("#vPillsContent").append(contentHTML);
 					$("#vPillsTab").append(tabHTML);
-
 					var data = {};
 					data["cookie"] = cookie;
 					data["groupid"] = realID;
@@ -639,7 +656,7 @@ $(document).ready(function(){
 							console.log("Successfully called check");
 						},
 						function(result) { //fail
-							console.log("Failed to call calendar/check");
+							alert("Failed to call check");
 						});
 				}
 
@@ -798,16 +815,15 @@ $(document).ready(function(){
 
 							console.log(data);
 
-							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
+							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat/bot", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
 									console.log(json);
 
-									var messageRecieved = json["text"];
+									/*var messageRecieved = json["text"];
 									var html = "<p>Chatbot: " + messageRecieved + "</p>";
-									console.log(html);
-									$("#group" + activeGroupID + "Content .chatBox").append(html);
+									$("#group" + activeGroupID + "Content input").append(html);*/
 								},
 								function(result) { //fail
 									alert("Failed to send message to chat bot");
@@ -1163,6 +1179,10 @@ $(document).ready(function(){
 
 		$("#createEventModalTime").removeClass("is-invalid");
 
+		if(meridiem == "pm") {
+			hours += 12;
+		}
+
 		var data = {}
 		data["cookie"] = cookie;
 		data["name"] = name;
@@ -1413,8 +1433,72 @@ $(document).ready(function(){
 		}
 	}
 
-	//update chat every 3 seconds
-	setInterval(updateChat, 3000);
+	//update chat every 8 seconds
+	setInterval(updateChat, 8000);
+
+	var expirationTime = function() {
+		//Get month and year
+		var dateObject = new Date();
+		var month = dateObject.getMonth() + 1;
+		var year = dateObject.getFullYear();
+
+		//Set fields in json
+		var data = {};
+		data["cookie"] = cookie;
+		data["month"] = month;
+		data["year"] = year;
+		data["groupid"] = activeGroupID;
+
+		//Make endpoint call
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/get", JSON.stringify(data),
+		//Success
+		function(result) {
+			var json = JSON.parse(result);
+			//console.log(json);
+			for(var i = 0; i < json.length; i++) {
+				var openEnded = json[i]["is_open_ended"];
+				if(openEnded == true) {
+					var now = new Date();
+					var currDateObject = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+					var expireDate = json[i]["time"];
+					var expireDateObject = new Date();
+					expireDateObject.setFullYear(expireDate.substring(0,4));
+					expireDateObject.setMonth(expireDate.substring(5,7));
+					expireDateObject.setDate(expireDate.substring(9,11));
+					expireDateObject.setHours(expireDate.substring(11,13));
+					expireDateObject.setMinutes(expireDate.substring(14,16));
+					expireDateObject.setSeconds(expireDate.substring(17,19));
+					expireDateObject.setMilliseconds(expireDate.substring(20,21));
+					if(expireDateObject < currDateObject) {
+						//console.log("expire is before the current");
+
+						var data1 = {};
+						data1["cookie"] = cookie;
+						data1["groupid"] = activeGroupID;
+						data1["eventid"] = json[i]["id"];
+
+						accessServer("POST", "https://scheduleit.duckdns.org/api/findbesttime", JSON.stringify(data1),
+						//Success
+						function(result) {
+							console.log("Successfully assigned the best time.");
+						},
+						//Failure
+						function(result) {
+							console.log("Failed to assign the best time.");
+						});
+					} 
+				}
+			}
+		}, 
+
+		//Failure
+		function(result) {
+			console.log("Failed to retrieve calendar events for expiration time.");
+		});
+	}
+
+	//Expiration Time Polling
+	setInterval(expirationTime, 10000);
 
 	var expirationTime = function() {
 		//Get month and year
