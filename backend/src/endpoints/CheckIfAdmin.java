@@ -47,8 +47,19 @@ public class CheckIfAdmin implements IAPIRoute {
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
-
-        ArrayList<String> current_admins = group.getAdmins();
+        String groupmember = (String)args[1];
+        System.out.println("\nCALLING isADMIN\n");
+        if (group.isAdmin(groupmember)) {
+            String response = "{\"value\":\"true\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
+            return;
+        }
+        else {
+            String response = "{\"value\":\"false\"}";
+            Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
+            return;
+        }
+        /*ArrayList<String> current_admins = group.getAdmins();
         if (!current_admins.contains(user.getUsername())) {
             String response = "{\"value\":\"false\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
@@ -58,7 +69,7 @@ public class CheckIfAdmin implements IAPIRoute {
             String response = "{\"value\":\"true\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.OK), sock);
             return;
-        }
+        }*/
     }
     Object[] parseArgs(String message) {
         try {

@@ -207,19 +207,19 @@ public class EventPutter {
                 builder.append(", ");
             }
         }
-        if (description == null) {
+        if (description != null) {
             builder.append(String.format("description='%s'", description));
             if (time != null || type != null) {
                 builder.append(", ");
             }
         }
-        if (time == null) {
+        if (time != null) {
             builder.append(String.format("time='%s'", time));
             if (type != null) {
                 builder.append(", ");
             }
         }
-        if (type == null) {
+        if (type != null) {
             builder.append(String.format("type='%s'", type));
         }
         return builder.toString();

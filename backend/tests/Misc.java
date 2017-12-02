@@ -2,10 +2,10 @@ import com.google.gson.*;
 public class Misc {
     public static int login() {
         String url = "http://scheduleit.duckdns.org/api/user/login";
-        String username = "testingSprint2";
+        String username = "test";
         String pass = "test";
         try {
-            String message = "{\"name\":\"testingSprint2\",\"pass\":\"test\"}";
+            String message = "{\"name\":\"test\",\"pass\":\"test\"}";
             String response = HttpRequest.postRequest(url,message);
             return new Gson().fromJson(response, JsonObject.class).get("cookie").getAsInt();
         }

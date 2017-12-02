@@ -3,7 +3,6 @@ package database;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import endpoints.GetMembers;
 import management.SCalendar;
 import management.Tracker;
 
@@ -142,10 +141,12 @@ public class Group {
             if (!user.isMuted(this.id)) {
                 System.out.println("Adding notification to " + user.getId());
                 notification.userid = user.getId();
-                Notification newer = NotificationInDb.add(notification);
-                if (newer != null) {
-                    user.addNotification(notification);
-                    //hasBeenNotified.put(username, true);
+                if (user.addNotification(notification)) {
+                    Notification newer = NotificationInDb.add(notification);
+                    /*if (newer != null) {
+                        user.addNotification(notification);
+                        //hasBeenNotified.put(username, true);
+                    }*/
                 }
                 else {
                     System.out.println("Failed to add notification");
@@ -225,13 +226,19 @@ public class Group {
 	}
 	public synchronized boolean isAdmin(String username) {
         //refresh noAdmins
+        updateAdmins();
         System.out.println("Noadmins: " + noAdmins);
         if (isNoAdmins()) {
             return true;
         }
         for (String admin : admins) {
+            System.out.println("Admin: " + admin);
             if (admin.equals(username)) {
+                System.out.println("Admins equal");
                 return true;
+            }
+            else {
+                System.out.println(String.format("%s does not equal %s", admin, username));
             }
         }
         return false;
@@ -306,6 +313,31 @@ public class Group {
     }
     public String getName() {
         return name;
+    }
+    public void updateAdmins() {
+        System.out.println("Called updateAdmins()");
+        Tracker tracker = Tracker.mainTracker;
+        ArrayList<Integer> adminsdb = GetGroupAdmins.getGroupAdmins(this.getId());
+        if (adminsdb == null) {
+            return;
+        }
+        for (int admin : adminsdb) {
+            boolean contains = false;
+            User user = tracker.getUserById(admin);
+            if (user == null) {
+                continue;
+            }
+            for (String username : this.admins) {
+                if (user.getUsername().equals(username)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                System.out.println("Added: " + user.getUsername());
+                this.admins.add(user.getUsername());
+            }
+        }
     }
     public ArrayList<String> getAdmins() {
         return admins;

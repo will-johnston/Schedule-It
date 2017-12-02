@@ -104,14 +104,14 @@ public class GroupRemoveAdmin implements IAPIRoute {
         }
 
         //make sure member is an admin
-        ArrayList<String> admins = group.getAdmins();
+        /*ArrayList<String> admins = group.getAdmins();
         System.out.println("Member name: " + groupmember.getUsername());
         for (String admin : admins) {
             System.out.println("Admin: " + admin);
 
-        }
+        }*/
 
-        if (!admins.contains(groupmember.getUsername())) {
+        if (!group.isAdmin(groupmember.getUsername())) {
             String response = "{\"error\":\"Group member is not an admin\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
@@ -120,10 +120,11 @@ public class GroupRemoveAdmin implements IAPIRoute {
         System.out.printf("group id: %d, group member id: %d\n", groupid, memberid);
         //remove admin priveleges from group member
         if (ModifyGroup.removeAdminPrivileges(groupid, memberid)) {
+            group.updateAdmins();
             Socketeer.send(HTTPMessage.makeResponse("", HTTPMessage.HTTPStatus.OK), sock);
             return;
         } else {
-            String response = "{\"error\":\"Error adding admin privileges\"}";
+            String response = "{\"error\":\"Error removing admin privileges\"}";
             Socketeer.send(HTTPMessage.makeResponse(response, HTTPMessage.HTTPStatus.BadRequest), sock);
             return;
         }
