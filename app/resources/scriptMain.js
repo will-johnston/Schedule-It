@@ -112,10 +112,6 @@ $(document).ready(function(){
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
-		$(".friendRequestDeclineButton").off();
-		$(".groupInviteAcceptButton").off();
-		$(".groupInviteDeclineButton").off();
-
 		$(".friendRequestAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -138,6 +134,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".friendRequestDeclineButton").off();
 		$(".friendRequestDeclineButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -159,6 +156,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupInviteAcceptButton").off();
 		$(".groupInviteAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -180,6 +178,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupInviteDeclineButton").off();
 		$(".groupInviteDeclineButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -200,6 +199,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventGoingButton").off();
 		$(".groupEventGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -220,6 +220,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventMaybeGoingButton").off();
 		$(".groupEventMaybeGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -240,6 +241,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventNotGoingButton").off();
 		$(".groupEventNotGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -260,6 +262,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".eventReminderDismissButton").off();
 		$(".eventReminderDismissButton").click(function() {
 			var data = {};
 			data["cookie"] = cookie;
@@ -984,6 +987,7 @@ $(document).ready(function(){
 				alert("Failed to unmuted group");
 			});
 	});
+
 	$("#groupSettingsNoAdmins").click(function() {
 		var data = {};
 		data["cookie"] = cookie;
@@ -999,6 +1003,7 @@ $(document).ready(function(){
 			alert("Failed to set no admins");
 		});
 	});
+
 	$("#groupSettingsAllowAdmins").click(function() {
 		var data = {};
 		data["cookie"] = cookie;
