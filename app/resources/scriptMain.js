@@ -112,10 +112,6 @@ $(document).ready(function(){
 	//NOTIFICATIONS
 	var assignNotificationFunctionality = function() {
 		$(".friendRequestAcceptButton").off();
-		$(".friendRequestDeclineButton").off();
-		$(".groupInviteAcceptButton").off();
-		$(".groupInviteDeclineButton").off();
-
 		$(".friendRequestAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -138,6 +134,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".friendRequestDeclineButton").off();
 		$(".friendRequestDeclineButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -159,6 +156,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupInviteAcceptButton").off();
 		$(".groupInviteAcceptButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -180,6 +178,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupInviteDeclineButton").off();
 		$(".groupInviteDeclineButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -200,6 +199,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventGoingButton").off();
 		$(".groupEventGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -220,6 +220,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventMaybeGoingButton").off();
 		$(".groupEventMaybeGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -240,6 +241,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".groupEventNotGoingButton").off();
 		$(".groupEventNotGoingButton").click(function(event) {
 			var data = {};
 			data["cookie"] = cookie;
@@ -260,6 +262,7 @@ $(document).ready(function(){
 				});
 		});
 
+		$(".eventReminderDismissButton").off();
 		$(".eventReminderDismissButton").click(function() {
 			var data = {};
 			data["cookie"] = cookie;
@@ -606,7 +609,7 @@ $(document).ready(function(){
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
 										else {
-											contentHTML += "<p>This tab is just for you!";//" Set personal events and see all events you're attending in your calendar.";
+											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
 											meGroupID = realID;
 										}
 						
@@ -813,17 +816,13 @@ $(document).ready(function(){
 							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
 							data = JSON.stringify(data);
 
-							console.log(data);
-
-							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat/bot", data,
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
-									console.log(json);
 
-									/*var messageRecieved = json["text"];
-									var html = "<p>Chatbot: " + messageRecieved + "</p>";
-									$("#group" + activeGroupID + "Content input").append(html);*/
+									var html = "<p>Chatbot: " + json["text"] + "</p>";
+									$("#group" + activeGroupID + "Content .chatBox").append(html);
 								},
 								function(result) { //fail
 									alert("Failed to send message to chat bot");
@@ -988,6 +987,7 @@ $(document).ready(function(){
 				alert("Failed to unmuted group");
 			});
 	});
+
 	$("#groupSettingsNoAdmins").click(function() {
 		var data = {};
 		data["cookie"] = cookie;
@@ -1003,6 +1003,7 @@ $(document).ready(function(){
 			alert("Failed to set no admins");
 		});
 	});
+
 	$("#groupSettingsAllowAdmins").click(function() {
 		var data = {};
 		data["cookie"] = cookie;
