@@ -606,7 +606,7 @@ $(document).ready(function(){
 											contentHTML += '<button type="button" class="btn btn-secondary btn-sm leaveGroupButton">Leave group</button>';
 										}
 										else {
-											contentHTML += "<p>This tab is just for you!";//" Set personal events and see all events you're attending in your calendar.";
+											contentHTML += "<p>This tab is just for you! Set personal events and see all events you're attending in your calendar.";
 											meGroupID = realID;
 										}
 						
@@ -813,17 +813,13 @@ $(document).ready(function(){
 							data["text"] = "<" + activeGroupID + "> <" + userID + "> " + messageSend;
 							data = JSON.stringify(data);
 
-							console.log(data);
-
-							accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/chat/bot", data,
+							accessServer("POST", "https://willjohnston.pythonanywhere.com/api/chatterbot/", data,
 								function(result) { //success
 									console.log("Successfully sent message to chat bot");
 									var json = JSON.parse(result);
-									console.log(json);
 
-									/*var messageRecieved = json["text"];
-									var html = "<p>Chatbot: " + messageRecieved + "</p>";
-									$("#group" + activeGroupID + "Content input").append(html);*/
+									var html = "<p>Chatbot: " + json["text"] + "</p>";
+									$("#group" + activeGroupID + "Content .chatBox").append(html);
 								},
 								function(result) { //fail
 									alert("Failed to send message to chat bot");
