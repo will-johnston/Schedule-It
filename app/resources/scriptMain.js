@@ -72,7 +72,6 @@ $(document).ready(function(){
 
 	var accessCount = 0;
 	var accessServer = function(method, url, data, onSuccess, onFail) {
-		console.log(url);
 		if(url != "https://scheduleit.duckdns.org/api/user/groups/getChat" &&
 			url != "https://scheduleit.duckdns.org/api/user/notifications/get" &&
 			url != "https://scheduleit.duckdns.org/api/user/groups/calendar/get") {
