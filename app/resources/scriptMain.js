@@ -70,10 +70,25 @@ $(document).ready(function(){
 
 	assignFunctionality();
 
+	var accessCount = 0;
 	var accessServer = function(method, url, data, onSuccess, onFail) {
+		if(url != "https://scheduleit.duckdns.org/api/user/groups/getChat" &&
+			url != "https://scheduleit.duckdns.org/api/user/notifications/get" &&
+			url != "https://scheduleit.duckdns.org/api/user/groups/calendar/get") {
+				$("#loadingText").show();
+				accessCount++;
+		}
+
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
+			if(url != "https://scheduleit.duckdns.org/api/user/groups/getChat" &&
+				url != "https://scheduleit.duckdns.org/api/user/notifications/get" &&
+				url != "https://scheduleit.duckdns.org/api/user/groups/calendar/get"
+				&& --accessCount == 0) {
+					$("#loadingText").hide();
+			}
+
 			if (xhr.status === 200) {
 				onSuccess(xhr.response);
 			}
@@ -281,147 +296,130 @@ $(document).ready(function(){
 	};
 
 	var updateNotifications = function() {
-		var data = {};
-		data["cookie"] = cookie;
-		data["groupid"] = activeGroupID;
-		data = JSON.stringify(data);
-		accessServer("POST", "https://scheduleit.duckdns.org/api/user/groups/calendar/check", data,
+		accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
 			function(result) { //success
-				var data = {};
-				data["cookie"] = cookie;
-				data = JSON.stringify(data);
+				console.log("Successfully retrieved notifications");
 
-				accessServer("POST", "https://scheduleit.duckdns.org/api/user/notifications/get", data,
-					function(result) { //success
-						console.log("Successfully retrieved notifications");
+				$("#notificationMenu").empty();
 
-						$("#notificationMenu").empty();
+				var json = JSON.parse(result);
 
-						var json = JSON.parse(result);
+				if(json[0] == null) {
+					$("#notificationsBadge").text("0");
+					return;
+				}
 
-						if(json[0] == null) {
-							$("#notificationsBadge").text("0");
-							return;
-						}
+				$("#notificationsBadge").text(json.length);
 
-						$("#notificationsBadge").text(json.length);
+				for(var i = 0; i < json.length; i++) {
+					var notification = json[i];
 
-						for(var i = 0; i < json.length; i++) {
-							var notification = json[i];
+					if(notification["type"] == "invite.friend") {
+						var notifID = notification["id"];
+						var fullName = notification["data"]["fullName"];
+						//var picture = notification["data"]["picture"];
 
-							if(notification["type"] == "invite.friend") {
-								var notifID = notification["id"];
-								var fullName = notification["data"]["fullName"];
-								//var picture = notification["data"]["picture"];
-
-								var html = `
-									<!-- friend request -->
-									<div class="card">
-										<div class="card-header">
-											Friend request
-										</div>
-										<div class="card-body">
-											<p class="card-text">` + fullName + ` would like to add you as a friend</p>
-										</div>
-										<div class="card-footer">
-											<div class="float-right" notifID="` + notifID + `">
-												<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
-												<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
-											</div>
-										</div>
+						var html = `
+							<!-- friend request -->
+							<div class="card">
+								<div class="card-header">
+									Friend request
+								</div>
+								<div class="card-body">
+									<p class="card-text">` + fullName + ` would like to add you as a friend</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + notifID + `">
+										<button type="button" class="btn btn-success btn-sm friendRequestAcceptButton">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm friendRequestDeclineButton">Decline</button>
 									</div>
-									`;
+								</div>
+							</div>
+							`;
 
-								$("#notificationMenu").append(html);
-								//might need to assign the functionality of the accept/decline buttons
-							}
-							else if(notification["type"] == "invite.group") {
-								var id = notification["id"];
-								var name = notification["data"]["groupname"];
-								//var picture = notification["data"]["picture"];
+						$("#notificationMenu").append(html);
+						//might need to assign the functionality of the accept/decline buttons
+					}
+					else if(notification["type"] == "invite.group") {
+						var id = notification["id"];
+						var name = notification["data"]["groupname"];
+						//var picture = notification["data"]["picture"];
 
-								var html = `
-									<!-- group invite -->
-									<div class="card">
-										<div class="card-header">
-											Group invite
-										</div>
-										<div class="card-body">
-											<p class="card-text">You have been invited to join ` + name + `</p>
-										</div>
-										<div class="card-footer">
-											<div class="float-right" notifID="` + id + `">
-												<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
-												<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
-											</div>
-										</div>
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Group invite
+								</div>
+								<div class="card-body">
+									<p class="card-text">You have been invited to join ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-success btn-sm groupInviteAcceptButton">Accept</button>
+										<button type="button" class="btn btn-danger btn-sm groupInviteDeclineButton">Decline</button>
 									</div>
-									`;
+								</div>
+							</div>
+							`;
 
-								$("#notificationMenu").append(html);
-							}
-							else if(notification["type"] == "invite.event") {
-								var id = notification["id"];
-								var name = notification["name"];
+						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "invite.event") {
+						var id = notification["id"];
+						var name = notification["name"];
 
-								var html = `
-									<!-- group invite -->
-									<div class="card">
-										<div class="card-header">
-											Event added
-										</div>
-										<div class="card-body">
-											<p class="card-text">An event has been created: ` + name + `</p>
-										</div>
-										<div class="card-footer">
-											<div class="float-right" notifID="` + id + `">
-												<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
-												<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
-												<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
-											</div>
-										</div>
+						var html = `
+							<!-- group invite -->
+							<div class="card">
+								<div class="card-header">
+									Event added
+								</div>
+								<div class="card-body">
+									<p class="card-text">An event has been created: ` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-success btn-sm groupEventGoingButton">Going</button>
+										<button type="button" class="btn btn-primary btn-sm groupEventMaybeGoingButton">Maybe going</button>
+										<button type="button" class="btn btn-danger btn-sm groupEventNotGoingButton">Not going</button>
 									</div>
-									`;
+								</div>
+							</div>
+							`;
 
-								$("#notificationMenu").append(html);
-							}
-							else if(notification["type"] == "remind.event") {
-								var id = notification["id"];
-								var name = notification["name"];
+						$("#notificationMenu").append(html);
+					}
+					else if(notification["type"] == "remind.event") {
+						var id = notification["id"];
+						var name = notification["name"];
 
-								var html = `
-									<!-- event reminder -->
-									<div class="card">
-										<div class="card-header">
-											Event reminder
-										</div>
-										<div class="card-body">
-											<p class="card-text">` + name + `</p>
-										</div>
-										<div class="card-footer">
-											<div class="float-right" notifID="` + id + `">
-												<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
-											</div>
-										</div>
+						var html = `
+							<!-- event reminder -->
+							<div class="card">
+								<div class="card-header">
+									Event reminder
+								</div>
+								<div class="card-body">
+									<p class="card-text">` + name + `</p>
+								</div>
+								<div class="card-footer">
+									<div class="float-right" notifID="` + id + `">
+										<button type="button" class="btn btn-primary btn-sm eventReminderDismissButton">Dismiss</button>
 									</div>
-									`;
+								</div>
+							</div>
+							`;
 
-								$("#notificationMenu").append(html);
-							}
+						$("#notificationMenu").append(html);
+					}
 
-							assignNotificationFunctionality();
-						}
-					},
-					function(result) { //fail
-						console.log("Failed to retrieve notifications")
-					});
+					assignNotificationFunctionality();
+				}
 			},
 			function(result) { //fail
-				console.log("Failed to call calendar/check");
+				console.log("Failed to retrieve notifications")
 			});
-
-
-			
 	};
 
 	//update notifications every 30 seconds
@@ -1497,9 +1495,6 @@ $(document).ready(function(){
 			console.log("Failed to retrieve calendar events for expiration time.");
 		});
 	}
-
-	//Expiration Time Polling
-	setInterval(expirationTime, 10000);
 
 	var expirationTime = function() {
 		//Get month and year
