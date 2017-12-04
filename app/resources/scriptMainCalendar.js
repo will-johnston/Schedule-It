@@ -13,12 +13,20 @@ var activeEventID;
 
 var username;
 var meGroupID;
+var accessCount = 0;
 
 $(document).ready(function(){
 	var accessServer = function(method, url, data, onSuccess, onFail) {
+		$("#loadingText").show();
+		accessCount++;
+
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
 		xhr.onload = function () {
+			if(--accessCount == 0) {
+					$("#loadingText").hide();
+			}
+
 			if (xhr.status === 200) {
 				onSuccess(xhr.response);
 			}

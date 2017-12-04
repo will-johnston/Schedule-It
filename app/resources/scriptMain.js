@@ -70,7 +70,6 @@ $(document).ready(function(){
 
 	assignFunctionality();
 
-	var accessCount = 0;
 	var accessServer = function(method, url, data, onSuccess, onFail) {
 		if(url != "https://scheduleit.duckdns.org/api/user/groups/getChat" &&
 			url != "https://scheduleit.duckdns.org/api/user/notifications/get" &&
