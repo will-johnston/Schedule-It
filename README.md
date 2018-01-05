@@ -17,9 +17,11 @@ Schedule-It is a web application designed for easy communication and event sched
 - [mySQL](https://dev.mysql.com/)
 - [jQuery](https://jquery.com/)
 
+![Screenshot](https://i.imgur.com/38bB9P4.png)
+
 ### Postman Collection
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/46ed75ba901e6e9fb1eb)
 
 ### Bug listing
 [![Google Sheets](https://png.icons8.com/google-sheets/color/50)](https://docs.google.com/spreadsheets/d/1CIBPR1b_vADFiwsD8H27rrGDceitjB1loLopZLML2oY/edit?usp=sharing)
-Request edit permissions or send in a "bug report".
+Request edit permissions or send in a "bug report"
