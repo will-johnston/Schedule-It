@@ -1,5 +1,5 @@
 # Schedule-It
-Schedule-It is a web application designed for easy communication and event scheduling within groups.
+Schedule-It is a web application designed for easy communication and event scheduling. This project was made for CS307 at Purdue University and was self hosted on a Raspberry Pi using a custom built RESTful API. Machine learning in Computer Science is big right now which is why this project has an integrated chatbot trained with a natural dialog.
 
 ### Features
 - Secure account creation and login
@@ -13,8 +13,9 @@ Schedule-It is a web application designed for easy communication and event sched
 
 ### Technologies
 - [Chatterbot](http://chatterbot.readthedocs.io/en/stable/)
-- [Bootstrap](https://getbootstrap.com/)
+- [Apache](https://httpd.apache.org/)
 - [mySQL](https://dev.mysql.com/)
+- [Bootstrap](https://getbootstrap.com/)
 - [jQuery](https://jquery.com/)
 
 ![Screenshot](https://i.imgur.com/38bB9P4.png)
